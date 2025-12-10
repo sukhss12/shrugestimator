@@ -9,7 +9,7 @@ import { SortableStageColumn } from '@/components/SortableStageColumn';
 import { AddStageButton } from '@/components/AddStageButton';
 import { JourneySizeScale } from '@/components/JourneySizeScale';
 import { StageNavigation } from '@/components/StageNavigation';
-import { Logo } from '@/components/Logo';
+import { HeroSidebar } from '@/components/HeroSidebar';
 import { TShirtSize, ReleaseColour } from '@/types';
 import { SIZE_DAYS, WORKING_DAYS_PER_WEEK, getJourneySize } from '@/lib/constants';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
@@ -229,21 +229,14 @@ const Index = () => {
       </div>;
   }
 
-  return <div className="flex flex-col h-screen bg-background">
-    <div className="flex flex-col h-full w-full max-w-7xl mx-auto">
-      {/* Logo - Top Left */}
-      <div className="px-4 sm:px-6 py-4">
-        <div className="flex items-center gap-3">
-          <Logo width={56} />
-          <div>
-            <span className="text-xl font-bold text-foreground">Shrug</span>
-            <p className="text-xs text-muted-foreground">Product estimation, roughly</p>
-          </div>
-        </div>
-      </div>
+  return <div className="flex h-screen bg-background">
+      {/* Fixed Sidebar */}
+      <HeroSidebar />
 
-      {/* Settings/Summary Bar - Above Stages */}
-      <div className="sticky top-0 z-10 mx-4 sm:mx-6 my-2 px-4 py-3 bg-card border border-border rounded-lg flex flex-wrap items-center gap-3 sm:gap-4">
+      {/* Main Canvas */}
+      <div className="flex flex-col flex-1 h-full md:ml-[240px] lg:ml-[280px]">
+        {/* Settings/Summary Bar */}
+        <div className="sticky top-0 z-10 m-4 px-4 py-3 bg-card border border-border rounded-lg flex flex-wrap items-center gap-3 sm:gap-4">
         {/* Journey Name */}
         <div className="min-w-[140px] max-w-[200px]">
           {isEditingName || !journeyName ? (
@@ -391,7 +384,7 @@ const Index = () => {
         </DndContext>
       </main>
     </div>
-    </div>;
+  </div>;
 };
 
 export default Index;
