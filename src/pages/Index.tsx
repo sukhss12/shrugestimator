@@ -41,7 +41,7 @@ interface Stage {
 interface StoredData {
   journeyName: string;
   teamSize: number;
-  appetite: number;
+  scope: number;
   stages: Stage[];
 }
 
@@ -53,7 +53,7 @@ const calculateFeatureDays = (estimates?: FeatureEstimates): number => {
 const defaultData: StoredData = {
   journeyName: '',
   teamSize: 2,
-  appetite: 6,
+  scope: 6,
   stages: [{
     id: '1',
     name: 'Stage 1',
@@ -66,11 +66,11 @@ const loadFromStorage = (): StoredData => {
     const stored = localStorage.getItem(STORAGE_KEY);
     if (stored) {
       const data = JSON.parse(stored);
-      // Backward compatibility: migrate sprintWeeks to appetite
+      // Backward compatibility: migrate sprintWeeks/appetite to scope
       return {
         ...defaultData,
         ...data,
-        appetite: data.appetite ?? data.sprintWeeks ?? 6
+        scope: data.scope ?? data.appetite ?? data.sprintWeeks ?? 6
       };
     }
   } catch (e) {
@@ -92,7 +92,7 @@ const Index = () => {
   const [journeyName, setJourneyName] = useState('');
   const [isEditingName, setIsEditingName] = useState(false);
   const [teamSize, setTeamSize] = useState(2);
-  const [appetite, setAppetite] = useState(6);
+  const [scope, setScope] = useState(6);
   const [stages, setStages] = useState<Stage[]>([]);
   const [newStageId, setNewStageId] = useState<string | null>(null);
 
@@ -109,7 +109,7 @@ const Index = () => {
     const data = loadFromStorage();
     setJourneyName(data.journeyName);
     setTeamSize(data.teamSize);
-    setAppetite(data.appetite);
+    setScope(data.scope);
     setStages(data.stages);
     setIsLoaded(true);
   }, []);
@@ -120,11 +120,11 @@ const Index = () => {
       saveToStorage({
         journeyName,
         teamSize,
-        appetite,
+        scope,
         stages
       });
     }
-  }, [journeyName, teamSize, appetite, stages, isLoaded]);
+  }, [journeyName, teamSize, scope, stages, isLoaded]);
 
   // Summary calculations
   const summary = useMemo(() => {
@@ -282,13 +282,13 @@ const Index = () => {
                 </Button>
               </div>
 
-              {/* Appetite */}
+              {/* Scope */}
               <div className="flex items-center gap-1.5">
-                <span className="text-xs text-foreground/60">Appetite</span>
+                <span className="text-xs text-foreground/60">Scope</span>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button variant="outline" className="h-7 gap-1 px-2 text-sm">
-                      {appetite} wks
+                      {scope} wks
                       <ChevronDown className="h-3 w-3 opacity-50" />
                     </Button>
                   </DropdownMenuTrigger>
@@ -296,8 +296,8 @@ const Index = () => {
                     {[1, 2, 3, 4, 6, 8, 10, 12].map((weeks) => (
                       <DropdownMenuItem 
                         key={weeks}
-                        onClick={() => setAppetite(weeks)}
-                        className={appetite === weeks ? 'bg-accent' : ''}
+                        onClick={() => setScope(weeks)}
+                        className={scope === weeks ? 'bg-accent' : ''}
                       >
                         {weeks} week{weeks > 1 ? 's' : ''}
                       </DropdownMenuItem>
@@ -330,17 +330,17 @@ const Index = () => {
                   <div className="text-sm text-foreground/70">{summary.timeEstimate}</div>
                 </div>
                 <div className="flex items-center gap-1.5">
-                  <span className="text-xs text-foreground/60">Appetite</span>
+                  <span className="text-xs text-foreground/60">Scope</span>
                   <div className="w-12 h-1.5 bg-muted rounded-full overflow-hidden">
                     <div 
                       className={`h-full rounded-full transition-all ${
-                        summary.calendarWeeks > appetite ? 'bg-destructive' : 'bg-primary'
+                        summary.calendarWeeks > scope ? 'bg-destructive' : 'bg-primary'
                       }`}
-                      style={{ width: `${Math.min((summary.calendarWeeks / appetite) * 100, 100)}%` }}
+                      style={{ width: `${Math.min((summary.calendarWeeks / scope) * 100, 100)}%` }}
                     />
                   </div>
-                  <span className={`text-xs tabular-nums ${summary.calendarWeeks > appetite ? 'text-destructive' : 'text-foreground/60'}`}>
-                    {Math.round((summary.calendarWeeks / appetite) * 100)}%
+                  <span className={`text-xs tabular-nums ${summary.calendarWeeks > scope ? 'text-destructive' : 'text-foreground/60'}`}>
+                    {Math.round((summary.calendarWeeks / scope) * 100)}%
                   </span>
                 </div>
               </div>
@@ -393,14 +393,14 @@ const Index = () => {
                 </Button>
               </div>
 
-              {/* Appetite */}
+              {/* Scope */}
               <div className="flex items-center gap-1.5">
-                <span className="text-xs text-foreground/60 hidden lg:inline">Delivery Appetite</span>
-                <span className="text-xs text-foreground/60 lg:hidden">Appetite</span>
+                <span className="text-xs text-foreground/60 hidden lg:inline">Delivery Scope</span>
+                <span className="text-xs text-foreground/60 lg:hidden">Scope</span>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button variant="outline" className="h-7 gap-1 px-2 text-sm">
-                      {appetite} wks
+                      {scope} wks
                       <ChevronDown className="h-3 w-3 opacity-50" />
                     </Button>
                   </DropdownMenuTrigger>
@@ -408,8 +408,8 @@ const Index = () => {
                     {[1, 2, 3, 4, 6, 8, 10, 12].map((weeks) => (
                       <DropdownMenuItem 
                         key={weeks}
-                        onClick={() => setAppetite(weeks)}
-                        className={appetite === weeks ? 'bg-accent' : ''}
+                        onClick={() => setScope(weeks)}
+                        className={scope === weeks ? 'bg-accent' : ''}
                       >
                         {weeks} week{weeks > 1 ? 's' : ''}
                       </DropdownMenuItem>
@@ -444,17 +444,17 @@ const Index = () => {
                 <JourneySizeScale currentSize={summary.journeySize} />
 
                 <div className="flex items-center gap-1.5">
-                  <span className="text-xs text-foreground/60">Appetite</span>
+                  <span className="text-xs text-foreground/60">Scope</span>
                   <div className="w-16 h-1.5 bg-muted rounded-full overflow-hidden">
                     <div 
                       className={`h-full rounded-full transition-all ${
-                        summary.calendarWeeks > appetite ? 'bg-destructive' : 'bg-primary'
+                        summary.calendarWeeks > scope ? 'bg-destructive' : 'bg-primary'
                       }`}
-                      style={{ width: `${Math.min((summary.calendarWeeks / appetite) * 100, 100)}%` }}
+                      style={{ width: `${Math.min((summary.calendarWeeks / scope) * 100, 100)}%` }}
                     />
                   </div>
-                  <span className={`text-xs tabular-nums ${summary.calendarWeeks > appetite ? 'text-destructive' : 'text-foreground/60'}`}>
-                    {Math.round((summary.calendarWeeks / appetite) * 100)}%
+                  <span className={`text-xs tabular-nums ${summary.calendarWeeks > scope ? 'text-destructive' : 'text-foreground/60'}`}>
+                    {Math.round((summary.calendarWeeks / scope) * 100)}%
                   </span>
                 </div>
               </div>
@@ -485,17 +485,17 @@ const Index = () => {
               <div className="flex items-center gap-3">
                 <JourneySizeScale currentSize={summary.journeySize} />
                 <div className="flex items-center gap-1.5">
-                  <span className="text-xs text-foreground/60">Appetite</span>
+                  <span className="text-xs text-foreground/60">Scope</span>
                   <div className="w-16 h-1.5 bg-muted rounded-full overflow-hidden">
                     <div 
                       className={`h-full rounded-full transition-all ${
-                        summary.calendarWeeks > appetite ? 'bg-destructive' : 'bg-primary'
+                        summary.calendarWeeks > scope ? 'bg-destructive' : 'bg-primary'
                       }`}
-                      style={{ width: `${Math.min((summary.calendarWeeks / appetite) * 100, 100)}%` }}
+                      style={{ width: `${Math.min((summary.calendarWeeks / scope) * 100, 100)}%` }}
                     />
                   </div>
-                  <span className={`text-xs tabular-nums ${summary.calendarWeeks > appetite ? 'text-destructive' : 'text-foreground/60'}`}>
-                    {Math.round((summary.calendarWeeks / appetite) * 100)}%
+                  <span className={`text-xs tabular-nums ${summary.calendarWeeks > scope ? 'text-destructive' : 'text-foreground/60'}`}>
+                    {Math.round((summary.calendarWeeks / scope) * 100)}%
                   </span>
                 </div>
               </div>
