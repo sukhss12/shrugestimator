@@ -39,8 +39,9 @@ const initialStages: Stage[] = [
     id: '2',
     name: 'Prepare',
     features: [
-      { id: '2-1', name: 'Data validation', estimates: { fe: 'XS', be: 'S', db: 'NA', int: 'NA' }, selected: true },
-      { id: '2-2', name: 'Template loading', estimates: { fe: 'S', be: 'S', db: 'S', int: 'NA' }, selected: true },
+      { id: '2-1', name: 'Select company', estimates: undefined, selected: true },
+      { id: '2-2', name: 'Select date range', estimates: undefined, selected: true },
+      { id: '2-3', name: 'Choose report type', estimates: undefined, selected: true },
     ],
   },
   {

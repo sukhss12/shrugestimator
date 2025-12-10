@@ -69,10 +69,26 @@ export const StageColumn = ({
 
   const handleSaveEstimates = (featureName: string, estimates: FeatureEstimates) => {
     if (!editingFeature) return;
-    onFeaturesChange(features.map(f => 
-      f.id === editingFeature.id ? { ...f, name: featureName, estimates } : f
-    ));
+    // Check if feature already exists in list (editing existing)
+    const existingFeature = features.find(f => f.id === editingFeature.id);
+    if (existingFeature) {
+      onFeaturesChange(features.map(f => 
+        f.id === editingFeature.id ? { ...f, name: featureName, estimates } : f
+      ));
+    }
     setEditingFeature(null);
+  };
+
+  const handleModalClose = (open: boolean) => {
+    if (!open && editingFeature) {
+      // If closing modal for a new feature that doesn't exist yet, add it
+      const existingFeature = features.find(f => f.id === editingFeature.id);
+      if (!existingFeature) {
+        onFeaturesChange([...features, editingFeature]);
+      }
+      setEditingFeature(null);
+    }
+    setModalOpen(open);
   };
 
   const handleAddFeature = () => {
@@ -82,7 +98,7 @@ export const StageColumn = ({
       estimates: undefined,
       selected: true,
     };
-    onFeaturesChange([...features, newFeature]);
+    // Don't add to features yet - will be added on modal close/save
     setEditingFeature(newFeature);
     setModalOpen(true);
   };
@@ -145,7 +161,7 @@ export const StageColumn = ({
       {/* Estimation Modal */}
       <EstimationModal
         open={modalOpen}
-        onOpenChange={setModalOpen}
+        onOpenChange={handleModalClose}
         featureName={editingFeature?.name || ''}
         initialEstimates={editingFeature?.estimates}
         onSave={handleSaveEstimates}
