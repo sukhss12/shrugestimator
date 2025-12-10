@@ -1,117 +1,81 @@
 import { useState, useEffect } from 'react';
-import { Logo } from './Logo';
+import { ChevronDown, ChevronUp } from 'lucide-react';
+import { Button } from './ui/button';
 
 const HERO_COLLAPSED_KEY = 'shrug-hero-collapsed';
 
 export const HeroSection = () => {
-  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(true); // Collapsed by default
   const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
     const stored = localStorage.getItem(HERO_COLLAPSED_KEY);
-    if (stored === 'true') {
-      setIsCollapsed(true);
+    if (stored !== null) {
+      setIsCollapsed(stored === 'true');
     }
     setIsLoaded(true);
   }, []);
 
   const toggleCollapse = () => {
-    const newValue = !isCollapsed;
-    setIsCollapsed(newValue);
-    localStorage.setItem(HERO_COLLAPSED_KEY, String(newValue));
+    const newState = !isCollapsed;
+    setIsCollapsed(newState);
+    localStorage.setItem(HERO_COLLAPSED_KEY, String(newState));
   };
 
-  // Prevent flash of wrong state
-  if (!isLoaded) {
-    return null;
-  }
+  if (!isLoaded) return null;
 
-  // Collapsed state - just logo + wordmark
-  if (isCollapsed) {
-    return (
-      <div className="border-b border-border">
-        <div className="max-w-[600px] mx-auto px-6 sm:px-8 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <Logo width={48} />
-            <div>
-              <span className="text-2xl font-bold text-foreground">Shrug</span>
-              <p className="text-sm text-muted-foreground italic mt-0.5">Product estimation, roughly</p>
-            </div>
-          </div>
-          <button
-            onClick={toggleCollapse}
-            className="text-xs text-muted-foreground hover:text-foreground transition-colors"
-          >
-            Show
-          </button>
-        </div>
-      </div>
-    );
-  }
-
-  // Expanded state - full hero
   return (
-    <div className="border-b border-border">
-      <div className="max-w-[600px] mx-auto px-6 sm:px-8 pt-8 pb-6">
-        {/* Hide link */}
-        <div className="flex justify-end mb-4">
-          <button
-            onClick={toggleCollapse}
-            className="text-xs text-muted-foreground hover:text-foreground transition-colors"
-          >
-            Hide
-          </button>
-        </div>
+    <div className="border-b border-border bg-card/50">
+      <div className="max-w-4xl mx-auto px-4 py-2">
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={toggleCollapse}
+          className="text-xs text-muted-foreground hover:text-foreground gap-1 h-7 px-2"
+        >
+          {isCollapsed ? (
+            <>
+              <span>What's this?</span>
+              <ChevronDown className="h-3 w-3" />
+            </>
+          ) : (
+            <>
+              <span>Hide</span>
+              <ChevronUp className="h-3 w-3" />
+            </>
+          )}
+        </Button>
 
-        {/* Logo + Wordmark */}
-        <div className="flex flex-col sm:flex-row items-center sm:items-start gap-3 mb-6">
-          <Logo width={48} />
-          <div className="text-center sm:text-left">
-            <span className="text-2xl font-bold text-foreground">Shrug</span>
-            <p className="text-sm text-muted-foreground italic mt-1">Product estimation, roughly</p>
-          </div>
-        </div>
+        {!isCollapsed && (
+          <div className="py-3 space-y-3 text-xs text-muted-foreground leading-relaxed max-w-xl">
+            <p>
+              You know that moment when someone asks "when's this shipping?" and everyone stares at the ceiling? Someone mutters "<em>...depends</em>".{' '}
+              <span className="text-foreground font-medium">This is for that.</span>
+            </p>
 
-        {/* Body Copy */}
-        <div className="space-y-4 text-base text-foreground/70 leading-relaxed">
-          <p>
-            You know that moment when someone asks "when's this shipping?" and everyone stares at the ceiling? Someone mutters "<em>...depends</em>".
-          </p>
+            <p>
+              Map your journey. Size your features. See if your grand vision fits your appetite.{' '}
+              <span className="text-muted-foreground/70">Spoiler:</span>{' '}
+              <span className="text-foreground font-medium">it probably won't.</span>
+            </p>
 
-          <p className="text-lg font-medium text-foreground">
-            This is for that.
-          </p>
-
-          <p>
-            Map your journey. Size your features. See if your grand vision actually fits your appetite.{' '}
-            <span className="text-muted-foreground">Spoiler:</span>{' '}
-            <span className="text-foreground font-medium">it probably won't.</span>{' '}
-            That's what the priorities are for:
-          </p>
-
-          {/* Priority List */}
-          <div className="space-y-2 py-4">
-            <div className="flex items-center gap-2">
-              <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 flex-shrink-0" />
-              <span className="font-medium text-foreground">Now</span>
-              <span className="text-muted-foreground">— this ships</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="w-2.5 h-2.5 rounded-full bg-amber-500 flex-shrink-0" />
-              <span className="font-medium text-foreground">Next</span>
-              <span className="text-muted-foreground">— that waits</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="w-2.5 h-2.5 rounded-full bg-violet-500 flex-shrink-0" />
-              <span className="font-medium text-foreground">Later</span>
-              <span className="text-muted-foreground">— we'll get to it</span>
+            {/* Priority Legend - inline */}
+            <div className="flex flex-wrap gap-4 pt-1">
+              <div className="flex items-center gap-1.5">
+                <span className="w-2 h-2 rounded-full bg-emerald-500" />
+                <span className="text-foreground/80">Now</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <span className="w-2 h-2 rounded-full bg-amber-500" />
+                <span className="text-foreground/80">Next</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <span className="w-2 h-2 rounded-full bg-violet-500" />
+                <span className="text-foreground/80">Later</span>
+              </div>
             </div>
           </div>
-
-          <p>
-            Get a rough shape before you've promised anything. Refine it properly once you're actually building.
-          </p>
-        </div>
+        )}
       </div>
     </div>
   );
