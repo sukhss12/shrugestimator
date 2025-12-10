@@ -196,7 +196,7 @@ export const StageColumn = ({
             onChange={(e) => setEditingName(e.target.value)}
             onBlur={commitName}
             onKeyDown={handleNameKeyDown}
-            placeholder="Journey Stage"
+            placeholder="Journey Step"
             className="flex-1 bg-muted/50 border-border/50 font-semibold text-base text-foreground placeholder:text-muted-foreground focus-visible:ring-1 focus-visible:ring-ring h-9 px-3"
           />
         {canDelete && onDelete && (

@@ -66,7 +66,7 @@ const defaultData: StoredData = {
   scope: 6,
   stages: [{
     id: '1',
-    name: 'Stage 1',
+    name: 'Journey Step 1',
     features: []
   }]
 };
@@ -206,7 +206,7 @@ const Index = () => {
     const id = Date.now().toString();
     const newStage: Stage = {
       id,
-      name: 'New Stage',
+      name: 'New Step',
       features: []
     };
     setStages([...stages, newStage]);
