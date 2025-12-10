@@ -170,7 +170,7 @@ export const StageColumn = ({
             value={name}
             onChange={(e) => onNameChange(e.target.value)}
             placeholder="Journey Stage"
-            className="flex-1 border-none shadow-none bg-transparent font-semibold text-base text-foreground placeholder:text-foreground/40 focus-visible:ring-0 px-0 h-auto py-0"
+            className="flex-1 bg-muted/50 border-border/50 font-semibold text-base text-foreground placeholder:text-muted-foreground focus-visible:ring-1 focus-visible:ring-ring h-9 px-3"
           />
           {canDelete && onDelete && (
             <Tooltip>
