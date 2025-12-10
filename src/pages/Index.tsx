@@ -21,6 +21,7 @@ import { SortableStageColumn } from '@/components/SortableStageColumn';
 import { AddStageButton } from '@/components/AddStageButton';
 import { JourneySizeScale } from '@/components/JourneySizeScale';
 import { SprintCapacityBar } from '@/components/SprintCapacityBar';
+import { Logo } from '@/components/Logo';
 import { TShirtSize, ReleaseColour } from '@/types';
 import { SIZE_POINTS, POINTS_PER_DEV_DAY } from '@/lib/constants';
 import {
@@ -268,13 +269,22 @@ const Index = () => {
     <div className="dark flex flex-col h-screen bg-background">
       {/* Top Bar - Sticky */}
       <header className="sticky top-0 z-10 flex items-center justify-between px-6 py-4 bg-card/80 backdrop-blur-md border-b border-border/50">
-        <Input
-          type="text"
-          value={journeyName}
-          onChange={(e) => setJourneyName(e.target.value)}
-          placeholder="e.g. Business Review Flow"
-          className="max-w-xs bg-transparent border-none shadow-none text-lg font-medium placeholder:text-muted-foreground/60 focus-visible:ring-0 px-0"
-        />
+        <div className="flex items-center gap-4">
+          {/* Logo + Wordmark */}
+          <div className="flex items-center gap-2 text-foreground">
+            <Logo width={80} />
+            <span className="font-medium text-lg hidden sm:inline">Shrug</span>
+          </div>
+          
+          {/* Journey Name */}
+          <Input
+            type="text"
+            value={journeyName}
+            onChange={(e) => setJourneyName(e.target.value)}
+            placeholder="e.g. Business Review Flow"
+            className="max-w-xs bg-transparent border-none shadow-none text-lg font-medium text-foreground placeholder:text-foreground/40 focus-visible:ring-0 px-0"
+          />
+        </div>
         
         <div className="flex items-center gap-4">
           {/* Team Size */}
