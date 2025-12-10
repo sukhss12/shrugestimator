@@ -270,9 +270,12 @@ const Index = () => {
       {/* Top Bar - Sticky */}
       <header className="sticky top-0 z-10 flex items-center justify-between px-6 py-3 bg-card/80 backdrop-blur-md border-b border-border/50">
         {/* Logo + Wordmark */}
-        <div className="flex items-center gap-2 text-foreground">
+        <div className="flex items-center gap-3 text-foreground">
           <Logo width={80} />
-          <span className="font-medium text-lg hidden sm:inline">Shrug</span>
+          <div className="hidden sm:block">
+            <span className="font-bold text-lg block leading-tight">Shrug</span>
+            <span className="text-xs text-foreground/60">Product estimation, roughly</span>
+          </div>
         </div>
         
         <div className="flex items-center gap-4">
