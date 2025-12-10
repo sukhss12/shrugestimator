@@ -1,7 +1,7 @@
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { StageColumn } from './StageColumn';
-import { TShirtSize } from '@/types';
+import { TShirtSize, ReleaseColour } from '@/types';
 
 interface FeatureEstimates {
   fe: TShirtSize;
@@ -15,6 +15,7 @@ interface Feature {
   name: string;
   estimates?: FeatureEstimates;
   selected: boolean;
+  colour?: ReleaseColour;
 }
 
 interface SortableStageColumnProps {

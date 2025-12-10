@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
@@ -95,6 +96,9 @@ export const EstimationModal = ({
             className="text-lg font-semibold placeholder:text-muted-foreground/60"
           />
           <DialogTitle className="sr-only">Estimate Feature</DialogTitle>
+          <DialogDescription className="sr-only">
+            Set t-shirt size estimates for each dimension
+          </DialogDescription>
         </DialogHeader>
 
         {/* Body */}

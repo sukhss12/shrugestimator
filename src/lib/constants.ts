@@ -20,7 +20,10 @@ export const SIZE_LABELS: Record<TShirtSize, string> = {
 
 export const WORKING_DAYS_PER_WEEK = 5;
 
-export const APPETITE_OPTIONS = [2, 4, 6, 8, 12] as const;
+export const MIN_TEAM_SIZE = 1;
+export const MAX_TEAM_SIZE = 10;
+
+export const SCOPE_OPTIONS = [1, 2, 3, 4, 6, 8, 10, 12] as const;
 
 export const JOURNEY_SIZE_BANDS = {
   XS: { max: 2, label: '< 2 wks', sprints: '< 1 sprint' },
