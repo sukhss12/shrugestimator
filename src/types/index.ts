@@ -1,5 +1,7 @@
 export type TShirtSize = 'XS' | 'S' | 'M' | 'L' | 'XL' | 'NA';
 
+export type ReleaseColour = 'green' | 'amber' | 'purple' | null;
+
 export interface FeatureEstimate {
   id: string;
   name: string;
@@ -8,6 +10,7 @@ export interface FeatureEstimate {
   db: TShirtSize;
   int: TShirtSize;
   selected: boolean;
+  colour?: ReleaseColour;
 }
 
 export interface PageEstimate {
