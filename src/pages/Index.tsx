@@ -258,14 +258,14 @@ const Index = () => {
   // Don't render until loaded to prevent flash
   if (!isLoaded) {
     return (
-      <div className="flex flex-col h-screen bg-slate-50 items-center justify-center">
+      <div className="dark flex flex-col h-screen bg-background items-center justify-center">
         <div className="text-muted-foreground text-sm">Loading...</div>
       </div>
     );
   }
 
   return (
-    <div className="flex flex-col h-screen bg-slate-50">
+    <div className="dark flex flex-col h-screen bg-background">
       {/* Top Bar - Sticky */}
       <header className="sticky top-0 z-10 flex items-center justify-between px-6 py-4 bg-background border-b border-border">
         <Input
