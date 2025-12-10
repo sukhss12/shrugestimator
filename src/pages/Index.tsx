@@ -1,10 +1,11 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Minus, Plus } from 'lucide-react';
 import { StageColumn } from '@/components/StageColumn';
 import { AddStageButton } from '@/components/AddStageButton';
 import { TShirtSize } from '@/types';
+import { SIZE_POINTS, POINTS_PER_DEV_DAY } from '@/lib/constants';
 
 interface FeatureEstimates {
   fe: TShirtSize;
@@ -25,6 +26,12 @@ interface Stage {
   name: string;
   features: Feature[];
 }
+
+const calculateFeaturePoints = (estimates?: FeatureEstimates): number => {
+  if (!estimates) return 0;
+  return SIZE_POINTS[estimates.fe] + SIZE_POINTS[estimates.be] + 
+         SIZE_POINTS[estimates.db] + SIZE_POINTS[estimates.int];
+};
 
 const initialStages: Stage[] = [
   {
@@ -75,12 +82,38 @@ const Index = () => {
   const [stages, setStages] = useState<Stage[]>(initialStages);
   const [newStageId, setNewStageId] = useState<string | null>(null);
 
+  // Summary calculations
+  const summary = useMemo(() => {
+    const allFeatures = stages.flatMap(s => s.features);
+    const totalCount = allFeatures.length;
+    const selectedFeatures = allFeatures.filter(f => f.selected);
+    const selectedCount = selectedFeatures.length;
+    const totalPoints = selectedFeatures.reduce(
+      (sum, f) => sum + calculateFeaturePoints(f.estimates),
+      0
+    );
+    const devDays = totalPoints / POINTS_PER_DEV_DAY;
+    const calendarDays = devDays / teamSize;
+    
+    let timeEstimate: string;
+    if (calendarDays === 0) {
+      timeEstimate = '0 days';
+    } else if (calendarDays > 5) {
+      const weeks = calendarDays / 5;
+      timeEstimate = `~${weeks.toFixed(1)} weeks`;
+    } else {
+      timeEstimate = `~${calendarDays.toFixed(1)} days`;
+    }
+
+    return { selectedCount, totalCount, totalPoints, timeEstimate };
+  }, [stages, teamSize]);
+
   const handleDecrement = () => {
     if (teamSize > 1) setTeamSize(teamSize - 1);
   };
 
   const handleIncrement = () => {
-    setTeamSize(teamSize + 1);
+    if (teamSize < 10) setTeamSize(teamSize + 1);
   };
 
   const handleAddStage = () => {
@@ -169,8 +202,14 @@ const Index = () => {
 
       {/* Bottom Bar - Sticky */}
       <footer className="sticky bottom-0 z-10 px-6 py-4 bg-background border-t border-border shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
-        <div className="flex items-center justify-between">
-          <span className="text-sm text-muted-foreground">Summary will appear here</span>
+        <div className="flex items-center justify-center">
+          <span className="text-sm font-medium">
+            {summary.selectedCount} of {summary.totalCount} selected
+            <span className="mx-2 text-muted-foreground">·</span>
+            <span className="text-primary">{summary.totalPoints} pts</span>
+            <span className="mx-2 text-muted-foreground">·</span>
+            {summary.timeEstimate}
+          </span>
         </div>
       </footer>
     </div>
