@@ -4,7 +4,7 @@ import { arrayMove, SortableContext, sortableKeyboardCoordinates, horizontalList
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
-import { Minus, Plus, ChevronDown, Pencil } from 'lucide-react';
+import { Minus, Plus, ChevronDown, Pencil, RotateCcw } from 'lucide-react';
 import { SortableStageColumn } from '@/components/SortableStageColumn';
 import { AddStageButton } from '@/components/AddStageButton';
 import { JourneySizeScale } from '@/components/JourneySizeScale';
@@ -14,6 +14,16 @@ import { HeroSection } from '@/components/HeroSection';
 import { TShirtSize, ReleaseColour } from '@/types';
 import { SIZE_DAYS, WORKING_DAYS_PER_WEEK, getJourneySize, MIN_TEAM_SIZE, MAX_TEAM_SIZE, SCOPE_OPTIONS } from '@/lib/constants';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 
 const STORAGE_KEY = 'tshirt-estimator-data';
 
@@ -95,6 +105,7 @@ const Index = () => {
   const [scope, setScope] = useState(6);
   const [stages, setStages] = useState<Stage[]>([]);
   const [newStageId, setNewStageId] = useState<string | null>(null);
+  const [resetDialogOpen, setResetDialogOpen] = useState(false);
 
   const sensors = useSensors(useSensor(PointerSensor, {
     activationConstraint: {
@@ -223,6 +234,14 @@ const Index = () => {
     }
   };
 
+  const handleReset = () => {
+    setJourneyName(defaultData.journeyName);
+    setTeamSize(defaultData.teamSize);
+    setScope(defaultData.scope);
+    setStages(defaultData.stages);
+    setResetDialogOpen(false);
+  };
+
   // Don't render until loaded to prevent flash
   if (!isLoaded) {
     return <div className="flex flex-col h-screen bg-background items-center justify-center">
@@ -245,27 +264,43 @@ const Index = () => {
         <div className="sticky top-0 z-10 my-4 px-4 py-3 bg-card border border-border rounded-lg">
           {/* Mobile: Stacked layout */}
           <div className="flex flex-col gap-3 sm:hidden">
-            {/* Row 1: Journey Name */}
-            <div className="w-full">
-              {isEditingName || !journeyName ? (
-                <Input 
-                  value={journeyName}
-                  onChange={e => setJourneyName(e.target.value)}
-                  onBlur={() => setIsEditingName(false)}
-                  onKeyDown={e => e.key === 'Enter' && setIsEditingName(false)}
-                  placeholder="Journey name..."
-                  autoFocus
-                  className="h-8 text-sm w-full"
-                />
-              ) : (
-                <button 
-                  onClick={() => setIsEditingName(true)}
-                  className="flex items-center gap-1.5 text-sm font-medium text-foreground hover:text-foreground/80 transition-colors group"
-                >
-                  <span className="truncate">{journeyName}</span>
-                  <Pencil className="h-3 w-3 opacity-0 group-hover:opacity-60 transition-opacity flex-shrink-0" />
-                </button>
-              )}
+            {/* Row 1: Journey Name + Reset */}
+            <div className="flex items-center justify-between gap-2 w-full">
+              <div className="flex-1 min-w-0">
+                {isEditingName || !journeyName ? (
+                  <Input 
+                    value={journeyName}
+                    onChange={e => setJourneyName(e.target.value.slice(0, 60))}
+                    onBlur={() => setIsEditingName(false)}
+                    onKeyDown={e => e.key === 'Enter' && setIsEditingName(false)}
+                    placeholder="Journey name..."
+                    autoFocus
+                    maxLength={60}
+                    className="h-8 text-sm w-full"
+                  />
+                ) : (
+                  <button 
+                    onClick={() => setIsEditingName(true)}
+                    className="flex items-center gap-1.5 text-sm font-medium text-foreground hover:text-foreground/80 transition-colors"
+                  >
+                    <span className="truncate">{journeyName}</span>
+                    <Pencil className="h-3 w-3 opacity-60 flex-shrink-0" />
+                  </button>
+                )}
+              </div>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button 
+                    variant="ghost" 
+                    size="icon" 
+                    className="h-7 w-7 text-foreground/50 hover:text-foreground"
+                    onClick={() => setResetDialogOpen(true)}
+                  >
+                    <RotateCcw className="h-3.5 w-3.5" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent side="bottom" className="text-xs">Reset all</TooltipContent>
+              </Tooltip>
             </div>
 
             {/* Row 2: Controls */}
@@ -356,27 +391,43 @@ const Index = () => {
             {/* Row 1: Settings */}
             <div className="flex items-center gap-4 flex-wrap">
               {/* Journey Name */}
-              <div className="min-w-[140px] max-w-[200px]">
+              <div className="min-w-[140px] max-w-[280px]">
                 {isEditingName || !journeyName ? (
                   <Input 
                     value={journeyName}
-                    onChange={e => setJourneyName(e.target.value)}
+                    onChange={e => setJourneyName(e.target.value.slice(0, 60))}
                     onBlur={() => setIsEditingName(false)}
                     onKeyDown={e => e.key === 'Enter' && setIsEditingName(false)}
                     placeholder="Journey name..."
                     autoFocus
+                    maxLength={60}
                     className="h-8 text-sm"
                   />
                 ) : (
                   <button 
                     onClick={() => setIsEditingName(true)}
-                    className="flex items-center gap-1.5 text-sm font-medium text-foreground hover:text-foreground/80 transition-colors group"
+                    className="flex items-center gap-1.5 text-sm font-medium text-foreground hover:text-foreground/80 transition-colors"
                   >
-                    <span className="truncate max-w-[160px]">{journeyName}</span>
-                    <Pencil className="h-3 w-3 opacity-0 group-hover:opacity-60 transition-opacity flex-shrink-0" />
+                    <span className="truncate max-w-[240px]">{journeyName}</span>
+                    <Pencil className="h-3 w-3 opacity-60 flex-shrink-0" />
                   </button>
                 )}
               </div>
+
+              {/* Reset Button */}
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button 
+                    variant="ghost" 
+                    size="icon" 
+                    className="h-7 w-7 text-foreground/50 hover:text-foreground"
+                    onClick={() => setResetDialogOpen(true)}
+                  >
+                    <RotateCcw className="h-3.5 w-3.5" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent side="bottom" className="text-xs">Reset all</TooltipContent>
+              </Tooltip>
 
               <div className="w-px h-6 bg-border hidden lg:block" />
 
@@ -536,6 +587,27 @@ const Index = () => {
           <p className="text-sm text-muted-foreground/40">¯\_(ツ)_/¯</p>
         </footer>
       </div>
+
+      {/* Reset Confirmation Dialog */}
+      <AlertDialog open={resetDialogOpen} onOpenChange={setResetDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Reset everything?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This will clear the journey name, reset team size and scope to defaults, and delete all stages and features. This cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleReset}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              Reset
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>;
 };
 
