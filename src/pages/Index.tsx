@@ -10,7 +10,7 @@ import { JourneySizeScale } from '@/components/JourneySizeScale';
 import { AppetiteBar } from '@/components/AppetiteBar';
 import { Logo } from '@/components/Logo';
 import { TShirtSize, ReleaseColour } from '@/types';
-import { SIZE_DAYS, WORKING_DAYS_PER_WEEK, APPETITE_OPTIONS } from '@/lib/constants';
+import { SIZE_DAYS, WORKING_DAYS_PER_WEEK, APPETITE_OPTIONS, getJourneySize } from '@/lib/constants';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 
 const STORAGE_KEY = 'tshirt-estimator-data';
@@ -152,19 +152,8 @@ const Index = () => {
       timeEstimate = `~${roundedWeeks} week${roundedWeeks !== 1 ? 's' : ''}`;
     }
 
-    // Journey size based on calendar weeks
-    let journeySize: string;
-    if (calendarWeeks < 1) {
-      journeySize = 'XS';
-    } else if (calendarWeeks <= 2) {
-      journeySize = 'S';
-    } else if (calendarWeeks <= 4) {
-      journeySize = 'M';
-    } else if (calendarWeeks <= 6) {
-      journeySize = 'L';
-    } else {
-      journeySize = 'XL';
-    }
+    // Journey size based on calendar weeks (using new bands)
+    const journeySize = getJourneySize(calendarWeeks);
 
     return {
       selectedCount,

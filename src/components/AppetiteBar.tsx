@@ -4,6 +4,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
+import { getJourneySize } from '@/lib/constants';
 
 interface AppetiteBarProps {
   totalDevDays: number;
@@ -24,8 +25,10 @@ export const AppetiteBar = ({
   const greenCalendarWeeks = teamSize > 0 ? greenDevDays / teamSize / 5 : 0;
   const greenPercent = appetite > 0 ? (greenCalendarWeeks / appetite) * 100 : 0;
   const greenOverAppetite = greenCalendarWeeks > appetite;
+  const isOverAppetite = calendarWeeks > appetite;
   const weeksOver = calendarWeeks - appetite;
   const greenWeeksOver = greenCalendarWeeks - appetite;
+  const journeySize = getJourneySize(calendarWeeks);
   
   // Color based on appetite usage
   const getBarColor = () => {
@@ -45,11 +48,6 @@ export const AppetiteBar = ({
     const rounded = Math.round(weeks * 2) / 2;
     return rounded;
   };
-
-  // Display text
-  const displayText = appetitePercent <= 100 
-    ? `${Math.round(appetitePercent)}%`
-    : `${formatWeeks(calendarWeeks)}/${appetite} wks`;
 
   const fillWidth = Math.min(appetitePercent, 100);
   const greenFillWidth = Math.min(greenPercent, 100);
@@ -97,25 +95,41 @@ export const AppetiteBar = ({
         </Tooltip>
       )}
 
-      {/* Total appetite bar */}
+      {/* Total appetite summary */}
       <Tooltip>
         <TooltipTrigger asChild>
-          <div className="flex flex-col gap-1 cursor-default">
-            <div className="flex items-center gap-2">
-              <span className="text-xs text-foreground/70">Total:</span>
-              <div className="w-20 h-2 bg-foreground/20 rounded-full overflow-hidden">
-                <div 
-                  className={`h-full ${getBarColor()} transition-all duration-300`}
-                  style={{ width: `${fillWidth}%` }}
-                />
-              </div>
-              <span className={`text-xs font-medium ${getTextColor()}`}>
-                {displayText}
+          <div className="flex items-center gap-2 cursor-default">
+            <span className="text-xs text-foreground/70">
+              ~{formatWeeks(calendarWeeks)} wks
+            </span>
+            <span className={`
+              text-xs font-semibold px-1.5 py-0.5 rounded
+              ${isOverAppetite 
+                ? 'bg-red-100 text-red-700 dark:bg-red-900/50 dark:text-red-300' 
+                : 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/50 dark:text-emerald-300'
+              }
+            `}>
+              {journeySize}
+            </span>
+            <span className="text-xs text-foreground/40">·</span>
+            {isOverAppetite ? (
+              <span className="text-xs text-red-500 flex items-center gap-1">
+                <AlertTriangle className="h-3 w-3" />
+                {Math.round(appetitePercent)}% — descope {formatWeeks(weeksOver)} wks to fit
               </span>
-              {appetitePercent > 100 && (
-                <AlertTriangle className="h-3.5 w-3.5 text-red-500" />
-              )}
-            </div>
+            ) : (
+              <>
+                <span className={`text-xs ${getTextColor()}`}>
+                  {Math.round(appetitePercent)}% of {appetite}-week appetite
+                </span>
+                <div className="w-16 h-2 bg-foreground/20 rounded-full overflow-hidden">
+                  <div 
+                    className={`h-full ${getBarColor()} transition-all duration-300`}
+                    style={{ width: `${fillWidth}%` }}
+                  />
+                </div>
+              </>
+            )}
           </div>
         </TooltipTrigger>
         <TooltipContent side="top" className="text-xs">
@@ -126,9 +140,9 @@ export const AppetiteBar = ({
             <div className="text-foreground/70">
               {totalDevDays} dev-days ÷ {teamSize} dev{teamSize > 1 ? 's' : ''} = ~{formatWeeks(calendarWeeks)} weeks
             </div>
-            {appetitePercent > 100 && (
+            {isOverAppetite && (
               <div className="text-red-500 font-medium">
-                ⚠️ {formatWeeks(weeksOver)} weeks over appetite
+                ⚠️ Descope {formatWeeks(weeksOver)} weeks to fit appetite
               </div>
             )}
           </div>
