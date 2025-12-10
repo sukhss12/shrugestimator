@@ -40,7 +40,7 @@ export const HeroSection = () => {
 
         <CollapsibleContent>
           <div className="bg-card border border-border rounded-lg p-4 sm:p-6">
-            <div className="space-y-3 text-xs text-muted-foreground leading-relaxed max-w-xl">
+            <div className="space-y-3 text-xs text-muted-foreground leading-relaxed">
               <p>
                 You know that moment when someone asks "when's this shipping?" and everyone stares at the ceiling? Someone mutters "<em>...depends</em>".
               </p>
