@@ -236,7 +236,7 @@ const Index = () => {
       {/* Main Canvas */}
       <div className="flex flex-col flex-1 h-full md:ml-[240px] lg:ml-[280px]">
         {/* Settings/Summary Bar */}
-        <div className="sticky top-0 z-10 m-4 px-4 py-3 bg-card border border-border rounded-lg flex flex-wrap items-center gap-3 sm:gap-4">
+        <div className="sticky top-0 z-10 m-4 px-4 py-3 bg-card border border-border rounded-lg flex flex-wrap items-center gap-3 sm:gap-4 max-w-[1200px]">
         {/* Journey Name */}
         <div className="min-w-[140px] max-w-[200px]">
           {isEditingName || !journeyName ? (
