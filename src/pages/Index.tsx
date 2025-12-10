@@ -101,11 +101,22 @@ const Index = () => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [journeyName, setJourneyName] = useState('');
   const [isEditingName, setIsEditingName] = useState(false);
+  const [editingNameValue, setEditingNameValue] = useState('');
   const [teamSize, setTeamSize] = useState(2);
   const [scope, setScope] = useState(6);
   const [stages, setStages] = useState<Stage[]>([]);
   const [newStageId, setNewStageId] = useState<string | null>(null);
   const [resetDialogOpen, setResetDialogOpen] = useState(false);
+
+  const startEditingName = () => {
+    setEditingNameValue(journeyName);
+    setIsEditingName(true);
+  };
+
+  const commitName = () => {
+    setJourneyName(editingNameValue.trim());
+    setIsEditingName(false);
+  };
 
   const sensors = useSensors(useSensor(PointerSensor, {
     activationConstraint: {
@@ -269,10 +280,11 @@ const Index = () => {
               <div className="flex-1 min-w-0">
                 {isEditingName || !journeyName ? (
                   <Input 
-                    value={journeyName}
-                    onChange={e => setJourneyName(e.target.value.slice(0, 60))}
-                    onBlur={() => setIsEditingName(false)}
-                    onKeyDown={e => e.key === 'Enter' && setIsEditingName(false)}
+                    value={isEditingName ? editingNameValue : ''}
+                    onChange={e => setEditingNameValue(e.target.value.slice(0, 60))}
+                    onBlur={commitName}
+                    onKeyDown={e => e.key === 'Enter' && commitName()}
+                    onFocus={() => !isEditingName && startEditingName()}
                     placeholder="Journey name..."
                     autoFocus
                     maxLength={60}
@@ -280,7 +292,7 @@ const Index = () => {
                   />
                 ) : (
                   <button 
-                    onClick={() => setIsEditingName(true)}
+                    onClick={startEditingName}
                     className="flex items-center gap-1.5 text-sm font-medium text-foreground hover:text-foreground/80 transition-colors"
                   >
                     <span className="truncate">{journeyName}</span>
@@ -394,10 +406,11 @@ const Index = () => {
               <div className="min-w-[140px] max-w-[280px]">
                 {isEditingName || !journeyName ? (
                   <Input 
-                    value={journeyName}
-                    onChange={e => setJourneyName(e.target.value.slice(0, 60))}
-                    onBlur={() => setIsEditingName(false)}
-                    onKeyDown={e => e.key === 'Enter' && setIsEditingName(false)}
+                    value={isEditingName ? editingNameValue : ''}
+                    onChange={e => setEditingNameValue(e.target.value.slice(0, 60))}
+                    onBlur={commitName}
+                    onKeyDown={e => e.key === 'Enter' && commitName()}
+                    onFocus={() => !isEditingName && startEditingName()}
                     placeholder="Journey name..."
                     autoFocus
                     maxLength={60}
@@ -405,7 +418,7 @@ const Index = () => {
                   />
                 ) : (
                   <button 
-                    onClick={() => setIsEditingName(true)}
+                    onClick={startEditingName}
                     className="flex items-center gap-1.5 text-sm font-medium text-foreground hover:text-foreground/80 transition-colors"
                   >
                     <span className="truncate max-w-[240px]">{journeyName}</span>
