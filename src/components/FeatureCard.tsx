@@ -104,7 +104,9 @@ export const FeatureCard = ({
         {/* Expand Icon with Tooltip */}
         <Tooltip>
           <TooltipTrigger asChild>
-            <ChevronRight className="h-4 w-4 text-muted-foreground/50 group-hover:text-muted-foreground transition-colors flex-shrink-0" />
+            <span className="flex-shrink-0 cursor-pointer">
+              <ChevronRight className="h-4 w-4 text-muted-foreground/50 group-hover:text-muted-foreground transition-colors" />
+            </span>
           </TooltipTrigger>
           <TooltipContent side="right" className="text-xs">
             Click to estimate

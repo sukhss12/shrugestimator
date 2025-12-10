@@ -199,16 +199,18 @@ export const StageColumn = ({
             placeholder="Journey Stage"
             className="flex-1 bg-muted/50 border-border/50 font-semibold text-base text-foreground placeholder:text-muted-foreground focus-visible:ring-1 focus-visible:ring-ring h-9 px-3"
           />
-          {canDelete && onDelete && (
+        {canDelete && onDelete && (
             <Tooltip>
               <TooltipTrigger asChild>
-                <button
+                <Button
+                  variant="ghost"
+                  size="icon"
                   onClick={handleDeleteStage}
-                  className="opacity-0 group-hover/stage:opacity-100 transition-opacity duration-150 p-1 text-foreground/50 hover:text-destructive focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded"
+                  className="opacity-0 group-hover/stage:opacity-100 transition-opacity duration-150 h-7 w-7 text-foreground/50 hover:text-destructive focus-visible:opacity-100"
                   aria-label="Delete stage"
                 >
                   <Trash2 className="h-4 w-4" />
-                </button>
+                </Button>
               </TooltipTrigger>
               <TooltipContent side="top" className="text-xs">
                 Delete stage
@@ -218,9 +220,15 @@ export const StageColumn = ({
           {!canDelete && (
             <Tooltip>
               <TooltipTrigger asChild>
-                <span className="p-1 text-foreground/20 cursor-not-allowed">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  disabled
+                  className="h-7 w-7 text-foreground/20 cursor-not-allowed"
+                  aria-label="Cannot delete stage"
+                >
                   <Trash2 className="h-4 w-4" />
-                </span>
+                </Button>
               </TooltipTrigger>
               <TooltipContent side="top" className="text-xs">
                 Add another stage before deleting this one
