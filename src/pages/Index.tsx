@@ -268,22 +268,11 @@ const Index = () => {
   return (
     <div className="dark flex flex-col h-screen bg-background">
       {/* Top Bar - Sticky */}
-      <header className="sticky top-0 z-10 flex items-center justify-between px-6 py-4 bg-card/80 backdrop-blur-md border-b border-border/50">
-        <div className="flex items-center gap-4">
-          {/* Logo + Wordmark */}
-          <div className="flex items-center gap-2 text-foreground">
-            <Logo width={80} />
-            <span className="font-medium text-lg hidden sm:inline">Shrug</span>
-          </div>
-          
-          {/* Journey Name */}
-          <Input
-            type="text"
-            value={journeyName}
-            onChange={(e) => setJourneyName(e.target.value)}
-            placeholder="e.g. Business Review Flow"
-            className="max-w-xs bg-transparent border-none shadow-none text-lg font-medium text-foreground placeholder:text-foreground/40 focus-visible:ring-0 px-0"
-          />
+      <header className="sticky top-0 z-10 flex items-center justify-between px-6 py-3 bg-card/80 backdrop-blur-md border-b border-border/50">
+        {/* Logo + Wordmark */}
+        <div className="flex items-center gap-2 text-foreground">
+          <Logo width={80} />
+          <span className="font-medium text-lg hidden sm:inline">Shrug</span>
         </div>
         
         <div className="flex items-center gap-4">
@@ -338,15 +327,26 @@ const Index = () => {
           </div>
 
           {/* Capacity indicator */}
-          <span className="text-xs text-muted-foreground hidden lg:inline">
+          <span className="text-xs text-foreground/50 hidden lg:inline">
             {summary.sprintCapacity} pts/sprint
           </span>
         </div>
       </header>
 
+      {/* Journey Title */}
+      <div className="px-8 pt-6 pb-2">
+        <Input
+          type="text"
+          value={journeyName}
+          onChange={(e) => setJourneyName(e.target.value)}
+          placeholder="e.g. Business Review Flow"
+          className="max-w-md bg-transparent border-none shadow-none text-2xl font-semibold text-foreground placeholder:text-foreground/30 focus-visible:ring-0 px-0 h-auto"
+        />
+      </div>
+
       {/* Main Scrolling Area */}
       <main
-        className="flex-1 overflow-x-auto overflow-y-hidden p-8"
+        className="flex-1 overflow-x-auto overflow-y-hidden px-8 pb-8"
         style={{
           background: `linear-gradient(135deg, hsl(var(--background)) 0%, hsl(var(--card) / 0.5) 50%, hsl(var(--background)) 100%)`,
         }}
