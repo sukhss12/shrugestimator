@@ -10,7 +10,7 @@ export const HeroSidebar = () => {
       {/* Mobile toggle button */}
       <button
         onClick={() => setIsOpen(true)}
-        className="md:hidden fixed top-4 left-4 z-50 p-2 bg-card border border-border rounded-lg"
+        className="md:hidden fixed top-4 left-4 z-50 p-2 bg-black/70 backdrop-blur-xl border border-violet-500/20 rounded-lg text-white"
         aria-label="Open sidebar"
       >
         <Menu className="h-5 w-5" />
@@ -28,7 +28,9 @@ export const HeroSidebar = () => {
       <aside
         className={`
           fixed left-0 top-0 h-screen w-[280px] lg:w-[280px] md:w-[240px]
-          bg-black/70 backdrop-blur-xl border-r border-violet-500/20
+          bg-gradient-to-b from-violet-950/40 via-black/70 to-black/80
+          backdrop-blur-xl border-r border-violet-500/30
+          shadow-[inset_0_0_60px_rgba(139,92,246,0.1)]
           flex flex-col p-6 overflow-y-auto
           z-50 transition-transform duration-300
           ${isOpen ? 'translate-x-0' : '-translate-x-full'}
@@ -45,12 +47,12 @@ export const HeroSidebar = () => {
         </button>
 
         {/* Logo + Wordmark */}
-        <div className="flex items-center gap-3 mb-6">
-          <Logo width={84} />
-          <div>
-            <span className="text-xl font-bold text-white">Shrug</span>
-            <p className="text-sm text-slate-400 italic">Product estimation, roughly</p>
+        <div className="mb-6">
+          <div className="flex items-center gap-2">
+            <Logo width={56} />
+            <span className="text-xl font-bold text-white leading-none">Shrug</span>
           </div>
+          <p className="text-sm text-slate-400 italic mt-1.5">Product estimation, roughly</p>
         </div>
 
         {/* Body Copy */}
