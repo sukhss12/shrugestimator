@@ -161,9 +161,9 @@ export const StageColumn = ({
 
   return (
     <>
-      <div className={`group/stage flex flex-col w-[280px] min-h-[400px] h-fit bg-card/80 backdrop-blur-sm border border-border/50 rounded-xl shadow-lg shrink-0 transition-all duration-150 ${isDragging ? 'shadow-2xl scale-[1.02]' : ''}`}>
+      <div className={`group/stage flex flex-col w-[280px] min-h-[400px] h-fit bg-card border border-border rounded-xl shadow-lg shrink-0 transition-all duration-150 ${isDragging ? 'shadow-2xl scale-[1.02]' : ''}`}>
         {/* Header */}
-        <div className="flex items-center gap-2 px-3 py-3 border-b border-border/50">
+        <div className="flex items-center gap-2 px-3 py-3 border-b border-border">
           <div
             {...dragHandleProps}
             className="cursor-grab active:cursor-grabbing touch-none"
