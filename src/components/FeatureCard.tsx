@@ -52,7 +52,7 @@ export const FeatureCard = ({
     <div
       className={`
         group relative flex items-center gap-3 p-3 
-        bg-card/80 backdrop-blur-sm rounded-lg
+        bg-card rounded-lg
         cursor-pointer transition-all duration-200
         focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none
         ${selected ? 'opacity-100' : 'opacity-50'}
