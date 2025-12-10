@@ -55,10 +55,10 @@ export const SprintCapacityBar = ({
           <TooltipTrigger asChild>
             <div className="flex items-center gap-2 cursor-default">
               <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 shrink-0" />
-              <span className="text-xs text-muted-foreground">
+              <span className="text-xs text-foreground/70">
                 {greenPoints} of {sprintCapacity}
               </span>
-              <div className="w-16 h-2 bg-muted rounded-full overflow-hidden">
+              <div className="w-16 h-2 bg-foreground/20 rounded-full overflow-hidden">
                 <div 
                   className={`h-full ${greenOverBudget ? 'bg-red-500' : 'bg-emerald-500'} transition-all duration-300`}
                   style={{ width: `${greenFillWidth}%` }}
@@ -95,8 +95,8 @@ export const SprintCapacityBar = ({
         <TooltipTrigger asChild>
           <div className="flex flex-col gap-1 cursor-default">
             <div className="flex items-center gap-2">
-              <span className="text-xs text-muted-foreground">Total:</span>
-              <div className="w-20 h-2 bg-muted rounded-full overflow-hidden">
+              <span className="text-xs text-foreground/70">Total:</span>
+              <div className="w-20 h-2 bg-foreground/20 rounded-full overflow-hidden">
                 <div 
                   className={`h-full ${getBarColor()} transition-all duration-300`}
                   style={{ width: `${fillWidth}%` }}
@@ -116,7 +116,7 @@ export const SprintCapacityBar = ({
             <div className="font-medium">
               Sprint Capacity: {sprintCapacity} pts
             </div>
-            <div className="text-muted-foreground">
+            <div className="text-foreground/70">
               {teamSize} dev{teamSize > 1 ? 's' : ''} × {sprintWeeks} wk{sprintWeeks > 1 ? 's' : ''}
             </div>
             {capacityPercent > 100 && (

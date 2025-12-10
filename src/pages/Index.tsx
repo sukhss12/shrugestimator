@@ -411,13 +411,13 @@ const Index = () => {
             )}
             {summary.unassignedPoints > 0 && (
               <span className="flex items-center gap-1">
-                <span className="w-2.5 h-2.5 rounded-full bg-muted-foreground/30 border border-muted-foreground/50" />
-                <span className="text-muted-foreground">{summary.unassignedPoints}</span>
+                <span className="w-2.5 h-2.5 rounded-full bg-foreground/20 border border-foreground/40" />
+                <span className="text-foreground/60">{summary.unassignedPoints}</span>
               </span>
             )}
-            <span className="text-muted-foreground">·</span>
-            <span className="font-medium">{summary.totalPoints} pts</span>
-            <span className="text-muted-foreground">·</span>
+            <span className="text-foreground/40">·</span>
+            <span className="font-medium text-foreground">{summary.totalPoints} pts</span>
+            <span className="text-foreground/40">·</span>
             <span className="font-medium text-primary">{summary.timeEstimate}</span>
           </div>
         </div>
