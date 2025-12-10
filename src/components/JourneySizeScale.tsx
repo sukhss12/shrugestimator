@@ -7,54 +7,70 @@ import {
 interface JourneySizeScaleProps {
   currentSize: string;
   totalPoints: number;
+  sprintCapacity: number;
 }
 
-const SIZES = [
-  { size: 'XS', range: '1-10', tooltip: 'A few days work' },
-  { size: 'S', range: '11-25', tooltip: 'About a week' },
-  { size: 'M', range: '26-50', tooltip: '1-2 weeks' },
-  { size: 'L', range: '51-100', tooltip: '3-4 weeks' },
-  { size: 'XL', range: '100+', tooltip: 'A month or more' },
+const getSizes = (sprintCapacity: number) => [
+  { size: 'XS', range: '1-10', tooltip: '<10% of sprint', sprintContext: 'fits easily' },
+  { size: 'S', range: '11-25', tooltip: '~¼ sprint', sprintContext: 'fits easily' },
+  { size: 'M', range: '26-50', tooltip: '~½ sprint', sprintContext: 'good fit' },
+  { size: 'L', range: '51-100', tooltip: 'Full sprint', sprintContext: 'tight fit' },
+  { size: 'XL', range: '100+', tooltip: 'Multi-sprint', sprintContext: 'split it' },
 ];
 
-export const JourneySizeScale = ({ currentSize, totalPoints }: JourneySizeScaleProps) => {
+export const JourneySizeScale = ({ currentSize, totalPoints, sprintCapacity }: JourneySizeScaleProps) => {
+  const sizes = getSizes(sprintCapacity);
+  const capacityPercent = sprintCapacity > 0 ? Math.round((totalPoints / sprintCapacity) * 100) : 0;
+  const isOverCapacity = totalPoints > sprintCapacity;
+
   return (
-    <div className="flex items-center gap-1">
-      <span className="text-xs text-muted-foreground mr-2 hidden sm:inline">Journey Size:</span>
-      <div className="flex gap-1">
-        {SIZES.map(({ size, range, tooltip }) => {
-          const isActive = size === currentSize;
-          return (
-            <Tooltip key={size}>
-              <TooltipTrigger asChild>
-                <div
-                  className={`
-                    flex flex-col items-center justify-center px-2 py-1 rounded-md
-                    transition-all duration-150 cursor-default min-w-[40px]
-                    ${isActive
-                      ? 'bg-foreground text-background'
-                      : 'bg-background border border-border text-muted-foreground'
-                    }
-                  `}
-                >
-                  <span className={`text-xs font-semibold ${isActive ? '' : 'text-muted-foreground'}`}>
-                    {size}
-                  </span>
-                  <span className={`text-[10px] ${isActive ? 'text-background/80' : 'text-muted-foreground/60'}`}>
-                    {isActive ? `${totalPoints}` : range}
-                  </span>
-                </div>
-              </TooltipTrigger>
-              <TooltipContent side="top" className="text-xs">
-                <div className="text-center">
-                  <div className="font-medium">{size}: {range} pts</div>
-                  <div className="text-muted-foreground">{tooltip}</div>
-                </div>
-              </TooltipContent>
-            </Tooltip>
-          );
-        })}
+    <div className="flex flex-col gap-1">
+      <div className="flex items-center gap-1">
+        <span className="text-xs text-muted-foreground mr-2 hidden sm:inline">Journey:</span>
+        <div className="flex gap-1">
+          {sizes.map(({ size, range, tooltip, sprintContext }) => {
+            const isActive = size === currentSize;
+            const showWarning = isActive && isOverCapacity;
+            return (
+              <Tooltip key={size}>
+                <TooltipTrigger asChild>
+                  <div
+                    className={`
+                      flex flex-col items-center justify-center px-2 py-1 rounded-md
+                      transition-all duration-150 cursor-default min-w-[40px]
+                      ${isActive
+                        ? showWarning 
+                          ? 'bg-red-500 text-white'
+                          : 'bg-foreground text-background'
+                        : 'bg-background border border-border text-muted-foreground'
+                      }
+                    `}
+                  >
+                    <span className={`text-xs font-semibold ${isActive ? '' : 'text-muted-foreground'}`}>
+                      {size}
+                    </span>
+                    <span className={`text-[10px] ${isActive ? (showWarning ? 'text-white/80' : 'text-background/80') : 'text-muted-foreground/60'}`}>
+                      {isActive ? `${totalPoints}` : range}
+                    </span>
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent side="top" className="text-xs">
+                  <div className="text-center">
+                    <div className="font-medium">{size}: {range} pts</div>
+                    <div className="text-muted-foreground">{tooltip}</div>
+                    <div className="text-muted-foreground/80 text-[10px]">{sprintContext}</div>
+                  </div>
+                </TooltipContent>
+              </Tooltip>
+            );
+          })}
+        </div>
       </div>
+      {totalPoints > 0 && (
+        <span className={`text-[10px] ${isOverCapacity ? 'text-red-500' : 'text-muted-foreground'}`}>
+          {capacityPercent}% of sprint capacity
+        </span>
+      )}
     </div>
   );
 };

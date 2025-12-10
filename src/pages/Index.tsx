@@ -16,12 +16,19 @@ import {
 } from '@dnd-kit/sortable';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Minus, Plus } from 'lucide-react';
+import { Minus, Plus, ChevronDown } from 'lucide-react';
 import { SortableStageColumn } from '@/components/SortableStageColumn';
 import { AddStageButton } from '@/components/AddStageButton';
 import { JourneySizeScale } from '@/components/JourneySizeScale';
+import { SprintCapacityBar } from '@/components/SprintCapacityBar';
 import { TShirtSize } from '@/types';
 import { SIZE_POINTS, POINTS_PER_DEV_DAY } from '@/lib/constants';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 
 const STORAGE_KEY = 'tshirt-estimator-data';
 
@@ -48,6 +55,7 @@ interface Stage {
 interface StoredData {
   journeyName: string;
   teamSize: number;
+  sprintWeeks: number;
   stages: Stage[];
 }
 
@@ -60,6 +68,7 @@ const calculateFeaturePoints = (estimates?: FeatureEstimates): number => {
 const defaultData: StoredData = {
   journeyName: '',
   teamSize: 2,
+  sprintWeeks: 2,
   stages: [
     {
       id: '1',
@@ -73,7 +82,9 @@ const loadFromStorage = (): StoredData => {
   try {
     const stored = localStorage.getItem(STORAGE_KEY);
     if (stored) {
-      return JSON.parse(stored);
+      const data = JSON.parse(stored);
+      // Backward compatibility: add sprintWeeks if missing
+      return { ...defaultData, ...data, sprintWeeks: data.sprintWeeks ?? 2 };
     }
   } catch (e) {
     console.error('Failed to load from localStorage:', e);
@@ -89,10 +100,13 @@ const saveToStorage = (data: StoredData) => {
   }
 };
 
+const SPRINT_OPTIONS = [1, 2, 3, 4] as const;
+
 const Index = () => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [journeyName, setJourneyName] = useState('');
   const [teamSize, setTeamSize] = useState(2);
+  const [sprintWeeks, setSprintWeeks] = useState(2);
   const [stages, setStages] = useState<Stage[]>([]);
   const [newStageId, setNewStageId] = useState<string | null>(null);
 
@@ -112,6 +126,7 @@ const Index = () => {
     const data = loadFromStorage();
     setJourneyName(data.journeyName);
     setTeamSize(data.teamSize);
+    setSprintWeeks(data.sprintWeeks);
     setStages(data.stages);
     setIsLoaded(true);
   }, []);
@@ -119,9 +134,9 @@ const Index = () => {
   // Save to localStorage on every change
   useEffect(() => {
     if (isLoaded) {
-      saveToStorage({ journeyName, teamSize, stages });
+      saveToStorage({ journeyName, teamSize, sprintWeeks, stages });
     }
-  }, [journeyName, teamSize, stages, isLoaded]);
+  }, [journeyName, teamSize, sprintWeeks, stages, isLoaded]);
 
   // Summary calculations
   const summary = useMemo(() => {
@@ -135,6 +150,11 @@ const Index = () => {
     );
     const devDays = totalPoints / POINTS_PER_DEV_DAY;
     const calendarDays = devDays / teamSize;
+    
+    // Sprint capacity calculation
+    const sprintDays = sprintWeeks * 5;
+    const sprintCapacity = sprintDays * teamSize * POINTS_PER_DEV_DAY;
+    const capacityPercent = sprintCapacity > 0 ? (totalPoints / sprintCapacity) * 100 : 0;
     
     // Round up to nearest 0.5
     const roundedDays = Math.ceil(calendarDays * 2) / 2;
@@ -164,8 +184,8 @@ const Index = () => {
       journeySize = 'XL';
     }
 
-    return { selectedCount, totalCount, totalPoints, timeEstimate, journeySize };
-  }, [stages, teamSize]);
+    return { selectedCount, totalCount, totalPoints, timeEstimate, journeySize, sprintCapacity, capacityPercent };
+  }, [stages, teamSize, sprintWeeks]);
 
   const handleDecrement = () => {
     if (teamSize > 1) setTeamSize(teamSize - 1);
@@ -235,34 +255,66 @@ const Index = () => {
           className="max-w-xs bg-transparent border-none shadow-none text-lg font-medium placeholder:text-muted-foreground/60 focus-visible:ring-0 px-0"
         />
         
-        <div className="flex items-center gap-2">
-          <span className="text-sm text-muted-foreground">Team:</span>
-          <div className="flex items-center gap-1">
-            <Button
-              variant="outline"
-              size="icon"
-              className="h-7 w-7 focus-visible:ring-2 focus-visible:ring-ring"
-              onClick={handleDecrement}
-              disabled={teamSize <= 1}
-            >
-              <Minus className="h-3 w-3" />
-            </Button>
-            <span className="w-6 text-center text-sm font-medium">{teamSize}</span>
-            <Button
-              variant="outline"
-              size="icon"
-              className="h-7 w-7 focus-visible:ring-2 focus-visible:ring-ring"
-              onClick={handleIncrement}
-              disabled={teamSize >= 10}
-            >
-              <Plus className="h-3 w-3" />
-            </Button>
+        <div className="flex items-center gap-4">
+          {/* Team Size */}
+          <div className="flex items-center gap-2">
+            <span className="text-sm text-muted-foreground">Team:</span>
+            <div className="flex items-center gap-1">
+              <Button
+                variant="outline"
+                size="icon"
+                className="h-7 w-7 focus-visible:ring-2 focus-visible:ring-ring"
+                onClick={handleDecrement}
+                disabled={teamSize <= 1}
+              >
+                <Minus className="h-3 w-3" />
+              </Button>
+              <span className="w-6 text-center text-sm font-medium">{teamSize}</span>
+              <Button
+                variant="outline"
+                size="icon"
+                className="h-7 w-7 focus-visible:ring-2 focus-visible:ring-ring"
+                onClick={handleIncrement}
+                disabled={teamSize >= 10}
+              >
+                <Plus className="h-3 w-3" />
+              </Button>
+            </div>
           </div>
+
+          {/* Sprint Length */}
+          <div className="flex items-center gap-2">
+            <span className="text-sm text-muted-foreground">Sprint:</span>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" size="sm" className="h-7 gap-1 px-2">
+                  {sprintWeeks} wk{sprintWeeks > 1 ? 's' : ''}
+                  <ChevronDown className="h-3 w-3" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                {SPRINT_OPTIONS.map((weeks) => (
+                  <DropdownMenuItem
+                    key={weeks}
+                    onClick={() => setSprintWeeks(weeks)}
+                    className={sprintWeeks === weeks ? 'bg-accent' : ''}
+                  >
+                    {weeks} week{weeks > 1 ? 's' : ''}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+
+          {/* Capacity indicator */}
+          <span className="text-xs text-muted-foreground hidden lg:inline">
+            {summary.sprintCapacity} pts/sprint
+          </span>
         </div>
       </header>
 
       {/* Main Scrolling Area */}
-      <main 
+      <main
         className="flex-1 overflow-x-auto overflow-y-hidden p-8"
         style={{
           backgroundImage: `radial-gradient(circle, hsl(var(--border)) 1px, transparent 1px)`,
@@ -304,7 +356,16 @@ const Index = () => {
           {/* Journey Size Scale - Left */}
           <JourneySizeScale 
             currentSize={summary.journeySize} 
-            totalPoints={summary.totalPoints} 
+            totalPoints={summary.totalPoints}
+            sprintCapacity={summary.sprintCapacity}
+          />
+          
+          {/* Sprint Capacity Bar - Center */}
+          <SprintCapacityBar
+            totalPoints={summary.totalPoints}
+            sprintCapacity={summary.sprintCapacity}
+            teamSize={teamSize}
+            sprintWeeks={sprintWeeks}
           />
           
           {/* Summary Stats - Right */}
@@ -314,8 +375,6 @@ const Index = () => {
             </span>
             <span className="text-muted-foreground hidden md:inline">·</span>
             <span className="font-medium">{summary.totalPoints} pts</span>
-            <span className="text-muted-foreground">·</span>
-            <span className="text-muted-foreground">Team: {teamSize}</span>
             <span className="text-muted-foreground">·</span>
             <span className="font-medium text-primary">{summary.timeEstimate}</span>
           </div>
