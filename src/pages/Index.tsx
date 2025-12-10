@@ -298,7 +298,7 @@ const Index = () => {
 
         {/* Team Size */}
         <div className="flex flex-col gap-2">
-          <label className="text-sm font-medium text-foreground">Team</label>
+          <label className="text-sm font-medium text-foreground">Team Size</label>
           <div className="flex items-center gap-1">
             <Button variant="outline" size="icon" className="h-9 w-9" onClick={handleDecrement} disabled={teamSize <= 1}>
               <Minus className="h-4 w-4" />
@@ -312,7 +312,7 @@ const Index = () => {
 
         {/* Appetite */}
         <div className="flex flex-col gap-2">
-          <label className="text-sm font-medium text-foreground">Appetite</label>
+          <label className="text-sm font-medium text-foreground">Delivery Appetite</label>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" className="h-9 gap-1 px-3">
