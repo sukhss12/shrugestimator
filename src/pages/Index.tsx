@@ -241,24 +241,24 @@ const Index = () => {
       </header>
 
       {/* Hero Intro */}
-      <div className="px-8 pt-8 pb-6 border-b border-border/30">
-        <div className="max-w-2xl space-y-4">
-          <p className="text-foreground/80 leading-relaxed">
+      <div className="px-4 sm:px-8 pt-6 sm:pt-8 pb-4 sm:pb-6 border-b border-border/30">
+        <div className="max-w-2xl space-y-3 sm:space-y-4">
+          <p className="text-foreground/80 leading-relaxed text-sm sm:text-base">
             You know that moment in refinement where someone asks "how long will this take?" and everyone stares at the ceiling?
             <span className="text-foreground font-medium"> This is for that.</span>
           </p>
-          <p className="text-foreground/70 text-sm leading-relaxed">
+          <p className="text-foreground/70 text-xs sm:text-sm leading-relaxed">
             Shrug is a free t-shirt sizing tool. Map your features, slap some sizes on them, and see if your grand vision actually fits in your appetite. 
             <span className="text-foreground/50 italic"> Spoiler: it probably doesn't. That's why there's a descope button.</span>
           </p>
-          <p className="text-foreground/60 text-sm">
+          <p className="text-foreground/60 text-xs sm:text-sm">
             Will your estimates be accurate? <span className="font-mono">¯\_(ツ)_/¯</span>
           </p>
         </div>
       </div>
 
       {/* Journey Settings */}
-      <div className="px-8 pt-6 pb-4 flex flex-wrap items-end gap-6">
+      <div className="px-4 sm:px-8 pt-4 sm:pt-6 pb-3 sm:pb-4 flex flex-wrap items-end gap-4 sm:gap-6">
         {/* Journey Name */}
         <div className="flex-1 min-w-[200px] max-w-md">
           <label className="text-sm font-medium text-foreground mb-2 block">
@@ -301,10 +301,10 @@ const Index = () => {
       </div>
 
       {/* Main Scrolling Area */}
-      <main className="flex-1 overflow-x-auto overflow-y-hidden px-8 pb-8 bg-background">
+      <main className="flex-1 overflow-x-auto overflow-y-auto px-4 sm:px-8 pb-8 bg-background">
         <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
           <SortableContext items={stages.map(s => s.id)} strategy={horizontalListSortingStrategy}>
-            <div className="flex gap-4 h-full items-start">
+            <div className="flex flex-col sm:flex-row gap-4 h-full items-stretch sm:items-start">
               {stages.map(stage => <SortableStageColumn key={stage.id} id={stage.id} name={stage.name} features={stage.features} onNameChange={name => handleStageName(stage.id, name)} onFeaturesChange={features => handleStageFeatures(stage.id, features)} onDelete={() => handleDeleteStage(stage.id)} canDelete={stages.length > 1} autoFocus={stage.id === newStageId} />)}
               <AddStageButton onClick={handleAddStage} />
             </div>
@@ -313,8 +313,8 @@ const Index = () => {
       </main>
 
       {/* Bottom Bar - Sticky */}
-      <footer className="sticky bottom-0 z-10 px-6 py-3 bg-card border-t border-border">
-        <div className="flex items-center justify-between gap-4">
+      <footer className="sticky bottom-0 z-10 px-4 sm:px-6 py-2 sm:py-3 bg-card border-t border-border">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-4">
           {/* Journey Size Scale - Left (reference only) */}
           <JourneySizeScale currentSize={summary.journeySize} />
           
