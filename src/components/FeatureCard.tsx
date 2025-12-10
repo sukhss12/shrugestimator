@@ -23,11 +23,11 @@ interface FeatureCardProps {
   onColourChange?: (colour: ReleaseColour) => void;
 }
 
-const COLOUR_OPTIONS: { value: ReleaseColour; label: string; bgClass: string; borderClass: string }[] = [
-  { value: null, label: 'Unassigned', bgClass: 'bg-muted', borderClass: 'border-l-muted-foreground/30' },
-  { value: 'green', label: 'Now', bgClass: 'bg-emerald-500', borderClass: 'border-l-emerald-500' },
-  { value: 'amber', label: 'Next', bgClass: 'bg-amber-500', borderClass: 'border-l-amber-500' },
-  { value: 'purple', label: 'Later', bgClass: 'bg-violet-500', borderClass: 'border-l-violet-500' },
+const COLOUR_OPTIONS: { value: ReleaseColour; label: string; bgClass: string; borderClass: string; textClass: string }[] = [
+  { value: null, label: 'Backlog', bgClass: 'bg-muted', borderClass: 'border-l-muted-foreground/30', textClass: 'text-muted-foreground' },
+  { value: 'green', label: 'Now', bgClass: 'bg-emerald-500', borderClass: 'border-l-emerald-500', textClass: 'text-emerald-500' },
+  { value: 'amber', label: 'Next', bgClass: 'bg-amber-500', borderClass: 'border-l-amber-500', textClass: 'text-amber-500' },
+  { value: 'purple', label: 'Later', bgClass: 'bg-violet-500', borderClass: 'border-l-violet-500', textClass: 'text-violet-500' },
 ];
 
 const getColourClasses = (colour: ReleaseColour) => {
@@ -51,7 +51,7 @@ export const FeatureCard = ({
   return (
     <div
       className={`
-        group relative flex items-center gap-3 p-3 pl-0
+        group relative flex flex-col gap-2 p-3 pl-4
         bg-card rounded-lg border border-border
         cursor-pointer transition-all duration-200
         focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none
@@ -68,96 +68,101 @@ export const FeatureCard = ({
         }
       }}
     >
-      {/* Left Border Color Picker */}
-      <Popover>
-        <PopoverTrigger asChild>
-          <button
-            onClick={(e) => e.stopPropagation()}
-            className="w-3 h-full absolute left-0 top-0 rounded-l-lg cursor-pointer hover:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-            aria-label="Set release phase"
+      {/* Top Row: Checkbox + Name + Points + Actions */}
+      <div className="flex items-center gap-3">
+        {/* Checkbox */}
+        <div onClick={(e) => e.stopPropagation()}>
+          <Checkbox
+            checked={selected}
+            onCheckedChange={onToggle}
+            className="h-4 w-4"
           />
-        </PopoverTrigger>
-        <PopoverContent className="w-auto p-2" align="start">
-          <div className="flex gap-2">
-            {COLOUR_OPTIONS.map((option) => (
-              <Tooltip key={option.label}>
-                <TooltipTrigger asChild>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onColourChange?.(option.value);
-                    }}
-                    className={`
-                      w-6 h-6 rounded-full transition-transform hover:scale-110
-                      focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring
-                      ${option.value === null 
-                        ? 'bg-muted-foreground/20 border-2 border-muted-foreground/40' 
-                        : option.bgClass
-                      }
-                      ${colour === option.value ? 'ring-2 ring-ring ring-offset-1' : ''}
-                    `}
-                    aria-label={option.label}
-                  />
-                </TooltipTrigger>
-                <TooltipContent side="bottom" className="text-xs">
-                  {option.label}
-                </TooltipContent>
-              </Tooltip>
-            ))}
-          </div>
-        </PopoverContent>
-      </Popover>
+        </div>
 
-      {/* Checkbox */}
-      <div onClick={(e) => e.stopPropagation()} className="pl-3">
-        <Checkbox
-          checked={selected}
-          onCheckedChange={onToggle}
-          className="h-4 w-4"
-        />
+        {/* Feature Name */}
+        <span className="flex-1 text-sm font-medium text-foreground truncate">
+          {name}
+        </span>
+
+        {/* Points - Subtle Text */}
+        <span
+          className={`
+            text-xs tabular-nums
+            ${hasEstimates 
+              ? 'text-muted-foreground' 
+              : 'text-muted-foreground/50'
+            }
+          `}
+        >
+          {hasEstimates ? `${points} pts` : '—'}
+        </span>
+
+        {/* Delete Button - appears on hover */}
+        {onDelete && (
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              onDelete();
+            }}
+            className="opacity-0 group-hover:opacity-100 transition-opacity duration-150 p-1 -mr-1 text-muted-foreground hover:text-destructive focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded"
+            aria-label="Delete feature"
+          >
+            <Trash2 className="h-4 w-4" />
+          </button>
+        )}
+
+        {/* Expand Icon with Tooltip */}
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <ChevronRight className="h-4 w-4 text-muted-foreground/50 group-hover:text-muted-foreground transition-colors" />
+          </TooltipTrigger>
+          <TooltipContent side="right" className="text-xs">
+            Click to estimate
+          </TooltipContent>
+        </Tooltip>
       </div>
 
-      {/* Feature Name */}
-      <span className="flex-1 text-sm font-medium text-foreground truncate">
-        {name}
-      </span>
-
-      {/* Points - Subtle Text */}
-      <span
-        className={`
-          text-xs tabular-nums
-          ${hasEstimates 
-            ? 'text-muted-foreground' 
-            : 'text-muted-foreground/50'
-          }
-        `}
-      >
-        {hasEstimates ? `${points} pts` : '—'}
-      </span>
-
-      {/* Delete Button - appears on hover */}
-      {onDelete && (
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            onDelete();
-          }}
-          className="opacity-0 group-hover:opacity-100 transition-opacity duration-150 p-1 -mr-1 text-muted-foreground hover:text-destructive focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded"
-          aria-label="Delete feature"
-        >
-          <Trash2 className="h-4 w-4" />
-        </button>
-      )}
-
-      {/* Expand Icon with Tooltip */}
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <ChevronRight className="h-4 w-4 text-muted-foreground/50 group-hover:text-muted-foreground transition-colors" />
-        </TooltipTrigger>
-        <TooltipContent side="right" className="text-xs">
-          Click to estimate
-        </TooltipContent>
-      </Tooltip>
+      {/* Bottom Row: Release Phase Selector */}
+      <div className="flex items-center gap-2 pl-7">
+        <Popover>
+          <PopoverTrigger asChild>
+            <button
+              onClick={(e) => e.stopPropagation()}
+              className={`
+                flex items-center gap-1.5 px-2 py-1 rounded text-xs font-medium
+                border border-border hover:border-primary/30 transition-colors
+                focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring
+                ${colourClasses.textClass}
+              `}
+              aria-label="Set release phase"
+            >
+              <span className={`w-2 h-2 rounded-full ${colour ? colourClasses.bgClass : 'bg-muted-foreground/40'}`} />
+              {colourClasses.label}
+            </button>
+          </PopoverTrigger>
+          <PopoverContent className="w-auto p-2" align="start">
+            <div className="flex flex-col gap-1">
+              {COLOUR_OPTIONS.map((option) => (
+                <button
+                  key={option.label}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onColourChange?.(option.value);
+                  }}
+                  className={`
+                    flex items-center gap-2 px-3 py-1.5 rounded text-sm transition-colors
+                    hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring
+                    ${colour === option.value ? 'bg-muted' : ''}
+                  `}
+                >
+                  <span className={`w-3 h-3 rounded-full ${option.value === null ? 'bg-muted-foreground/30 border border-muted-foreground/50' : option.bgClass}`} />
+                  <span className={option.textClass}>{option.label}</span>
+                </button>
+              ))}
+            </div>
+          </PopoverContent>
+        </Popover>
+      </div>
     </div>
   );
 };
