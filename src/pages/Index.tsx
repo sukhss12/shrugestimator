@@ -100,7 +100,7 @@ const saveToStorage = (data: StoredData) => {
   }
 };
 
-const SPRINT_OPTIONS = [1, 2, 3, 4] as const;
+const SPRINT_OPTIONS = [1, 2, 3, 4, 6] as const;
 
 const Index = () => {
   const [isLoaded, setIsLoaded] = useState(false);
