@@ -336,6 +336,26 @@ const Index = () => {
         </div>
       </header>
 
+      {/* Hero Intro */}
+      <div className="px-8 pt-8 pb-6 border-b border-border/30">
+        <div className="max-w-2xl space-y-4">
+          <p className="text-foreground/80 leading-relaxed">
+            You know that moment in refinement where someone asks "how long will this take?" and everyone stares at the ceiling?
+            <span className="text-foreground font-medium"> This is for that.</span>
+          </p>
+          <p className="text-foreground/70 text-sm leading-relaxed">
+            Shrug is a free t-shirt sizing tool. Map your features, slap some sizes on them, and see if your grand vision actually fits in your appetite. 
+            <span className="text-foreground/50 italic"> Spoiler: it probably doesn't. That's why there's a descope button.</span>
+          </p>
+          <p className="text-foreground/60 text-sm">
+            Will your estimates be accurate? <span className="font-mono">¯\_(ツ)_/¯</span>
+          </p>
+          <p className="text-foreground/50 text-xs uppercase tracking-wide">
+            But at least they'll be visible.
+          </p>
+        </div>
+      </div>
+
       {/* Journey Title */}
       <div className="px-8 pt-6 pb-4">
         <label className="text-sm font-medium text-foreground mb-2 block">
