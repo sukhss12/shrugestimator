@@ -2,14 +2,41 @@ import { useState } from 'react';
 import { GripVertical, Plus } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { FeatureCard } from '@/components/FeatureCard';
+
+interface Feature {
+  id: string;
+  name: string;
+  points?: number;
+  selected: boolean;
+}
 
 export const StageColumn = () => {
   const [stageName, setStageName] = useState('');
-  const [features] = useState<string[]>([]);
+  const [features, setFeatures] = useState<Feature[]>([
+    { id: '1', name: 'User authentication', points: 12, selected: true },
+    { id: '2', name: 'Dashboard layout', points: 8, selected: true },
+    { id: '3', name: 'Data export', points: undefined, selected: false },
+  ]);
+
+  const handleToggleFeature = (id: string) => {
+    setFeatures(features.map(f => 
+      f.id === id ? { ...f, selected: !f.selected } : f
+    ));
+  };
+
+  const handleFeatureClick = (id: string) => {
+    console.log('Open modal for feature:', id);
+  };
 
   const handleAddFeature = () => {
-    // Will be connected later
-    console.log('Add feature clicked');
+    const newFeature: Feature = {
+      id: Date.now().toString(),
+      name: 'New feature',
+      points: undefined,
+      selected: true,
+    };
+    setFeatures([...features, newFeature]);
   };
 
   return (
@@ -37,13 +64,15 @@ export const StageColumn = () => {
           </button>
         ) : (
           <div className="flex flex-col gap-3">
-            {features.map((feature, index) => (
-              <div
-                key={index}
-                className="p-3 bg-muted/50 border border-border rounded-md text-sm"
-              >
-                {feature}
-              </div>
+            {features.map((feature) => (
+              <FeatureCard
+                key={feature.id}
+                name={feature.name}
+                points={feature.points}
+                selected={feature.selected}
+                onToggle={() => handleToggleFeature(feature.id)}
+                onClick={() => handleFeatureClick(feature.id)}
+              />
             ))}
           </div>
         )}
