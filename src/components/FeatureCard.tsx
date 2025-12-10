@@ -69,7 +69,7 @@ export const FeatureCard = ({
         }
       }}
     >
-      {/* Top Row: Checkbox + Name + Days + Actions */}
+      {/* Top Row: Checkbox + Name + Actions */}
       <div className="flex items-center gap-3">
         {/* Checkbox */}
         <div onClick={(e) => e.stopPropagation()}>
@@ -81,21 +81,8 @@ export const FeatureCard = ({
         </div>
 
         {/* Feature Name */}
-        <span className="flex-1 text-sm font-medium text-foreground truncate">
+        <span className="flex-1 text-sm font-medium text-foreground line-clamp-2 leading-tight">
           {name}
-        </span>
-
-        {/* Dev Days - Subtle Text */}
-        <span
-          className={`
-            text-xs tabular-nums
-            ${hasEstimates 
-              ? 'text-muted-foreground' 
-              : 'text-muted-foreground/50'
-            }
-          `}
-        >
-          {hasEstimates ? `${devDays} days` : '—'}
         </span>
 
         {/* Delete Button - appears on hover */}
@@ -105,7 +92,7 @@ export const FeatureCard = ({
               e.stopPropagation();
               onDelete();
             }}
-            className="opacity-0 group-hover:opacity-100 transition-opacity duration-150 p-1 -mr-1 text-muted-foreground hover:text-destructive focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded"
+            className="opacity-0 group-hover:opacity-100 transition-opacity duration-150 p-1 -mr-1 text-muted-foreground hover:text-destructive focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded flex-shrink-0"
             aria-label="Delete feature"
           >
             <Trash2 className="h-4 w-4" />
@@ -115,7 +102,7 @@ export const FeatureCard = ({
         {/* Expand Icon with Tooltip */}
         <Tooltip>
           <TooltipTrigger asChild>
-            <ChevronRight className="h-4 w-4 text-muted-foreground/50 group-hover:text-muted-foreground transition-colors" />
+            <ChevronRight className="h-4 w-4 text-muted-foreground/50 group-hover:text-muted-foreground transition-colors flex-shrink-0" />
           </TooltipTrigger>
           <TooltipContent side="right" className="text-xs">
             Click to estimate
@@ -123,8 +110,8 @@ export const FeatureCard = ({
         </Tooltip>
       </div>
 
-      {/* Bottom Row: Release Phase Selector */}
-      <div className="flex items-center gap-2 pl-7">
+      {/* Bottom Row: Release Phase + Dev Days */}
+      <div className="flex items-center justify-between pl-7">
         <Popover>
           <PopoverTrigger asChild>
             <button
@@ -163,6 +150,19 @@ export const FeatureCard = ({
             </div>
           </PopoverContent>
         </Popover>
+
+        {/* Dev Days */}
+        <span
+          className={`
+            text-xs tabular-nums
+            ${hasEstimates 
+              ? 'text-muted-foreground' 
+              : 'text-muted-foreground/50'
+            }
+          `}
+        >
+          {hasEstimates ? `${devDays}d` : '—'}
+        </span>
       </div>
     </div>
   );
