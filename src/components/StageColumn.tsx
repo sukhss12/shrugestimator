@@ -122,13 +122,7 @@ export const StageColumn = ({
 
   const handleModalClose = (open: boolean) => {
     if (!open) {
-      if (editingFeature && !savedRef.current) {
-        // Only add feature if closing without save (cancel/escape/click outside)
-        const existingFeature = features.find(f => f.id === editingFeature.id);
-        if (!existingFeature) {
-          onFeaturesChange([...features, editingFeature]);
-        }
-      }
+      // Discard unsaved feature when modal is dismissed (click outside, escape, cancel)
       setEditingFeature(null);
       savedRef.current = false;
     }
@@ -161,7 +155,7 @@ export const StageColumn = ({
 
   return (
     <>
-      <div className={`group/stage flex flex-col w-[280px] min-h-[400px] h-fit bg-card border border-border rounded-xl shadow-lg shrink-0 transition-all duration-150 ${isDragging ? 'shadow-2xl scale-[1.02]' : ''}`}>
+      <div className={`group/stage flex flex-col w-full sm:w-[280px] min-h-[300px] sm:min-h-[400px] h-fit bg-card border border-border rounded-xl shadow-lg shrink-0 transition-all duration-150 ${isDragging ? 'shadow-2xl scale-[1.02]' : ''}`}>
         {/* Header */}
         <div className="flex items-center gap-2 px-3 py-3 border-b border-border">
           <div

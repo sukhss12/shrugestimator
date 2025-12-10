@@ -80,7 +80,7 @@ export const EstimationModal = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-[480px] p-0 gap-0">
+      <DialogContent className="w-[calc(100%-2rem)] sm:w-full max-w-[480px] p-0 gap-0">
         {/* Header */}
         <DialogHeader className="p-4 pb-3 border-b border-border pr-12">
           <Input

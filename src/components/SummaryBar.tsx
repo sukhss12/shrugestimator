@@ -46,7 +46,7 @@ export const SummaryBar = ({
   const hasPriorityBreakdown = greenDevDays > 0 || amberDevDays > 0 || purpleDevDays > 0;
 
   return (
-    <div className="flex items-center gap-3 text-sm">
+    <div className="flex flex-wrap items-center gap-2 text-xs sm:text-sm">
       {/* Dev-days: show breakdown OR total */}
       {hasPriorityBreakdown ? (
         <div className="flex items-center gap-2">
