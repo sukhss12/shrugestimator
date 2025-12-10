@@ -26,7 +26,7 @@ export const JourneySizeScale = ({ currentSize, totalPoints, sprintCapacity }: J
   return (
     <div className="flex flex-col gap-1">
       <div className="flex items-center gap-1">
-        <span className="text-xs text-muted-foreground mr-2 hidden sm:inline">Journey:</span>
+        <span className="text-xs text-foreground/60 mr-2 hidden sm:inline">Journey:</span>
         <div className="flex gap-1">
           {sizes.map(({ size, range, tooltip, sprintContext }) => {
             const isActive = size === currentSize;
@@ -41,15 +41,15 @@ export const JourneySizeScale = ({ currentSize, totalPoints, sprintCapacity }: J
                       ${isActive
                         ? showWarning 
                           ? 'bg-red-500 text-white'
-                          : 'bg-foreground text-background'
-                        : 'bg-background border border-border text-muted-foreground'
+                          : 'bg-primary text-primary-foreground'
+                        : 'bg-card border border-border/50 text-foreground/60'
                       }
                     `}
                   >
-                    <span className={`text-xs font-semibold ${isActive ? '' : 'text-muted-foreground'}`}>
+                    <span className={`text-xs font-semibold ${isActive ? '' : 'text-foreground/70'}`}>
                       {size}
                     </span>
-                    <span className={`text-[10px] ${isActive ? (showWarning ? 'text-white/80' : 'text-background/80') : 'text-muted-foreground/60'}`}>
+                    <span className={`text-[10px] ${isActive ? (showWarning ? 'text-white/80' : 'text-primary-foreground/80') : 'text-foreground/50'}`}>
                       {isActive ? `${totalPoints}` : range}
                     </span>
                   </div>
@@ -57,8 +57,8 @@ export const JourneySizeScale = ({ currentSize, totalPoints, sprintCapacity }: J
                 <TooltipContent side="top" className="text-xs">
                   <div className="text-center">
                     <div className="font-medium">{size}: {range} pts</div>
-                    <div className="text-muted-foreground">{tooltip}</div>
-                    <div className="text-muted-foreground/80 text-[10px]">{sprintContext}</div>
+                    <div className="text-foreground/70">{tooltip}</div>
+                    <div className="text-foreground/50 text-[10px]">{sprintContext}</div>
                   </div>
                 </TooltipContent>
               </Tooltip>
@@ -67,7 +67,7 @@ export const JourneySizeScale = ({ currentSize, totalPoints, sprintCapacity }: J
         </div>
       </div>
       {totalPoints > 0 && (
-        <span className={`text-[10px] ${isOverCapacity ? 'text-red-500' : 'text-muted-foreground'}`}>
+        <span className={`text-[10px] ${isOverCapacity ? 'text-red-500' : 'text-foreground/60'}`}>
           {capacityPercent}% of sprint capacity
         </span>
       )}

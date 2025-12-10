@@ -163,12 +163,12 @@ export const StageColumn = ({
     <>
       <div className={`group/stage flex flex-col w-[280px] min-h-[400px] h-fit bg-card/80 backdrop-blur-sm border border-border/50 rounded-xl shadow-lg shrink-0 transition-all duration-150 ${isDragging ? 'shadow-2xl scale-[1.02]' : ''}`}>
         {/* Header */}
-        <div className="flex items-center gap-2 px-3 py-3 border-b border-border">
+        <div className="flex items-center gap-2 px-3 py-3 border-b border-border/50">
           <div
             {...dragHandleProps}
             className="cursor-grab active:cursor-grabbing touch-none"
           >
-            <GripVertical className="h-4 w-4 text-muted-foreground/50 hover:text-muted-foreground transition-colors" />
+            <GripVertical className="h-4 w-4 text-foreground/40 hover:text-foreground/70 transition-colors" />
           </div>
           <Input
             ref={inputRef}
@@ -176,14 +176,14 @@ export const StageColumn = ({
             value={name}
             onChange={(e) => onNameChange(e.target.value)}
             placeholder="Stage name"
-            className="flex-1 border-none shadow-none bg-transparent font-semibold text-base placeholder:text-muted-foreground/60 focus-visible:ring-0 px-0 h-auto py-0"
+            className="flex-1 border-none shadow-none bg-transparent font-semibold text-base text-foreground placeholder:text-foreground/40 focus-visible:ring-0 px-0 h-auto py-0"
           />
           {canDelete && onDelete && (
             <Tooltip>
               <TooltipTrigger asChild>
                 <button
                   onClick={handleDeleteStage}
-                  className="opacity-0 group-hover/stage:opacity-100 transition-opacity duration-150 p-1 text-muted-foreground hover:text-destructive focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded"
+                  className="opacity-0 group-hover/stage:opacity-100 transition-opacity duration-150 p-1 text-foreground/50 hover:text-destructive focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded"
                   aria-label="Delete stage"
                 >
                   <Trash2 className="h-4 w-4" />
@@ -197,7 +197,7 @@ export const StageColumn = ({
           {!canDelete && (
             <Tooltip>
               <TooltipTrigger asChild>
-                <span className="p-1 text-muted-foreground/30 cursor-not-allowed">
+                <span className="p-1 text-foreground/20 cursor-not-allowed">
                   <Trash2 className="h-4 w-4" />
                 </span>
               </TooltipTrigger>
@@ -213,7 +213,7 @@ export const StageColumn = ({
           {features.length === 0 ? (
             <button
               onClick={handleAddFeature}
-              className="w-full h-full min-h-[120px] flex items-center justify-center border-2 border-dashed border-border rounded-md text-muted-foreground text-sm hover:border-muted-foreground/50 hover:bg-muted/30 transition-colors cursor-pointer"
+              className="w-full h-full min-h-[120px] flex items-center justify-center border-2 border-dashed border-border/50 rounded-md text-foreground/50 text-sm hover:border-foreground/30 hover:text-foreground/70 hover:bg-foreground/5 transition-colors cursor-pointer"
             >
               No features yet
             </button>
@@ -242,7 +242,7 @@ export const StageColumn = ({
             variant="ghost"
             size="sm"
             onClick={handleAddFeature}
-            className="w-full justify-start text-muted-foreground hover:text-foreground"
+            className="w-full justify-start text-foreground/60 hover:text-foreground hover:bg-foreground/5"
           >
             <Plus className="h-4 w-4 mr-1" />
             Add feature
