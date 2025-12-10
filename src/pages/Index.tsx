@@ -9,7 +9,7 @@ import { SortableStageColumn } from '@/components/SortableStageColumn';
 import { AddStageButton } from '@/components/AddStageButton';
 import { JourneySizeScale } from '@/components/JourneySizeScale';
 import { StageNavigation } from '@/components/StageNavigation';
-import { HeroSection } from '@/components/HeroSection';
+import { Logo } from '@/components/Logo';
 import { TShirtSize, ReleaseColour } from '@/types';
 import { SIZE_DAYS, WORKING_DAYS_PER_WEEK, getJourneySize } from '@/lib/constants';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
@@ -231,8 +231,16 @@ const Index = () => {
 
   return <div className="flex flex-col h-screen bg-background">
     <div className="flex flex-col h-full w-full max-w-7xl mx-auto">
-      {/* Hero Section */}
-      <HeroSection />
+      {/* Logo - Top Left */}
+      <div className="px-4 sm:px-6 py-4">
+        <div className="flex items-center gap-3">
+          <Logo width={56} />
+          <div>
+            <span className="text-xl font-bold text-foreground">Shrug</span>
+            <p className="text-xs text-muted-foreground">Product estimation, roughly</p>
+          </div>
+        </div>
+      </div>
 
       {/* Settings/Summary Bar - Above Stages */}
       <div className="sticky top-0 z-10 px-4 sm:px-6 py-3 bg-card border-y border-border flex flex-wrap items-center gap-3 sm:gap-4">
