@@ -97,21 +97,27 @@ export const StageColumn = ({
 
   const handleSaveEstimates = (featureName: string, estimates: FeatureEstimates) => {
     if (!editingFeature) return;
-    const existingFeature = features.find(f => f.id === editingFeature.id);
+    const featureId = editingFeature.id;
+    const existingFeature = features.find(f => f.id === featureId);
+    
     if (existingFeature) {
       // Update existing feature
       onFeaturesChange(features.map(f => 
-        f.id === editingFeature.id ? { ...f, name: featureName, estimates } : f
+        f.id === featureId ? { ...f, name: featureName, estimates } : f
       ));
     } else {
       // Add new feature with the edited name and estimates
       onFeaturesChange([...features, { ...editingFeature, name: featureName, estimates }]);
     }
+    // Clear editing state BEFORE modal close triggers
     setEditingFeature(null);
+    setModalOpen(false);
   };
 
   const handleModalClose = (open: boolean) => {
     if (!open && editingFeature) {
+      // Only add feature if it doesn't exist AND we're closing without save
+      // (handleSaveEstimates clears editingFeature before calling this)
       const existingFeature = features.find(f => f.id === editingFeature.id);
       if (!existingFeature) {
         onFeaturesChange([...features, editingFeature]);
