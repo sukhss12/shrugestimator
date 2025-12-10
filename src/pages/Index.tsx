@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Minus, Plus } from 'lucide-react';
+import { StageColumn } from '@/components/StageColumn';
 
 const Index = () => {
   const [journeyName, setJourneyName] = useState('');
@@ -60,10 +61,8 @@ const Index = () => {
           backgroundSize: '24px 24px',
         }}
       >
-        <div className="min-w-full min-h-full flex items-center justify-center">
-          <p className="text-muted-foreground text-sm">
-            Add your first stage to start mapping
-          </p>
+        <div className="flex gap-4 h-full items-start">
+          <StageColumn />
         </div>
       </main>
 
