@@ -74,6 +74,11 @@ export const StageColumn = ({
   const [modalOpen, setModalOpen] = useState(false);
   const [editingFeature, setEditingFeature] = useState<Feature | null>(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [editingName, setEditingName] = useState(name);
+
+  useEffect(() => {
+    setEditingName(name);
+  }, [name]);
 
   useEffect(() => {
     if (autoFocus && inputRef.current) {
@@ -81,6 +86,26 @@ export const StageColumn = ({
       inputRef.current.select();
     }
   }, [autoFocus]);
+
+  const commitName = () => {
+    const trimmed = editingName.trim();
+    if (trimmed && trimmed !== name) {
+      onNameChange(trimmed);
+    } else if (!trimmed) {
+      setEditingName(name); // Reset to original if empty
+    }
+  };
+
+  const handleNameKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      commitName();
+      inputRef.current?.blur();
+    } else if (e.key === 'Escape') {
+      setEditingName(name);
+      inputRef.current?.blur();
+    }
+  };
 
   const handleToggleFeature = (featureId: string) => {
     onFeaturesChange(features.map(f => 
@@ -167,8 +192,10 @@ export const StageColumn = ({
           <Input
             ref={inputRef}
             type="text"
-            value={name}
-            onChange={(e) => onNameChange(e.target.value)}
+            value={editingName}
+            onChange={(e) => setEditingName(e.target.value)}
+            onBlur={commitName}
+            onKeyDown={handleNameKeyDown}
             placeholder="Journey Stage"
             className="flex-1 bg-muted/50 border-border/50 font-semibold text-base text-foreground placeholder:text-muted-foreground focus-visible:ring-1 focus-visible:ring-ring h-9 px-3"
           />
