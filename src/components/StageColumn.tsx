@@ -45,6 +45,8 @@ interface StageColumnProps {
   onDelete?: () => void;
   canDelete?: boolean;
   autoFocus?: boolean;
+  dragHandleProps?: React.HTMLAttributes<HTMLDivElement>;
+  isDragging?: boolean;
 }
 
 const calculatePoints = (estimates?: FeatureEstimates): number | undefined => {
@@ -63,6 +65,8 @@ export const StageColumn = ({
   onDelete,
   canDelete = true,
   autoFocus = false,
+  dragHandleProps,
+  isDragging = false,
 }: StageColumnProps) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [modalOpen, setModalOpen] = useState(false);
@@ -143,10 +147,15 @@ export const StageColumn = ({
 
   return (
     <>
-      <div className="group/stage flex flex-col w-[280px] min-h-[400px] h-fit bg-background border border-border rounded-lg shadow-sm shrink-0">
+      <div className={`group/stage flex flex-col w-[280px] min-h-[400px] h-fit bg-background border border-border rounded-lg shadow-sm shrink-0 transition-shadow duration-150 ${isDragging ? 'shadow-2xl' : ''}`}>
         {/* Header */}
         <div className="flex items-center gap-2 px-3 py-3 border-b border-border">
-          <GripVertical className="h-4 w-4 text-muted-foreground/50 cursor-grab" />
+          <div
+            {...dragHandleProps}
+            className="cursor-grab active:cursor-grabbing touch-none"
+          >
+            <GripVertical className="h-4 w-4 text-muted-foreground/50 hover:text-muted-foreground transition-colors" />
+          </div>
           <Input
             ref={inputRef}
             type="text"
