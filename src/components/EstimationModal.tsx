@@ -87,7 +87,7 @@ export const EstimationModal = ({
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="Feature name"
-            className="border-none shadow-none bg-transparent text-lg font-semibold placeholder:text-muted-foreground/60 focus-visible:ring-0 px-0 h-auto"
+            className="text-lg font-semibold placeholder:text-muted-foreground/60"
           />
           <DialogTitle className="sr-only">Estimate Feature</DialogTitle>
         </DialogHeader>
