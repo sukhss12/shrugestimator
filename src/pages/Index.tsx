@@ -12,7 +12,7 @@ import { StageNavigation } from '@/components/StageNavigation';
 import { BrandHeader } from '@/components/BrandHeader';
 import { HeroSection } from '@/components/HeroSection';
 import { TShirtSize, ReleaseColour } from '@/types';
-import { SIZE_DAYS, WORKING_DAYS_PER_WEEK, getJourneySize } from '@/lib/constants';
+import { SIZE_DAYS, WORKING_DAYS_PER_WEEK, getJourneySize, MIN_TEAM_SIZE, MAX_TEAM_SIZE, SCOPE_OPTIONS } from '@/lib/constants';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 
 const STORAGE_KEY = 'tshirt-estimator-data';
@@ -173,11 +173,11 @@ const Index = () => {
   }, [stages, teamSize]);
 
   const handleDecrement = () => {
-    if (teamSize > 1) setTeamSize(teamSize - 1);
+    if (teamSize > MIN_TEAM_SIZE) setTeamSize(teamSize - 1);
   };
 
   const handleIncrement = () => {
-    if (teamSize < 10) setTeamSize(teamSize + 1);
+    if (teamSize < MAX_TEAM_SIZE) setTeamSize(teamSize + 1);
   };
 
   const handleAddStage = () => {
@@ -273,11 +273,11 @@ const Index = () => {
               {/* Team Size */}
               <div className="flex items-center gap-1.5">
                 <span className="text-xs text-foreground/60">Team</span>
-                <Button variant="outline" size="icon" className="h-7 w-7" onClick={handleDecrement} disabled={teamSize <= 1}>
+                <Button variant="outline" size="icon" className="h-7 w-7" onClick={handleDecrement} disabled={teamSize <= MIN_TEAM_SIZE}>
                   <Minus className="h-3 w-3" />
                 </Button>
                 <span className="w-6 text-center text-sm font-medium">{teamSize}</span>
-                <Button variant="outline" size="icon" className="h-7 w-7" onClick={handleIncrement} disabled={teamSize >= 10}>
+                <Button variant="outline" size="icon" className="h-7 w-7" onClick={handleIncrement} disabled={teamSize >= MAX_TEAM_SIZE}>
                   <Plus className="h-3 w-3" />
                 </Button>
               </div>
@@ -293,7 +293,7 @@ const Index = () => {
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="bg-popover">
-                    {[1, 2, 3, 4, 6, 8, 10, 12].map((weeks) => (
+                    {SCOPE_OPTIONS.map((weeks) => (
                       <DropdownMenuItem 
                         key={weeks}
                         onClick={() => setScope(weeks)}
@@ -384,11 +384,11 @@ const Index = () => {
               <div className="flex items-center gap-1.5">
                 <span className="text-xs text-foreground/60 hidden lg:inline">Team Size</span>
                 <span className="text-xs text-foreground/60 lg:hidden">Team</span>
-                <Button variant="outline" size="icon" className="h-7 w-7" onClick={handleDecrement} disabled={teamSize <= 1}>
+                <Button variant="outline" size="icon" className="h-7 w-7" onClick={handleDecrement} disabled={teamSize <= MIN_TEAM_SIZE}>
                   <Minus className="h-3 w-3" />
                 </Button>
                 <span className="w-6 text-center text-sm font-medium">{teamSize}</span>
-                <Button variant="outline" size="icon" className="h-7 w-7" onClick={handleIncrement} disabled={teamSize >= 10}>
+                <Button variant="outline" size="icon" className="h-7 w-7" onClick={handleIncrement} disabled={teamSize >= MAX_TEAM_SIZE}>
                   <Plus className="h-3 w-3" />
                 </Button>
               </div>
@@ -405,7 +405,7 @@ const Index = () => {
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="bg-popover">
-                    {[1, 2, 3, 4, 6, 8, 10, 12].map((weeks) => (
+                    {SCOPE_OPTIONS.map((weeks) => (
                       <DropdownMenuItem 
                         key={weeks}
                         onClick={() => setScope(weeks)}
