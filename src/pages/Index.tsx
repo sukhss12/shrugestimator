@@ -9,7 +9,7 @@ import { SortableStageColumn } from '@/components/SortableStageColumn';
 import { AddStageButton } from '@/components/AddStageButton';
 import { JourneySizeScale } from '@/components/JourneySizeScale';
 import { StageNavigation } from '@/components/StageNavigation';
-import { Logo } from '@/components/Logo';
+import { HeroSection } from '@/components/HeroSection';
 import { TShirtSize, ReleaseColour } from '@/types';
 import { SIZE_DAYS, WORKING_DAYS_PER_WEEK, getJourneySize } from '@/lib/constants';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
@@ -230,29 +230,8 @@ const Index = () => {
   }
 
   return <div className="flex flex-col h-screen bg-background">
-      {/* Minimal Logo - Top Left */}
-      <div className="px-4 sm:px-6 py-4">
-        <div className="flex items-center gap-2 text-foreground">
-          <Logo width={60} />
-          <div>
-            <span className="font-bold text-sm block leading-tight">Shrug</span>
-            <span className="text-[10px] text-foreground/60">Product estimation, roughly</span>
-          </div>
-        </div>
-      </div>
-
-      {/* Hero Intro */}
-      <div className="px-4 sm:px-6 pb-4">
-        <div className="max-w-2xl space-y-2">
-          <p className="text-foreground/80 leading-relaxed text-sm">
-            You know that moment in refinement where someone asks "how long will this take?" and everyone stares at the ceiling?
-            <span className="text-foreground font-medium"> This is for that.</span>
-          </p>
-          <p className="text-foreground/60 text-xs">
-            Map your features, slap some sizes on them, and see if your vision fits in your appetite. Will your estimates be accurate? <span className="font-mono">¯\_(ツ)_/¯</span>
-          </p>
-        </div>
-      </div>
+      {/* Hero Section */}
+      <HeroSection />
 
       {/* Settings/Summary Bar - Above Stages */}
       <div className="sticky top-0 z-10 px-4 sm:px-6 py-3 bg-card border-y border-border flex flex-wrap items-center gap-3 sm:gap-4">
