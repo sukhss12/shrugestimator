@@ -3,10 +3,76 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Minus, Plus } from 'lucide-react';
 import { StageColumn } from '@/components/StageColumn';
+import { AddStageButton } from '@/components/AddStageButton';
+import { TShirtSize } from '@/types';
+
+interface FeatureEstimates {
+  fe: TShirtSize;
+  be: TShirtSize;
+  db: TShirtSize;
+  int: TShirtSize;
+}
+
+interface Feature {
+  id: string;
+  name: string;
+  estimates?: FeatureEstimates;
+  selected: boolean;
+}
+
+interface Stage {
+  id: string;
+  name: string;
+  features: Feature[];
+}
+
+const initialStages: Stage[] = [
+  {
+    id: '1',
+    name: 'Trigger',
+    features: [
+      { id: '1-1', name: 'Event listener setup', estimates: { fe: 'S', be: 'M', db: 'XS', int: 'S' }, selected: true },
+      { id: '1-2', name: 'Webhook receiver', estimates: { fe: 'NA', be: 'M', db: 'S', int: 'M' }, selected: true },
+    ],
+  },
+  {
+    id: '2',
+    name: 'Prepare',
+    features: [
+      { id: '2-1', name: 'Data validation', estimates: { fe: 'XS', be: 'S', db: 'NA', int: 'NA' }, selected: true },
+      { id: '2-2', name: 'Template loading', estimates: { fe: 'S', be: 'S', db: 'S', int: 'NA' }, selected: true },
+    ],
+  },
+  {
+    id: '3',
+    name: 'Generate',
+    features: [
+      { id: '3-1', name: 'Report builder', estimates: { fe: 'L', be: 'L', db: 'M', int: 'NA' }, selected: true },
+      { id: '3-2', name: 'PDF export', estimates: { fe: 'M', be: 'M', db: 'NA', int: 'S' }, selected: false },
+    ],
+  },
+  {
+    id: '4',
+    name: 'Send',
+    features: [
+      { id: '4-1', name: 'Email delivery', estimates: { fe: 'NA', be: 'M', db: 'XS', int: 'L' }, selected: true },
+    ],
+  },
+  {
+    id: '5',
+    name: 'Review',
+    features: [
+      { id: '5-1', name: 'Status dashboard', estimates: { fe: 'L', be: 'S', db: 'S', int: 'NA' }, selected: true },
+      { id: '5-2', name: 'Delivery logs', estimates: undefined, selected: true },
+    ],
+  },
+];
 
 const Index = () => {
   const [journeyName, setJourneyName] = useState('');
   const [teamSize, setTeamSize] = useState(2);
+  const [stages, setStages] = useState<Stage[]>(initialStages);
+  const [newStageId, setNewStageId] = useState<string | null>(null);
 
   const handleDecrement = () => {
     if (teamSize > 1) setTeamSize(teamSize - 1);
@@ -14,6 +80,29 @@ const Index = () => {
 
   const handleIncrement = () => {
     setTeamSize(teamSize + 1);
+  };
+
+  const handleAddStage = () => {
+    const id = Date.now().toString();
+    const newStage: Stage = {
+      id,
+      name: 'New Stage',
+      features: [],
+    };
+    setStages([...stages, newStage]);
+    setNewStageId(id);
+  };
+
+  const handleStageName = (stageId: string, name: string) => {
+    setStages(stages.map(s => 
+      s.id === stageId ? { ...s, name } : s
+    ));
+  };
+
+  const handleStageFeatures = (stageId: string, features: Feature[]) => {
+    setStages(stages.map(s => 
+      s.id === stageId ? { ...s, features } : s
+    ));
   };
 
   return (
@@ -62,7 +151,18 @@ const Index = () => {
         }}
       >
         <div className="flex gap-4 h-full items-start">
-          <StageColumn />
+          {stages.map((stage) => (
+            <StageColumn
+              key={stage.id}
+              id={stage.id}
+              name={stage.name}
+              features={stage.features}
+              onNameChange={(name) => handleStageName(stage.id, name)}
+              onFeaturesChange={(features) => handleStageFeatures(stage.id, features)}
+              autoFocus={stage.id === newStageId}
+            />
+          ))}
+          <AddStageButton onClick={handleAddStage} />
         </div>
       </main>
 

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { GripVertical, Plus } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -21,6 +21,15 @@ interface Feature {
   selected: boolean;
 }
 
+interface StageColumnProps {
+  id: string;
+  name: string;
+  features: Feature[];
+  onNameChange: (name: string) => void;
+  onFeaturesChange: (features: Feature[]) => void;
+  autoFocus?: boolean;
+}
+
 const calculatePoints = (estimates?: FeatureEstimates): number | undefined => {
   if (!estimates) return undefined;
   const total = SIZE_POINTS[estimates.fe] + SIZE_POINTS[estimates.be] + 
@@ -28,35 +37,28 @@ const calculatePoints = (estimates?: FeatureEstimates): number | undefined => {
   return total > 0 ? total : undefined;
 };
 
-export const StageColumn = () => {
-  const [stageName, setStageName] = useState('');
-  const [features, setFeatures] = useState<Feature[]>([
-    { 
-      id: '1', 
-      name: 'User authentication', 
-      estimates: { fe: 'M', be: 'L', db: 'S', int: 'XS' },
-      selected: true 
-    },
-    { 
-      id: '2', 
-      name: 'Dashboard layout', 
-      estimates: { fe: 'L', be: 'NA', db: 'NA', int: 'S' },
-      selected: true 
-    },
-    { 
-      id: '3', 
-      name: 'Data export', 
-      estimates: undefined,
-      selected: false 
-    },
-  ]);
-  
+export const StageColumn = ({ 
+  id, 
+  name, 
+  features, 
+  onNameChange, 
+  onFeaturesChange,
+  autoFocus = false,
+}: StageColumnProps) => {
+  const inputRef = useRef<HTMLInputElement>(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [editingFeature, setEditingFeature] = useState<Feature | null>(null);
 
-  const handleToggleFeature = (id: string) => {
-    setFeatures(features.map(f => 
-      f.id === id ? { ...f, selected: !f.selected } : f
+  useEffect(() => {
+    if (autoFocus && inputRef.current) {
+      inputRef.current.focus();
+      inputRef.current.select();
+    }
+  }, [autoFocus]);
+
+  const handleToggleFeature = (featureId: string) => {
+    onFeaturesChange(features.map(f => 
+      f.id === featureId ? { ...f, selected: !f.selected } : f
     ));
   };
 
@@ -65,36 +67,37 @@ export const StageColumn = () => {
     setModalOpen(true);
   };
 
-  const handleSaveEstimates = (name: string, estimates: FeatureEstimates) => {
+  const handleSaveEstimates = (featureName: string, estimates: FeatureEstimates) => {
     if (!editingFeature) return;
-    setFeatures(features.map(f => 
-      f.id === editingFeature.id ? { ...f, name, estimates } : f
+    onFeaturesChange(features.map(f => 
+      f.id === editingFeature.id ? { ...f, name: featureName, estimates } : f
     ));
     setEditingFeature(null);
   };
 
   const handleAddFeature = () => {
     const newFeature: Feature = {
-      id: Date.now().toString(),
+      id: `${id}-${Date.now()}`,
       name: 'New feature',
       estimates: undefined,
       selected: true,
     };
-    setFeatures([...features, newFeature]);
+    onFeaturesChange([...features, newFeature]);
     setEditingFeature(newFeature);
     setModalOpen(true);
   };
 
   return (
     <>
-      <div className="flex flex-col w-[280px] min-h-[400px] bg-background border border-border rounded-lg shadow-sm">
+      <div className="flex flex-col w-[280px] min-h-[400px] h-fit bg-background border border-border rounded-lg shadow-sm shrink-0">
         {/* Header */}
         <div className="flex items-center gap-2 px-3 py-3 border-b border-border">
           <GripVertical className="h-4 w-4 text-muted-foreground/50 cursor-grab" />
           <Input
+            ref={inputRef}
             type="text"
-            value={stageName}
-            onChange={(e) => setStageName(e.target.value)}
+            value={name}
+            onChange={(e) => onNameChange(e.target.value)}
             placeholder="Stage name"
             className="flex-1 border-none shadow-none bg-transparent font-semibold text-base placeholder:text-muted-foreground/60 focus-visible:ring-0 px-0 h-auto py-0"
           />
