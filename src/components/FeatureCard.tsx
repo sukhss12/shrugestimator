@@ -23,11 +23,11 @@ interface FeatureCardProps {
   onColourChange?: (colour: ReleaseColour) => void;
 }
 
-const COLOUR_OPTIONS: { value: ReleaseColour; label: string; bgClass: string; borderClass: string }[] = [
-  { value: null, label: 'Unassigned', bgClass: 'bg-muted', borderClass: '' },
-  { value: 'green', label: 'Now', bgClass: 'bg-emerald-500', borderClass: 'border-l-emerald-500' },
-  { value: 'amber', label: 'Next', bgClass: 'bg-amber-500', borderClass: 'border-l-amber-500' },
-  { value: 'purple', label: 'Later', bgClass: 'bg-violet-500', borderClass: 'border-l-violet-500' },
+const COLOUR_OPTIONS: { value: ReleaseColour; label: string; bgClass: string; borderClass: string; glowClass: string }[] = [
+  { value: null, label: 'Unassigned', bgClass: 'bg-muted', borderClass: '', glowClass: '' },
+  { value: 'green', label: 'Now', bgClass: 'bg-emerald-500', borderClass: 'border-emerald-500/60', glowClass: 'shadow-[0_0_12px_rgba(16,185,129,0.4)]' },
+  { value: 'amber', label: 'Next', bgClass: 'bg-amber-500', borderClass: 'border-amber-500/60', glowClass: 'shadow-[0_0_12px_rgba(245,158,11,0.4)]' },
+  { value: 'purple', label: 'Later', bgClass: 'bg-violet-500', borderClass: 'border-violet-500/60', glowClass: 'shadow-[0_0_12px_rgba(139,92,246,0.4)]' },
 ];
 
 const getColourClasses = (colour: ReleaseColour) => {
@@ -52,12 +52,14 @@ export const FeatureCard = ({
     <div
       className={`
         group relative flex items-center gap-3 p-3 
-        bg-background border border-border rounded-lg
-        cursor-pointer transition-all duration-150
-        hover:shadow-md hover:-translate-y-0.5 hover:border-primary/30
+        bg-card/80 backdrop-blur-sm rounded-lg
+        cursor-pointer transition-all duration-200
         focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none
         ${selected ? 'opacity-100' : 'opacity-50'}
-        ${colour ? `border-l-4 ${colourClasses.borderClass}` : ''}
+        ${colour 
+          ? `border ${colourClasses.borderClass} ${colourClasses.glowClass}` 
+          : 'border border-border hover:shadow-md hover:-translate-y-0.5 hover:border-primary/30'
+        }
       `}
       onClick={onClick}
       tabIndex={0}
