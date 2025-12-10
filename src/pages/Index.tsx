@@ -95,15 +95,9 @@ const Index = () => {
     const devDays = totalPoints / POINTS_PER_DEV_DAY;
     const calendarDays = devDays / teamSize;
     
-    let timeEstimate: string;
-    if (calendarDays === 0) {
-      timeEstimate = '0 days';
-    } else if (calendarDays > 5) {
-      const weeks = calendarDays / 5;
-      timeEstimate = `~${weeks.toFixed(1)} weeks`;
-    } else {
-      timeEstimate = `~${calendarDays.toFixed(1)} days`;
-    }
+    // Round up to nearest 0.5
+    const roundedDays = Math.ceil(calendarDays * 2) / 2;
+    const timeEstimate = `${roundedDays} days`;
 
     return { selectedCount, totalCount, totalPoints, timeEstimate };
   }, [stages, teamSize]);
