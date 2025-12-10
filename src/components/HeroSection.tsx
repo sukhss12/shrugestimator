@@ -33,7 +33,7 @@ export const HeroSection = () => {
           <div className="bg-card border border-border rounded-lg p-4 sm:p-6">
             <div className="space-y-3 text-xs text-muted-foreground leading-relaxed">
               <p>
-                You know that moment when someone asks "when's this shipping?" and everyone stares at the ceiling? Someone mutters "<em>...depends</em>".
+                You know that moment when someone asks "when's this shipping?" and all you can do is shrug?
               </p>
 
               <p className="text-sm font-medium text-foreground">
