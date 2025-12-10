@@ -3,15 +3,15 @@ import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, us
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, horizontalListSortingStrategy } from '@dnd-kit/sortable';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { Minus, Plus, ChevronDown, Pencil } from 'lucide-react';
 import { SortableStageColumn } from '@/components/SortableStageColumn';
 import { AddStageButton } from '@/components/AddStageButton';
 import { JourneySizeScale } from '@/components/JourneySizeScale';
-import { SummaryBar } from '@/components/SummaryBar';
 import { StageNavigation } from '@/components/StageNavigation';
 import { Logo } from '@/components/Logo';
 import { TShirtSize, ReleaseColour } from '@/types';
-import { SIZE_DAYS, WORKING_DAYS_PER_WEEK, APPETITE_OPTIONS, getJourneySize } from '@/lib/constants';
+import { SIZE_DAYS, WORKING_DAYS_PER_WEEK, getJourneySize } from '@/lib/constants';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 
 const STORAGE_KEY = 'tshirt-estimator-data';
@@ -230,104 +230,156 @@ const Index = () => {
   }
 
   return <div className="flex flex-col h-screen bg-background">
-      {/* Top Bar - Sticky */}
-      <header className="sticky top-0 z-10 flex items-center justify-between px-6 py-3 bg-card border-b border-border">
-        {/* Logo + Wordmark */}
-        <div className="flex items-center gap-3 text-foreground">
-          <Logo width={80} />
-          <div className="hidden sm:block">
-            <span className="font-bold text-lg block leading-tight">Shrug</span>
-            <span className="text-xs text-foreground/60">Product estimation, roughly</span>
+      {/* Unified Header Bar - Sticky */}
+      <header className="sticky top-0 z-10 bg-card border-b border-border">
+        {/* Top row: Logo + Journey Name + Controls + Summary */}
+        <div className="px-4 sm:px-6 py-3 flex flex-wrap items-center gap-3 sm:gap-4">
+          {/* Logo */}
+          <div className="flex items-center gap-2 text-foreground flex-shrink-0">
+            <Logo width={60} />
+            <div className="hidden lg:block">
+              <span className="font-bold text-sm block leading-tight">Shrug</span>
+              <span className="text-[10px] text-foreground/60">Product estimation, roughly</span>
+            </div>
+          </div>
+
+          {/* Divider */}
+          <div className="hidden sm:block w-px h-8 bg-border" />
+
+          {/* Journey Name */}
+          <div className="flex-1 min-w-[140px] max-w-[200px]">
+            {isEditingName || !journeyName ? (
+              <Input 
+                value={journeyName}
+                onChange={e => setJourneyName(e.target.value)}
+                onBlur={() => setIsEditingName(false)}
+                onKeyDown={e => e.key === 'Enter' && setIsEditingName(false)}
+                placeholder="Journey name..."
+                autoFocus
+                className="h-8 text-sm"
+              />
+            ) : (
+              <button 
+                onClick={() => setIsEditingName(true)}
+                className="flex items-center gap-1.5 text-sm font-medium text-foreground hover:text-foreground/80 transition-colors group"
+              >
+                <span className="truncate max-w-[160px]">{journeyName}</span>
+                <Pencil className="h-3 w-3 opacity-0 group-hover:opacity-60 transition-opacity flex-shrink-0" />
+              </button>
+            )}
+          </div>
+
+          {/* Divider */}
+          <div className="hidden sm:block w-px h-8 bg-border" />
+
+          {/* Team Size */}
+          <div className="flex items-center gap-1.5">
+            <span className="text-xs text-foreground/60 hidden sm:inline">Team</span>
+            <Button variant="outline" size="icon" className="h-7 w-7" onClick={handleDecrement} disabled={teamSize <= 1}>
+              <Minus className="h-3 w-3" />
+            </Button>
+            <span className="w-6 text-center text-sm font-medium">{teamSize}</span>
+            <Button variant="outline" size="icon" className="h-7 w-7" onClick={handleIncrement} disabled={teamSize >= 10}>
+              <Plus className="h-3 w-3" />
+            </Button>
+          </div>
+
+          {/* Appetite */}
+          <div className="flex items-center gap-1.5">
+            <span className="text-xs text-foreground/60 hidden sm:inline">Appetite</span>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" className="h-7 gap-1 px-2 text-sm">
+                  {appetite} wks
+                  <ChevronDown className="h-3 w-3 opacity-50" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="bg-popover">
+                {[1, 2, 3, 4, 6, 8, 10, 12].map((weeks) => (
+                  <DropdownMenuItem 
+                    key={weeks}
+                    onClick={() => setAppetite(weeks)}
+                    className={appetite === weeks ? 'bg-accent' : ''}
+                  >
+                    {weeks} week{weeks > 1 ? 's' : ''}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+
+          {/* Divider */}
+          <div className="hidden md:block w-px h-8 bg-border" />
+
+          {/* Summary Section */}
+          <div className="flex items-center gap-3 ml-auto">
+            {/* Dev Days */}
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <div className="text-sm">
+                  <span className="font-medium">{summary.totalDevDays}</span>
+                  <span className="text-foreground/60 ml-1">dev-days</span>
+                </div>
+              </TooltipTrigger>
+              <TooltipContent side="bottom" className="text-xs">
+                <div className="space-y-1">
+                  {summary.greenDevDays > 0 && <div className="flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-green-500" /> Now: {summary.greenDevDays}d</div>}
+                  {summary.amberDevDays > 0 && <div className="flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-amber-500" /> Next: {summary.amberDevDays}d</div>}
+                  {summary.purpleDevDays > 0 && <div className="flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-purple-500" /> Later: {summary.purpleDevDays}d</div>}
+                  {summary.unassignedDevDays > 0 && <div className="flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-muted" /> Unassigned: {summary.unassignedDevDays}d</div>}
+                </div>
+              </TooltipContent>
+            </Tooltip>
+
+            {/* Time Estimate */}
+            <div className="text-sm text-foreground/70">
+              {summary.timeEstimate}
+            </div>
+
+            {/* Journey Size Scale */}
+            <JourneySizeScale currentSize={summary.journeySize} />
+
+            {/* Appetite Progress */}
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <div className="flex items-center gap-1.5">
+                  <div className="w-16 h-1.5 bg-muted rounded-full overflow-hidden">
+                    <div 
+                      className={`h-full rounded-full transition-all ${
+                        summary.calendarWeeks > appetite ? 'bg-destructive' : 'bg-primary'
+                      }`}
+                      style={{ width: `${Math.min((summary.calendarWeeks / appetite) * 100, 100)}%` }}
+                    />
+                  </div>
+                  {summary.calendarWeeks > appetite && (
+                    <span className="text-destructive text-xs font-medium">!</span>
+                  )}
+                </div>
+              </TooltipTrigger>
+              <TooltipContent side="bottom" className="text-xs">
+                {summary.calendarWeeks > appetite 
+                  ? `Over appetite by ${(summary.calendarWeeks - appetite).toFixed(1)} weeks`
+                  : `${Math.round((summary.calendarWeeks / appetite) * 100)}% of ${appetite} week appetite`
+                }
+              </TooltipContent>
+            </Tooltip>
           </div>
         </div>
       </header>
 
       {/* Hero Intro */}
-      <div className="px-4 sm:px-8 pt-6 sm:pt-8 pb-4 sm:pb-6 border-b border-border/30">
-        <div className="max-w-2xl space-y-3 sm:space-y-4">
-          <p className="text-foreground/80 leading-relaxed text-sm sm:text-base">
+      <div className="px-4 sm:px-8 pt-4 sm:pt-6 pb-3 sm:pb-4 border-b border-border/30">
+        <div className="max-w-2xl space-y-2 sm:space-y-3">
+          <p className="text-foreground/80 leading-relaxed text-sm">
             You know that moment in refinement where someone asks "how long will this take?" and everyone stares at the ceiling?
             <span className="text-foreground font-medium"> This is for that.</span>
           </p>
-          <p className="text-foreground/70 text-xs sm:text-sm leading-relaxed">
-            Shrug is a free t-shirt sizing tool. Map your features, slap some sizes on them, and see if your grand vision actually fits in your appetite. 
-            <span className="text-foreground/50 italic"> Spoiler: it probably doesn't. That's why there's a descope button.</span>
-          </p>
-          <p className="text-foreground/60 text-xs sm:text-sm">
-            Will your estimates be accurate? <span className="font-mono">¯\_(ツ)_/¯</span>
+          <p className="text-foreground/60 text-xs">
+            Map your features, slap some sizes on them, and see if your vision fits in your appetite. Will your estimates be accurate? <span className="font-mono">¯\_(ツ)_/¯</span>
           </p>
         </div>
       </div>
 
-      {/* Journey Settings */}
-      <div className="px-4 sm:px-8 pt-4 sm:pt-6 pb-3 sm:pb-4 flex flex-wrap items-end gap-4 sm:gap-6">
-        {/* Journey Name */}
-        <div className="flex-1 min-w-[200px] max-w-md">
-          <label className="text-sm font-medium text-foreground mb-2 block">
-            Journey Name
-          </label>
-          {isEditingName || !journeyName ? (
-            <Input 
-              type="text" 
-              value={journeyName} 
-              onChange={e => setJourneyName(e.target.value)} 
-              onKeyDown={e => {
-                if (e.key === 'Enter' && journeyName.trim()) {
-                  setIsEditingName(false);
-                }
-              }}
-              onBlur={() => {
-                if (journeyName.trim()) {
-                  setIsEditingName(false);
-                }
-              }}
-              placeholder="e.g. Business Review Flow" 
-              className="text-lg"
-              autoFocus={isEditingName}
-            />
-          ) : (
-            <button
-              onClick={() => setIsEditingName(true)}
-              className="group w-full flex items-center gap-2 text-left text-lg font-medium text-foreground py-2 px-3 rounded-md border border-transparent hover:border-border hover:bg-accent/50 transition-colors"
-            >
-              <span className="flex-1">{journeyName}</span>
-              <Pencil className="h-4 w-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
-            </button>
-          )}
-        </div>
-
-        {/* Team Size */}
-        <div className="flex flex-col gap-2">
-          <label className="text-sm font-medium text-foreground">Team Size</label>
-          <div className="flex items-center gap-1">
-            <Button variant="outline" size="icon" className="h-9 w-9" onClick={handleDecrement} disabled={teamSize <= 1}>
-              <Minus className="h-4 w-4" />
-            </Button>
-            <span className="w-8 text-center text-sm font-medium text-foreground">{teamSize}</span>
-            <Button variant="outline" size="icon" className="h-9 w-9" onClick={handleIncrement} disabled={teamSize >= 10}>
-              <Plus className="h-4 w-4" />
-            </Button>
-          </div>
-        </div>
-
-        {/* Appetite */}
-        <div className="flex flex-col gap-2">
-          <label className="text-sm font-medium text-foreground">Delivery Appetite</label>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline" className="h-9 gap-1 px-3">
-                {appetite} week{appetite > 1 ? 's' : ''}
-                <ChevronDown className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="start">
-              {APPETITE_OPTIONS.map(weeks => <DropdownMenuItem key={weeks} onClick={() => setAppetite(weeks)} className={appetite === weeks ? 'bg-accent' : ''}>
-                  {weeks} week{weeks > 1 ? 's' : ''}
-                </DropdownMenuItem>)}
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
-      </div>
 
       {/* Main Scrolling Area */}
       <main className="flex-1 overflow-hidden px-4 sm:px-8 pb-4 sm:pb-8 bg-background">
@@ -356,26 +408,6 @@ const Index = () => {
         </DndContext>
       </main>
 
-      {/* Bottom Bar - Sticky */}
-      <footer className="sticky bottom-0 z-10 px-4 sm:px-6 py-2 sm:py-3 bg-card border-t border-border">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-4">
-          {/* Journey Size Scale - Left (reference only) */}
-          <JourneySizeScale currentSize={summary.journeySize} />
-          
-          {/* Summary - Right (all metrics) */}
-          <SummaryBar 
-            totalDevDays={summary.totalDevDays}
-            calendarWeeks={summary.calendarWeeks}
-            journeySize={summary.journeySize}
-            appetite={appetite}
-            teamSize={teamSize}
-            greenDevDays={summary.greenDevDays}
-            amberDevDays={summary.amberDevDays}
-            purpleDevDays={summary.purpleDevDays}
-            unassignedDevDays={summary.unassignedDevDays}
-          />
-        </div>
-      </footer>
     </div>;
 };
 
