@@ -329,29 +329,20 @@ const Index = () => {
                   </Tooltip>
                   <div className="text-sm text-foreground/70">{summary.timeEstimate}</div>
                 </div>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <div className="flex items-center gap-1.5">
-                      <div className="w-12 h-1.5 bg-muted rounded-full overflow-hidden">
-                        <div 
-                          className={`h-full rounded-full transition-all ${
-                            summary.calendarWeeks > appetite ? 'bg-destructive' : 'bg-primary'
-                          }`}
-                          style={{ width: `${Math.min((summary.calendarWeeks / appetite) * 100, 100)}%` }}
-                        />
-                      </div>
-                      {summary.calendarWeeks > appetite && (
-                        <span className="text-destructive text-xs font-medium">!</span>
-                      )}
-                    </div>
-                  </TooltipTrigger>
-                  <TooltipContent side="bottom" className="text-xs">
-                    {summary.calendarWeeks > appetite 
-                      ? `Over appetite by ${(summary.calendarWeeks - appetite).toFixed(1)} weeks`
-                      : `${Math.round((summary.calendarWeeks / appetite) * 100)}% of ${appetite} week appetite`
-                    }
-                  </TooltipContent>
-                </Tooltip>
+                <div className="flex items-center gap-1.5">
+                  <span className="text-xs text-foreground/60">Appetite</span>
+                  <div className="w-12 h-1.5 bg-muted rounded-full overflow-hidden">
+                    <div 
+                      className={`h-full rounded-full transition-all ${
+                        summary.calendarWeeks > appetite ? 'bg-destructive' : 'bg-primary'
+                      }`}
+                      style={{ width: `${Math.min((summary.calendarWeeks / appetite) * 100, 100)}%` }}
+                    />
+                  </div>
+                  <span className={`text-xs tabular-nums ${summary.calendarWeeks > appetite ? 'text-destructive' : 'text-foreground/60'}`}>
+                    {Math.round((summary.calendarWeeks / appetite) * 100)}%
+                  </span>
+                </div>
               </div>
               {/* Journey Size on its own row */}
               <div className="flex justify-center">
@@ -452,29 +443,20 @@ const Index = () => {
 
                 <JourneySizeScale currentSize={summary.journeySize} />
 
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <div className="flex items-center gap-1.5">
-                      <div className="w-16 h-1.5 bg-muted rounded-full overflow-hidden">
-                        <div 
-                          className={`h-full rounded-full transition-all ${
-                            summary.calendarWeeks > appetite ? 'bg-destructive' : 'bg-primary'
-                          }`}
-                          style={{ width: `${Math.min((summary.calendarWeeks / appetite) * 100, 100)}%` }}
-                        />
-                      </div>
-                      {summary.calendarWeeks > appetite && (
-                        <span className="text-destructive text-xs font-medium">!</span>
-                      )}
-                    </div>
-                  </TooltipTrigger>
-                  <TooltipContent side="bottom" className="text-xs">
-                    {summary.calendarWeeks > appetite 
-                      ? `Over appetite by ${(summary.calendarWeeks - appetite).toFixed(1)} weeks`
-                      : `${Math.round((summary.calendarWeeks / appetite) * 100)}% of ${appetite} week appetite`
-                    }
-                  </TooltipContent>
-                </Tooltip>
+                <div className="flex items-center gap-1.5">
+                  <span className="text-xs text-foreground/60">Appetite</span>
+                  <div className="w-16 h-1.5 bg-muted rounded-full overflow-hidden">
+                    <div 
+                      className={`h-full rounded-full transition-all ${
+                        summary.calendarWeeks > appetite ? 'bg-destructive' : 'bg-primary'
+                      }`}
+                      style={{ width: `${Math.min((summary.calendarWeeks / appetite) * 100, 100)}%` }}
+                    />
+                  </div>
+                  <span className={`text-xs tabular-nums ${summary.calendarWeeks > appetite ? 'text-destructive' : 'text-foreground/60'}`}>
+                    {Math.round((summary.calendarWeeks / appetite) * 100)}%
+                  </span>
+                </div>
               </div>
             </div>
 
@@ -502,29 +484,20 @@ const Index = () => {
 
               <div className="flex items-center gap-3">
                 <JourneySizeScale currentSize={summary.journeySize} />
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <div className="flex items-center gap-1.5">
-                      <div className="w-16 h-1.5 bg-muted rounded-full overflow-hidden">
-                        <div 
-                          className={`h-full rounded-full transition-all ${
-                            summary.calendarWeeks > appetite ? 'bg-destructive' : 'bg-primary'
-                          }`}
-                          style={{ width: `${Math.min((summary.calendarWeeks / appetite) * 100, 100)}%` }}
-                        />
-                      </div>
-                      {summary.calendarWeeks > appetite && (
-                        <span className="text-destructive text-xs font-medium">!</span>
-                      )}
-                    </div>
-                  </TooltipTrigger>
-                  <TooltipContent side="bottom" className="text-xs">
-                    {summary.calendarWeeks > appetite 
-                      ? `Over appetite by ${(summary.calendarWeeks - appetite).toFixed(1)} weeks`
-                      : `${Math.round((summary.calendarWeeks / appetite) * 100)}% of ${appetite} week appetite`
-                    }
-                  </TooltipContent>
-                </Tooltip>
+                <div className="flex items-center gap-1.5">
+                  <span className="text-xs text-foreground/60">Appetite</span>
+                  <div className="w-16 h-1.5 bg-muted rounded-full overflow-hidden">
+                    <div 
+                      className={`h-full rounded-full transition-all ${
+                        summary.calendarWeeks > appetite ? 'bg-destructive' : 'bg-primary'
+                      }`}
+                      style={{ width: `${Math.min((summary.calendarWeeks / appetite) * 100, 100)}%` }}
+                    />
+                  </div>
+                  <span className={`text-xs tabular-nums ${summary.calendarWeeks > appetite ? 'text-destructive' : 'text-foreground/60'}`}>
+                    {Math.round((summary.calendarWeeks / appetite) * 100)}%
+                  </span>
+                </div>
               </div>
             </div>
           </div>
