@@ -230,7 +230,7 @@ const Index = () => {
       </div>;
   }
 
-  return <div className="flex flex-col h-screen bg-background">
+  return <div className="flex flex-col min-h-screen bg-background">
       {/* Fixed Brand Header */}
       <BrandHeader />
 
@@ -239,10 +239,10 @@ const Index = () => {
         <HeroSection />
       </div>
 
-      {/* Main Canvas */}
-      <div className="flex flex-col flex-1 h-full overflow-hidden">
+      {/* Main Content - Fixed Width Container */}
+      <div className="flex-1 w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
         {/* Settings/Summary Bar */}
-        <div className="sticky top-0 z-10 m-4 px-4 py-3 bg-card border border-border rounded-lg flex flex-wrap items-center gap-3 sm:gap-4 max-w-[1200px]">
+        <div className="sticky top-0 z-10 my-4 px-4 py-3 bg-card border border-border rounded-lg flex flex-wrap items-center gap-3 sm:gap-4">
         {/* Journey Name */}
         <div className="min-w-[140px] max-w-[200px]">
           {isEditingName || !journeyName ? (
@@ -363,34 +363,34 @@ const Index = () => {
         </div>
       </div>
 
-      {/* Main Scrolling Area */}
-      <main className="flex-1 overflow-hidden px-4 sm:px-6 pb-4 sm:pb-6 pt-4 bg-background">
-        <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-          <SortableContext items={stages.map(s => s.id)} strategy={horizontalListSortingStrategy}>
-            <StageNavigation stageCount={stages.length + 1}>
-              {stages.map(stage => (
-                <div key={stage.id} className="flex-shrink-0 w-full sm:w-auto">
-                  <SortableStageColumn 
-                    id={stage.id} 
-                    name={stage.name} 
-                    features={stage.features} 
-                    onNameChange={name => handleStageName(stage.id, name)} 
-                    onFeaturesChange={features => handleStageFeatures(stage.id, features)} 
-                    onDelete={() => handleDeleteStage(stage.id)} 
-                    canDelete={stages.length > 1} 
-                    autoFocus={stage.id === newStageId} 
-                  />
+        {/* Main Scrolling Area */}
+        <main className="flex-1 overflow-x-auto pb-6">
+          <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+            <SortableContext items={stages.map(s => s.id)} strategy={horizontalListSortingStrategy}>
+              <StageNavigation stageCount={stages.length + 1}>
+                {stages.map(stage => (
+                  <div key={stage.id} className="flex-shrink-0 w-full sm:w-auto">
+                    <SortableStageColumn 
+                      id={stage.id} 
+                      name={stage.name} 
+                      features={stage.features} 
+                      onNameChange={name => handleStageName(stage.id, name)} 
+                      onFeaturesChange={features => handleStageFeatures(stage.id, features)} 
+                      onDelete={() => handleDeleteStage(stage.id)} 
+                      canDelete={stages.length > 1} 
+                      autoFocus={stage.id === newStageId} 
+                    />
+                  </div>
+                ))}
+                <div className="flex-shrink-0 w-full sm:w-auto">
+                  <AddStageButton onClick={handleAddStage} />
                 </div>
-              ))}
-              <div className="flex-shrink-0 w-full sm:w-auto">
-                <AddStageButton onClick={handleAddStage} />
-              </div>
-            </StageNavigation>
-          </SortableContext>
-        </DndContext>
-      </main>
-    </div>
-  </div>;
+              </StageNavigation>
+            </SortableContext>
+          </DndContext>
+        </main>
+      </div>
+    </div>;
 };
 
 export default Index;
