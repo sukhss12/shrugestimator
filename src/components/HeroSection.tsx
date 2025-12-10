@@ -2,38 +2,29 @@ import { useState, useEffect } from 'react';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Button } from '@/components/ui/button';
-
 export const HeroSection = () => {
   const [isOpen, setIsOpen] = useState(true);
-
   useEffect(() => {
     const stored = localStorage.getItem('hero-collapsed');
     if (stored !== null) {
       setIsOpen(stored !== 'true');
     }
   }, []);
-
   useEffect(() => {
     localStorage.setItem('hero-collapsed', (!isOpen).toString());
   }, [isOpen]);
-
-  return (
-    <div className="w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-4">
+  return <div className="w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-4">
       <Collapsible open={isOpen} onOpenChange={setIsOpen}>
         <div className="flex items-center justify-between mb-2">
           <CollapsibleTrigger asChild>
             <Button variant="ghost" size="sm" className="text-xs text-muted-foreground hover:text-foreground gap-1 px-2 h-7">
-              {isOpen ? (
-                <>
+              {isOpen ? <>
                   <ChevronUp className="h-3 w-3" />
                   Hide intro
-                </>
-              ) : (
-                <>
+                </> : <>
                   <ChevronDown className="h-3 w-3" />
                   What's this?
-                </>
-              )}
+                </>}
             </Button>
           </CollapsibleTrigger>
         </div>
@@ -75,9 +66,7 @@ export const HeroSection = () => {
                 </div>
               </div>
 
-              <p className="text-muted-foreground/70">
-                Get a rough shape before you've promised anything. Refine it properly once you're actually building.
-              </p>
+              <p className="text-muted-foreground/70">We calculate the effort for a single developer, and divide that by your team size. Get a rough shape before you've promised anything. Refine it properly once you're actually building.</p>
 
               {/* Closing line */}
               <div className="pt-2">
@@ -88,6 +77,5 @@ export const HeroSection = () => {
           </div>
         </CollapsibleContent>
       </Collapsible>
-    </div>
-  );
+    </div>;
 };
