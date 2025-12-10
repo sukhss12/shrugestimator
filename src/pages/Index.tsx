@@ -9,7 +9,8 @@ import { SortableStageColumn } from '@/components/SortableStageColumn';
 import { AddStageButton } from '@/components/AddStageButton';
 import { JourneySizeScale } from '@/components/JourneySizeScale';
 import { StageNavigation } from '@/components/StageNavigation';
-import { HeroSidebar } from '@/components/HeroSidebar';
+import { BrandHeader } from '@/components/BrandHeader';
+import { HeroSection } from '@/components/HeroSection';
 import { TShirtSize, ReleaseColour } from '@/types';
 import { SIZE_DAYS, WORKING_DAYS_PER_WEEK, getJourneySize } from '@/lib/constants';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
@@ -229,12 +230,17 @@ const Index = () => {
       </div>;
   }
 
-  return <div className="flex h-screen bg-background">
-      {/* Fixed Sidebar */}
-      <HeroSidebar />
+  return <div className="flex flex-col h-screen bg-background">
+      {/* Fixed Brand Header */}
+      <BrandHeader />
+
+      {/* Hero Section */}
+      <div className="pt-16">
+        <HeroSection />
+      </div>
 
       {/* Main Canvas */}
-      <div className="flex flex-col flex-1 h-full md:ml-[240px] lg:ml-[280px]">
+      <div className="flex flex-col flex-1 h-full overflow-hidden">
         {/* Settings/Summary Bar */}
         <div className="sticky top-0 z-10 m-4 px-4 py-3 bg-card border border-border rounded-lg flex flex-wrap items-center gap-3 sm:gap-4 max-w-[1200px]">
         {/* Journey Name */}
