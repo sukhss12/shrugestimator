@@ -229,7 +229,7 @@ const Index = () => {
   }
   return <div className="dark flex flex-col h-screen bg-background">
       {/* Top Bar - Sticky */}
-      <header className="sticky top-0 z-10 flex items-center justify-between px-6 py-3 bg-card/80 backdrop-blur-md border-b border-border/50">
+      <header className="sticky top-0 z-10 flex items-center justify-between px-6 py-3 bg-card border-b border-border">
         {/* Logo + Wordmark */}
         <div className="flex items-center gap-3 text-foreground">
           <Logo width={80} />
@@ -306,9 +306,7 @@ const Index = () => {
       </div>
 
       {/* Main Scrolling Area */}
-      <main className="flex-1 overflow-x-auto overflow-y-hidden px-8 pb-8" style={{
-      background: `linear-gradient(135deg, hsl(var(--background)) 0%, hsl(var(--card) / 0.5) 50%, hsl(var(--background)) 100%)`
-    }}>
+      <main className="flex-1 overflow-x-auto overflow-y-hidden px-8 pb-8 bg-background">
         <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
           <SortableContext items={stages.map(s => s.id)} strategy={horizontalListSortingStrategy}>
             <div className="flex gap-4 h-full items-start">
@@ -320,7 +318,7 @@ const Index = () => {
       </main>
 
       {/* Bottom Bar - Sticky */}
-      <footer className="sticky bottom-0 z-10 px-6 py-3 bg-card/80 backdrop-blur-md border-t border-border/50">
+      <footer className="sticky bottom-0 z-10 px-6 py-3 bg-card border-t border-border">
         <div className="flex items-center justify-between gap-4">
           {/* Journey Size Scale - Left */}
           <JourneySizeScale currentSize={summary.journeySize} totalPoints={summary.totalPoints} sprintCapacity={summary.sprintCapacity} />
