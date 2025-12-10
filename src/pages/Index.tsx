@@ -267,7 +267,7 @@ const Index = () => {
   return (
     <div className="dark flex flex-col h-screen bg-background">
       {/* Top Bar - Sticky */}
-      <header className="sticky top-0 z-10 flex items-center justify-between px-6 py-4 bg-background border-b border-border">
+      <header className="sticky top-0 z-10 flex items-center justify-between px-6 py-4 bg-card/80 backdrop-blur-md border-b border-border/50">
         <Input
           type="text"
           value={journeyName}
@@ -338,8 +338,7 @@ const Index = () => {
       <main
         className="flex-1 overflow-x-auto overflow-y-hidden p-8"
         style={{
-          backgroundImage: `radial-gradient(circle, hsl(var(--border)) 1px, transparent 1px)`,
-          backgroundSize: '24px 24px',
+          background: `linear-gradient(135deg, hsl(var(--background)) 0%, hsl(var(--card) / 0.5) 50%, hsl(var(--background)) 100%)`,
         }}
       >
         <DndContext
@@ -372,7 +371,7 @@ const Index = () => {
       </main>
 
       {/* Bottom Bar - Sticky */}
-      <footer className="sticky bottom-0 z-10 px-6 py-3 bg-background border-t border-border shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
+      <footer className="sticky bottom-0 z-10 px-6 py-3 bg-card/80 backdrop-blur-md border-t border-border/50">
         <div className="flex items-center justify-between gap-4">
           {/* Journey Size Scale - Left */}
           <JourneySizeScale 
