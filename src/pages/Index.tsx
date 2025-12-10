@@ -3,7 +3,7 @@ import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, us
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, horizontalListSortingStrategy } from '@dnd-kit/sortable';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Minus, Plus, ChevronDown } from 'lucide-react';
+import { Minus, Plus, ChevronDown, Pencil } from 'lucide-react';
 import { SortableStageColumn } from '@/components/SortableStageColumn';
 import { AddStageButton } from '@/components/AddStageButton';
 import { JourneySizeScale } from '@/components/JourneySizeScale';
@@ -288,9 +288,10 @@ const Index = () => {
           ) : (
             <button
               onClick={() => setIsEditingName(true)}
-              className="w-full text-left text-lg font-medium text-foreground py-2 px-3 rounded-md border border-transparent hover:border-border hover:bg-accent/50 transition-colors"
+              className="group w-full flex items-center gap-2 text-left text-lg font-medium text-foreground py-2 px-3 rounded-md border border-transparent hover:border-border hover:bg-accent/50 transition-colors"
             >
-              {journeyName}
+              <span className="flex-1">{journeyName}</span>
+              <Pencil className="h-4 w-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
             </button>
           )}
         </div>
