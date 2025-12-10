@@ -279,22 +279,22 @@ const Index = () => {
         <div className="flex items-center gap-4">
           {/* Team Size */}
           <div className="flex items-center gap-2">
-            <span className="text-sm text-muted-foreground">Team:</span>
+            <span className="text-sm text-foreground/70">Team:</span>
             <div className="flex items-center gap-1">
               <Button
                 variant="outline"
                 size="icon"
-                className="h-7 w-7 focus-visible:ring-2 focus-visible:ring-ring"
+                className="h-7 w-7 border-foreground/30 text-foreground hover:bg-foreground/10 focus-visible:ring-2 focus-visible:ring-ring"
                 onClick={handleDecrement}
                 disabled={teamSize <= 1}
               >
                 <Minus className="h-3 w-3" />
               </Button>
-              <span className="w-6 text-center text-sm font-medium">{teamSize}</span>
+              <span className="w-6 text-center text-sm font-medium text-foreground">{teamSize}</span>
               <Button
                 variant="outline"
                 size="icon"
-                className="h-7 w-7 focus-visible:ring-2 focus-visible:ring-ring"
+                className="h-7 w-7 border-foreground/30 text-foreground hover:bg-foreground/10 focus-visible:ring-2 focus-visible:ring-ring"
                 onClick={handleIncrement}
                 disabled={teamSize >= 10}
               >
@@ -305,15 +305,15 @@ const Index = () => {
 
           {/* Sprint Length */}
           <div className="flex items-center gap-2">
-            <span className="text-sm text-muted-foreground">Sprint:</span>
+            <span className="text-sm text-foreground/70">Sprint:</span>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="outline" size="sm" className="h-7 gap-1 px-2">
+                <Button variant="outline" size="sm" className="h-7 gap-1 px-2 border-foreground/30 text-foreground hover:bg-foreground/10">
                   {sprintWeeks} wk{sprintWeeks > 1 ? 's' : ''}
                   <ChevronDown className="h-3 w-3" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
+              <DropdownMenuContent align="end" className="bg-card border-border">
                 {SPRINT_OPTIONS.map((weeks) => (
                   <DropdownMenuItem
                     key={weeks}
