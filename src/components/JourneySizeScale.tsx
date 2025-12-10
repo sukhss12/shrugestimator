@@ -7,6 +7,7 @@ import { JOURNEY_SIZE_BANDS } from '@/lib/constants';
 
 interface JourneySizeScaleProps {
   currentSize: string;
+  compact?: boolean;
 }
 
 const SIZES = [
@@ -17,11 +18,11 @@ const SIZES = [
   { size: 'XL', range: '12+ wks' },
 ];
 
-export const JourneySizeScale = ({ currentSize }: JourneySizeScaleProps) => {
+export const JourneySizeScale = ({ currentSize, compact = false }: JourneySizeScaleProps) => {
   return (
     <div className="flex items-center gap-2">
       <span className="text-sm text-foreground/60 hidden sm:inline">Journey:</span>
-      <div className="flex gap-1">
+      <div className="flex gap-0.5">
         {SIZES.map(({ size, range }) => {
           const isActive = size === currentSize;
           const band = JOURNEY_SIZE_BANDS[size as keyof typeof JOURNEY_SIZE_BANDS];
@@ -30,8 +31,9 @@ export const JourneySizeScale = ({ currentSize }: JourneySizeScaleProps) => {
               <TooltipTrigger asChild>
                 <div
                   className={`
-                    px-2 py-1 rounded text-sm font-medium cursor-default
+                    rounded text-xs font-medium cursor-default
                     transition-colors duration-150
+                    ${compact ? 'px-1.5 py-0.5' : 'px-2 py-1 text-sm'}
                     ${isActive
                       ? 'bg-primary text-primary-foreground'
                       : 'bg-muted text-foreground/50 hover:text-foreground/70'
