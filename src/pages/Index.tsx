@@ -531,8 +531,9 @@ const Index = () => {
         </main>
 
         {/* Footer */}
-        <footer className="py-6 text-center">
-          <p className="text-xs text-muted-foreground/50">This app is free to use, forever, I guess.</p>
+        <footer className="py-6 text-center space-y-1">
+          <p className="text-xs text-muted-foreground/50">This app is free to use forever, I guess.</p>
+          <p className="text-sm text-muted-foreground/40">¯\_(ツ)_/¯</p>
         </footer>
       </div>
     </div>;
