@@ -21,3 +21,19 @@ export const SIZE_LABELS: Record<TShirtSize, string> = {
 export const WORKING_DAYS_PER_WEEK = 5;
 
 export const APPETITE_OPTIONS = [2, 4, 6, 8, 12] as const;
+
+export const JOURNEY_SIZE_BANDS = {
+  XS: { max: 2, label: '< 2 wks', sprints: '< 1 sprint' },
+  S:  { max: 4, label: '2–4 wks', sprints: '1–2 sprints' },
+  M:  { max: 8, label: '4–8 wks', sprints: '2–4 sprints' },
+  L:  { max: 12, label: '8–12 wks', sprints: '4–6 sprints' },
+  XL: { max: Infinity, label: '12+ wks', sprints: '6+ sprints' }
+};
+
+export const getJourneySize = (calendarWeeks: number): string => {
+  if (calendarWeeks < 2) return 'XS';
+  if (calendarWeeks < 4) return 'S';
+  if (calendarWeeks < 8) return 'M';
+  if (calendarWeeks < 12) return 'L';
+  return 'XL';
+};
