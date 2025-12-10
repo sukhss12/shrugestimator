@@ -47,19 +47,50 @@ export const SummaryBar = ({
 
   const fillWidth = Math.min(appetitePercent, 100);
 
+  const hasPriorityBreakdown = greenDevDays > 0 || amberDevDays > 0 || purpleDevDays > 0;
+
   return (
     <div className="flex items-center gap-3 text-sm">
-      {/* Core metrics */}
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <span className="font-medium text-foreground cursor-default">
-            {totalDevDays} dev-days
-          </span>
-        </TooltipTrigger>
-        <TooltipContent side="top" className="text-xs">
-          Total effort across all selected features
-        </TooltipContent>
-      </Tooltip>
+      {/* Dev-days: show total OR breakdown, not both */}
+      {hasPriorityBreakdown ? (
+        <div className="flex items-center gap-2">
+          {greenDevDays > 0 && (
+            <span className="flex items-center gap-1">
+              <span className="w-2 h-2 rounded-full bg-emerald-500" />
+              <span className="text-xs font-medium">{greenDevDays}d</span>
+            </span>
+          )}
+          {amberDevDays > 0 && (
+            <span className="flex items-center gap-1">
+              <span className="w-2 h-2 rounded-full bg-amber-500" />
+              <span className="text-xs font-medium">{amberDevDays}d</span>
+            </span>
+          )}
+          {purpleDevDays > 0 && (
+            <span className="flex items-center gap-1">
+              <span className="w-2 h-2 rounded-full bg-violet-500" />
+              <span className="text-xs font-medium">{purpleDevDays}d</span>
+            </span>
+          )}
+          {unassignedDevDays > 0 && (
+            <span className="flex items-center gap-1">
+              <span className="w-2 h-2 rounded-full bg-foreground/20 border border-foreground/40" />
+              <span className="text-xs text-foreground/60">{unassignedDevDays}d</span>
+            </span>
+          )}
+        </div>
+      ) : (
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <span className="font-medium text-foreground cursor-default">
+              {totalDevDays} dev-days
+            </span>
+          </TooltipTrigger>
+          <TooltipContent side="top" className="text-xs">
+            Total effort across all selected features
+          </TooltipContent>
+        </Tooltip>
+      )}
 
       <span className="text-foreground/40">·</span>
       
@@ -121,39 +152,6 @@ export const SummaryBar = ({
           </div>
         </TooltipContent>
       </Tooltip>
-
-      {/* Priority breakdown - only show if there are any */}
-      {(greenDevDays > 0 || amberDevDays > 0 || purpleDevDays > 0 || unassignedDevDays > 0) && (
-        <>
-          <span className="text-foreground/40">·</span>
-          <div className="flex items-center gap-2">
-            {greenDevDays > 0 && (
-              <span className="flex items-center gap-1">
-                <span className="w-2 h-2 rounded-full bg-emerald-500" />
-                <span className="text-xs">{greenDevDays}d</span>
-              </span>
-            )}
-            {amberDevDays > 0 && (
-              <span className="flex items-center gap-1">
-                <span className="w-2 h-2 rounded-full bg-amber-500" />
-                <span className="text-xs">{amberDevDays}d</span>
-              </span>
-            )}
-            {purpleDevDays > 0 && (
-              <span className="flex items-center gap-1">
-                <span className="w-2 h-2 rounded-full bg-violet-500" />
-                <span className="text-xs">{purpleDevDays}d</span>
-              </span>
-            )}
-            {unassignedDevDays > 0 && (
-              <span className="flex items-center gap-1">
-                <span className="w-2 h-2 rounded-full bg-foreground/20 border border-foreground/40" />
-                <span className="text-xs text-foreground/60">{unassignedDevDays}d</span>
-              </span>
-            )}
-          </div>
-        </>
-      )}
     </div>
   );
 };
