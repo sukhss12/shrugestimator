@@ -7,18 +7,21 @@ import { Minus, Plus, ChevronDown } from 'lucide-react';
 import { SortableStageColumn } from '@/components/SortableStageColumn';
 import { AddStageButton } from '@/components/AddStageButton';
 import { JourneySizeScale } from '@/components/JourneySizeScale';
-import { SprintCapacityBar } from '@/components/SprintCapacityBar';
+import { AppetiteBar } from '@/components/AppetiteBar';
 import { Logo } from '@/components/Logo';
 import { TShirtSize, ReleaseColour } from '@/types';
-import { SIZE_POINTS, POINTS_PER_DEV_DAY } from '@/lib/constants';
+import { SIZE_DAYS, WORKING_DAYS_PER_WEEK, APPETITE_OPTIONS } from '@/lib/constants';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+
 const STORAGE_KEY = 'tshirt-estimator-data';
+
 interface FeatureEstimates {
   fe: TShirtSize;
   be: TShirtSize;
   db: TShirtSize;
   int: TShirtSize;
 }
+
 interface Feature {
   id: string;
   name: string;
@@ -26,41 +29,46 @@ interface Feature {
   selected: boolean;
   colour?: ReleaseColour;
 }
+
 interface Stage {
   id: string;
   name: string;
   features: Feature[];
 }
+
 interface StoredData {
   journeyName: string;
   teamSize: number;
-  sprintWeeks: number;
+  appetite: number;
   stages: Stage[];
 }
-const calculateFeaturePoints = (estimates?: FeatureEstimates): number => {
+
+const calculateFeatureDays = (estimates?: FeatureEstimates): number => {
   if (!estimates) return 0;
-  return SIZE_POINTS[estimates.fe] + SIZE_POINTS[estimates.be] + SIZE_POINTS[estimates.db] + SIZE_POINTS[estimates.int];
+  return SIZE_DAYS[estimates.fe] + SIZE_DAYS[estimates.be] + SIZE_DAYS[estimates.db] + SIZE_DAYS[estimates.int];
 };
+
 const defaultData: StoredData = {
   journeyName: '',
   teamSize: 2,
-  sprintWeeks: 2,
+  appetite: 6,
   stages: [{
     id: '1',
     name: 'Stage 1',
     features: []
   }]
 };
+
 const loadFromStorage = (): StoredData => {
   try {
     const stored = localStorage.getItem(STORAGE_KEY);
     if (stored) {
       const data = JSON.parse(stored);
-      // Backward compatibility: add sprintWeeks if missing
+      // Backward compatibility: migrate sprintWeeks to appetite
       return {
         ...defaultData,
         ...data,
-        sprintWeeks: data.sprintWeeks ?? 2
+        appetite: data.appetite ?? data.sprintWeeks ?? 6
       };
     }
   } catch (e) {
@@ -68,6 +76,7 @@ const loadFromStorage = (): StoredData => {
   }
   return defaultData;
 };
+
 const saveToStorage = (data: StoredData) => {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
@@ -75,14 +84,15 @@ const saveToStorage = (data: StoredData) => {
     console.error('Failed to save to localStorage:', e);
   }
 };
-const SPRINT_OPTIONS = [1, 2, 3, 4, 6] as const;
+
 const Index = () => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [journeyName, setJourneyName] = useState('');
   const [teamSize, setTeamSize] = useState(2);
-  const [sprintWeeks, setSprintWeeks] = useState(2);
+  const [appetite, setAppetite] = useState(6);
   const [stages, setStages] = useState<Stage[]>([]);
   const [newStageId, setNewStageId] = useState<string | null>(null);
+
   const sensors = useSensors(useSensor(PointerSensor, {
     activationConstraint: {
       distance: 8
@@ -96,7 +106,7 @@ const Index = () => {
     const data = loadFromStorage();
     setJourneyName(data.journeyName);
     setTeamSize(data.teamSize);
-    setSprintWeeks(data.sprintWeeks);
+    setAppetite(data.appetite);
     setStages(data.stages);
     setIsLoaded(true);
   }, []);
@@ -107,11 +117,11 @@ const Index = () => {
       saveToStorage({
         journeyName,
         teamSize,
-        sprintWeeks,
+        appetite,
         stages
       });
     }
-  }, [journeyName, teamSize, sprintWeeks, stages, isLoaded]);
+  }, [journeyName, teamSize, appetite, stages, isLoaded]);
 
   // Summary calculations
   const summary = useMemo(() => {
@@ -119,69 +129,65 @@ const Index = () => {
     const totalCount = allFeatures.length;
     const selectedFeatures = allFeatures.filter(f => f.selected);
     const selectedCount = selectedFeatures.length;
-    const totalPoints = selectedFeatures.reduce((sum, f) => sum + calculateFeaturePoints(f.estimates), 0);
+    
+    // Dev-days totals
+    const totalDevDays = selectedFeatures.reduce((sum, f) => sum + calculateFeatureDays(f.estimates), 0);
+    const greenDevDays = selectedFeatures.filter(f => f.colour === 'green').reduce((sum, f) => sum + calculateFeatureDays(f.estimates), 0);
+    const amberDevDays = selectedFeatures.filter(f => f.colour === 'amber').reduce((sum, f) => sum + calculateFeatureDays(f.estimates), 0);
+    const purpleDevDays = selectedFeatures.filter(f => f.colour === 'purple').reduce((sum, f) => sum + calculateFeatureDays(f.estimates), 0);
+    const unassignedDevDays = selectedFeatures.filter(f => !f.colour).reduce((sum, f) => sum + calculateFeatureDays(f.estimates), 0);
 
-    // Points by release colour
-    const greenPoints = selectedFeatures.filter(f => f.colour === 'green').reduce((sum, f) => sum + calculateFeaturePoints(f.estimates), 0);
-    const amberPoints = selectedFeatures.filter(f => f.colour === 'amber').reduce((sum, f) => sum + calculateFeaturePoints(f.estimates), 0);
-    const purplePoints = selectedFeatures.filter(f => f.colour === 'purple').reduce((sum, f) => sum + calculateFeaturePoints(f.estimates), 0);
-    const unassignedPoints = selectedFeatures.filter(f => !f.colour).reduce((sum, f) => sum + calculateFeaturePoints(f.estimates), 0);
-    const devDays = totalPoints / POINTS_PER_DEV_DAY;
-    const calendarDays = devDays / teamSize;
-
-    // Sprint capacity calculation
-    const sprintDays = sprintWeeks * 5;
-    const sprintCapacity = sprintDays * teamSize * POINTS_PER_DEV_DAY;
-    const capacityPercent = sprintCapacity > 0 ? totalPoints / sprintCapacity * 100 : 0;
-    const greenCapacityPercent = sprintCapacity > 0 ? greenPoints / sprintCapacity * 100 : 0;
-
-    // Round up to nearest 0.5
-    const roundedDays = Math.ceil(calendarDays * 2) / 2;
+    // Calendar time calculation: (dev-days ÷ team size) ÷ 5 days/week
+    const calendarDays = teamSize > 0 ? totalDevDays / teamSize : 0;
+    const calendarWeeks = calendarDays / WORKING_DAYS_PER_WEEK;
+    
+    // Round to nearest 0.5
+    const roundedWeeks = Math.round(calendarWeeks * 2) / 2;
+    
+    // Time estimate display
     let timeEstimate: string;
-    if (roundedDays === 0) {
-      timeEstimate = '0 days';
-    } else if (roundedDays < 5) {
-      timeEstimate = `~${roundedDays} days`;
+    if (roundedWeeks === 0) {
+      timeEstimate = '0 weeks';
     } else {
-      // Convert to weeks, round up to nearest 0.5
-      const weeks = Math.ceil(roundedDays / 5 * 2) / 2;
-      timeEstimate = `~${weeks} weeks`;
+      timeEstimate = `~${roundedWeeks} week${roundedWeeks !== 1 ? 's' : ''}`;
     }
 
-    // Journey size based on total points
+    // Journey size based on calendar weeks
     let journeySize: string;
-    if (totalPoints <= 10) {
+    if (calendarWeeks < 1) {
       journeySize = 'XS';
-    } else if (totalPoints <= 25) {
+    } else if (calendarWeeks <= 2) {
       journeySize = 'S';
-    } else if (totalPoints <= 50) {
+    } else if (calendarWeeks <= 4) {
       journeySize = 'M';
-    } else if (totalPoints <= 100) {
+    } else if (calendarWeeks <= 6) {
       journeySize = 'L';
     } else {
       journeySize = 'XL';
     }
+
     return {
       selectedCount,
       totalCount,
-      totalPoints,
+      totalDevDays,
+      calendarWeeks,
       timeEstimate,
       journeySize,
-      sprintCapacity,
-      capacityPercent,
-      greenPoints,
-      amberPoints,
-      purplePoints,
-      unassignedPoints,
-      greenCapacityPercent
+      greenDevDays,
+      amberDevDays,
+      purpleDevDays,
+      unassignedDevDays
     };
-  }, [stages, teamSize, sprintWeeks]);
+  }, [stages, teamSize]);
+
   const handleDecrement = () => {
     if (teamSize > 1) setTeamSize(teamSize - 1);
   };
+
   const handleIncrement = () => {
     if (teamSize < 10) setTeamSize(teamSize + 1);
   };
+
   const handleAddStage = () => {
     const id = Date.now().toString();
     const newStage: Stage = {
@@ -192,21 +198,25 @@ const Index = () => {
     setStages([...stages, newStage]);
     setNewStageId(id);
   };
+
   const handleStageName = (stageId: string, name: string) => {
     setStages(stages.map(s => s.id === stageId ? {
       ...s,
       name
     } : s));
   };
+
   const handleStageFeatures = (stageId: string, features: Feature[]) => {
     setStages(stages.map(s => s.id === stageId ? {
       ...s,
       features
     } : s));
   };
+
   const handleDeleteStage = (stageId: string) => {
     setStages(stages.filter(s => s.id !== stageId));
   };
+
   const handleDragEnd = (event: DragEndEvent) => {
     const {
       active,
@@ -227,6 +237,7 @@ const Index = () => {
         <div className="text-muted-foreground text-sm">Loading...</div>
       </div>;
   }
+
   return <div className="flex flex-col h-screen bg-background">
       {/* Top Bar - Sticky */}
       <header className="sticky top-0 z-10 flex items-center justify-between px-6 py-3 bg-card border-b border-border">
@@ -281,28 +292,23 @@ const Index = () => {
           </div>
         </div>
 
-        {/* Sprint Length */}
+        {/* Appetite */}
         <div className="flex flex-col gap-2">
-          <label className="text-sm font-medium text-foreground">Sprint</label>
+          <label className="text-sm font-medium text-foreground">Appetite</label>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" className="h-9 gap-1 px-3">
-                {sprintWeeks} week{sprintWeeks > 1 ? 's' : ''}
+                {appetite} week{appetite > 1 ? 's' : ''}
                 <ChevronDown className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="start">
-              {SPRINT_OPTIONS.map(weeks => <DropdownMenuItem key={weeks} onClick={() => setSprintWeeks(weeks)} className={sprintWeeks === weeks ? 'bg-accent' : ''}>
+              {APPETITE_OPTIONS.map(weeks => <DropdownMenuItem key={weeks} onClick={() => setAppetite(weeks)} className={appetite === weeks ? 'bg-accent' : ''}>
                   {weeks} week{weeks > 1 ? 's' : ''}
                 </DropdownMenuItem>)}
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
-
-        {/* Capacity indicator */}
-        <span className="text-sm text-muted-foreground pb-2">
-          {summary.sprintCapacity} pts/sprint
-        </span>
       </div>
 
       {/* Main Scrolling Area */}
@@ -321,31 +327,42 @@ const Index = () => {
       <footer className="sticky bottom-0 z-10 px-6 py-3 bg-card border-t border-border">
         <div className="flex items-center justify-between gap-4">
           {/* Journey Size Scale - Left */}
-          <JourneySizeScale currentSize={summary.journeySize} totalPoints={summary.totalPoints} sprintCapacity={summary.sprintCapacity} />
+          <JourneySizeScale 
+            currentSize={summary.journeySize} 
+            totalDevDays={summary.totalDevDays} 
+            calendarWeeks={summary.calendarWeeks}
+            appetite={appetite} 
+          />
           
-          {/* Sprint Capacity Bar - Center */}
-          <SprintCapacityBar totalPoints={summary.totalPoints} sprintCapacity={summary.sprintCapacity} teamSize={teamSize} sprintWeeks={sprintWeeks} greenPoints={summary.greenPoints} />
+          {/* Appetite Bar - Center */}
+          <AppetiteBar 
+            totalDevDays={summary.totalDevDays} 
+            calendarWeeks={summary.calendarWeeks}
+            appetite={appetite} 
+            teamSize={teamSize} 
+            greenDevDays={summary.greenDevDays} 
+          />
           
           {/* Release Colour Totals */}
           <div className="flex items-center gap-3 text-sm">
-            {summary.greenPoints > 0 && <span className="flex items-center gap-1">
+            {summary.greenDevDays > 0 && <span className="flex items-center gap-1">
                 <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
-                <span className="font-medium">{summary.greenPoints}</span>
+                <span className="font-medium">{summary.greenDevDays}d</span>
               </span>}
-            {summary.amberPoints > 0 && <span className="flex items-center gap-1">
+            {summary.amberDevDays > 0 && <span className="flex items-center gap-1">
                 <span className="w-2.5 h-2.5 rounded-full bg-amber-500" />
-                <span className="font-medium">{summary.amberPoints}</span>
+                <span className="font-medium">{summary.amberDevDays}d</span>
               </span>}
-            {summary.purplePoints > 0 && <span className="flex items-center gap-1">
+            {summary.purpleDevDays > 0 && <span className="flex items-center gap-1">
                 <span className="w-2.5 h-2.5 rounded-full bg-violet-500" />
-                <span className="font-medium">{summary.purplePoints}</span>
+                <span className="font-medium">{summary.purpleDevDays}d</span>
               </span>}
-            {summary.unassignedPoints > 0 && <span className="flex items-center gap-1">
+            {summary.unassignedDevDays > 0 && <span className="flex items-center gap-1">
                 <span className="w-2.5 h-2.5 rounded-full bg-foreground/20 border border-foreground/40" />
-                <span className="text-foreground/60">{summary.unassignedPoints}</span>
+                <span className="text-foreground/60">{summary.unassignedDevDays}d</span>
               </span>}
             <span className="text-foreground/40">·</span>
-            <span className="font-medium text-foreground">{summary.totalPoints} pts</span>
+            <span className="font-medium text-foreground">{summary.totalDevDays} dev-days</span>
             <span className="text-foreground/40">·</span>
             <span className="font-medium text-primary">{summary.timeEstimate}</span>
           </div>
@@ -353,4 +370,5 @@ const Index = () => {
       </footer>
     </div>;
 };
+
 export default Index;

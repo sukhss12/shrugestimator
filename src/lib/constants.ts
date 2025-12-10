@@ -1,21 +1,23 @@
 import type { TShirtSize } from '@/types';
 
-export const SIZE_POINTS: Record<TShirtSize, number> = {
-  XS: 1,
-  S: 2,
-  M: 3,
+export const SIZE_DAYS: Record<TShirtSize, number> = {
+  XS: 0.5,
+  S: 1,
+  M: 2,
   L: 5,
-  XL: 8,
+  XL: 10,
   NA: 0,
 };
 
 export const SIZE_LABELS: Record<TShirtSize, string> = {
-  XS: 'Hours',
-  S: '½–1 day',
-  M: '1–2 days',
-  L: '3–5 days',
-  XL: '1 week+',
+  XS: 'Few hours',
+  S: '1 day',
+  M: '2 days',
+  L: '1 week',
+  XL: '2 weeks',
   NA: 'N/A',
 };
 
-export const POINTS_PER_DEV_DAY = 5;
+export const WORKING_DAYS_PER_WEEK = 5;
+
+export const APPETITE_OPTIONS = [2, 4, 6, 8, 12] as const;

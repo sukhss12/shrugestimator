@@ -20,7 +20,7 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { TShirtSize, ReleaseColour } from '@/types';
-import { SIZE_POINTS } from '@/lib/constants';
+import { SIZE_DAYS } from '@/lib/constants';
 
 interface FeatureEstimates {
   fe: TShirtSize;
@@ -50,10 +50,10 @@ interface StageColumnProps {
   isDragging?: boolean;
 }
 
-const calculatePoints = (estimates?: FeatureEstimates): number | undefined => {
+const calculateDays = (estimates?: FeatureEstimates): number | undefined => {
   if (!estimates) return undefined;
-  const total = SIZE_POINTS[estimates.fe] + SIZE_POINTS[estimates.be] + 
-                SIZE_POINTS[estimates.db] + SIZE_POINTS[estimates.int];
+  const total = SIZE_DAYS[estimates.fe] + SIZE_DAYS[estimates.be] + 
+                SIZE_DAYS[estimates.db] + SIZE_DAYS[estimates.int];
   return total > 0 ? total : undefined;
 };
 
@@ -223,7 +223,7 @@ export const StageColumn = ({
                 <FeatureCard
                   key={feature.id}
                   name={feature.name}
-                  points={calculatePoints(feature.estimates)}
+                  devDays={calculateDays(feature.estimates)}
                   selected={feature.selected}
                   colour={feature.colour}
                   onToggle={() => handleToggleFeature(feature.id)}

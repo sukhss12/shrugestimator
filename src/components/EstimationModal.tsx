@@ -8,7 +8,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { TShirtSize } from '@/types';
-import { SIZE_POINTS, SIZE_LABELS } from '@/lib/constants';
+import { SIZE_DAYS, SIZE_LABELS } from '@/lib/constants';
 
 const SIZES: TShirtSize[] = ['XS', 'S', 'M', 'L', 'XL', 'NA'];
 const DIMENSIONS = [
@@ -64,8 +64,8 @@ export const EstimationModal = ({
     setEstimates(prev => ({ ...prev, [dimension]: size }));
   };
 
-  const totalPoints = Object.values(estimates).reduce(
-    (sum, size) => sum + SIZE_POINTS[size],
+  const totalDevDays = Object.values(estimates).reduce(
+    (sum, size) => sum + SIZE_DAYS[size],
     0
   );
 
@@ -132,7 +132,7 @@ export const EstimationModal = ({
         {/* Footer */}
         <div className="flex items-center justify-between p-4 border-t border-border bg-muted">
           <span className="text-sm font-medium">
-            Total: <span className="text-primary">{totalPoints} points</span>
+            Total: <span className="text-primary">{totalDevDays} dev-days</span>
           </span>
           <div className="flex gap-2">
             <Button variant="ghost" onClick={handleCancel}>

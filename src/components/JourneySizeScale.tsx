@@ -6,31 +6,38 @@ import {
 
 interface JourneySizeScaleProps {
   currentSize: string;
-  totalPoints: number;
-  sprintCapacity: number;
+  totalDevDays: number;
+  calendarWeeks: number;
+  appetite: number;
 }
 
-const getSizes = (sprintCapacity: number) => [
-  { size: 'XS', range: '1-10', tooltip: '<10% of sprint', sprintContext: 'fits easily' },
-  { size: 'S', range: '11-25', tooltip: '~¼ sprint', sprintContext: 'fits easily' },
-  { size: 'M', range: '26-50', tooltip: '~½ sprint', sprintContext: 'good fit' },
-  { size: 'L', range: '51-100', tooltip: 'Full sprint', sprintContext: 'tight fit' },
-  { size: 'XL', range: '100+', tooltip: 'Multi-sprint', sprintContext: 'split it' },
+const SIZES = [
+  { size: 'XS', range: '< 1 wk', tooltip: 'Quick win' },
+  { size: 'S', range: '1-2 wks', tooltip: 'A couple of weeks' },
+  { size: 'M', range: '2-4 wks', tooltip: 'A month-ish' },
+  { size: 'L', range: '4-6 wks', tooltip: 'A shape-up cycle' },
+  { size: 'XL', range: '6+ wks', tooltip: 'Epic territory' },
 ];
 
-export const JourneySizeScale = ({ currentSize, totalPoints, sprintCapacity }: JourneySizeScaleProps) => {
-  const sizes = getSizes(sprintCapacity);
-  const capacityPercent = sprintCapacity > 0 ? Math.round((totalPoints / sprintCapacity) * 100) : 0;
-  const isOverCapacity = totalPoints > sprintCapacity;
+export const JourneySizeScale = ({ currentSize, totalDevDays, calendarWeeks, appetite }: JourneySizeScaleProps) => {
+  const appetitePercent = appetite > 0 ? Math.round((calendarWeeks / appetite) * 100) : 0;
+  const isOverAppetite = calendarWeeks > appetite;
+
+  // Format weeks display
+  const formatWeeks = (weeks: number) => {
+    if (weeks === 0) return '0 wks';
+    const rounded = Math.round(weeks * 2) / 2; // Round to nearest 0.5
+    return `~${rounded} wk${rounded !== 1 ? 's' : ''}`;
+  };
 
   return (
     <div className="flex flex-col gap-1">
       <div className="flex items-center gap-1">
         <span className="text-xs text-foreground/60 mr-2 hidden sm:inline">Journey:</span>
         <div className="flex gap-1">
-          {sizes.map(({ size, range, tooltip, sprintContext }) => {
+          {SIZES.map(({ size, range, tooltip }) => {
             const isActive = size === currentSize;
-            const showWarning = isActive && isOverCapacity;
+            const showWarning = isActive && isOverAppetite;
             return (
               <Tooltip key={size}>
                 <TooltipTrigger asChild>
@@ -50,15 +57,14 @@ export const JourneySizeScale = ({ currentSize, totalPoints, sprintCapacity }: J
                       {size}
                     </span>
                     <span className={`text-[10px] ${isActive ? (showWarning ? 'text-white/80' : 'text-primary-foreground/80') : 'text-foreground/50'}`}>
-                      {isActive ? `${totalPoints}` : range}
+                      {isActive ? formatWeeks(calendarWeeks) : range}
                     </span>
                   </div>
                 </TooltipTrigger>
                 <TooltipContent side="top" className="text-xs">
                   <div className="text-center">
-                    <div className="font-medium">{size}: {range} pts</div>
+                    <div className="font-medium">{size}: {range}</div>
                     <div className="text-foreground/70">{tooltip}</div>
-                    <div className="text-foreground/50 text-[10px]">{sprintContext}</div>
                   </div>
                 </TooltipContent>
               </Tooltip>
@@ -66,9 +72,9 @@ export const JourneySizeScale = ({ currentSize, totalPoints, sprintCapacity }: J
           })}
         </div>
       </div>
-      {totalPoints > 0 && (
-        <span className={`text-[10px] ${isOverCapacity ? 'text-red-500' : 'text-foreground/60'}`}>
-          {capacityPercent}% of sprint capacity
+      {totalDevDays > 0 && (
+        <span className={`text-[10px] ${isOverAppetite ? 'text-red-500' : 'text-foreground/60'}`}>
+          {appetitePercent}% of {appetite}-week appetite
         </span>
       )}
     </div>

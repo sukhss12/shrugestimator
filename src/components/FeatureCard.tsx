@@ -14,7 +14,7 @@ import { ReleaseColour } from '@/types';
 
 interface FeatureCardProps {
   name: string;
-  points?: number;
+  devDays?: number;
   selected?: boolean;
   colour?: ReleaseColour;
   onToggle?: () => void;
@@ -37,7 +37,7 @@ const getColourClasses = (colour: ReleaseColour) => {
 
 export const FeatureCard = ({
   name,
-  points,
+  devDays,
   selected = true,
   colour = null,
   onToggle,
@@ -45,7 +45,7 @@ export const FeatureCard = ({
   onDelete,
   onColourChange,
 }: FeatureCardProps) => {
-  const hasEstimates = points !== undefined && points > 0;
+  const hasEstimates = devDays !== undefined && devDays > 0;
   const colourClasses = getColourClasses(colour);
 
   return (
@@ -69,7 +69,7 @@ export const FeatureCard = ({
         }
       }}
     >
-      {/* Top Row: Checkbox + Name + Points + Actions */}
+      {/* Top Row: Checkbox + Name + Days + Actions */}
       <div className="flex items-center gap-3">
         {/* Checkbox */}
         <div onClick={(e) => e.stopPropagation()}>
@@ -85,7 +85,7 @@ export const FeatureCard = ({
           {name}
         </span>
 
-        {/* Points - Subtle Text */}
+        {/* Dev Days - Subtle Text */}
         <span
           className={`
             text-xs tabular-nums
@@ -95,7 +95,7 @@ export const FeatureCard = ({
             }
           `}
         >
-          {hasEstimates ? `${points} pts` : '—'}
+          {hasEstimates ? `${devDays} days` : '—'}
         </span>
 
         {/* Delete Button - appears on hover */}
