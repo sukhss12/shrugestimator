@@ -1,8 +1,23 @@
 import { useState, useMemo, useEffect } from 'react';
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent,
+} from '@dnd-kit/core';
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  horizontalListSortingStrategy,
+} from '@dnd-kit/sortable';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Minus, Plus } from 'lucide-react';
-import { StageColumn } from '@/components/StageColumn';
+import { SortableStageColumn } from '@/components/SortableStageColumn';
 import { AddStageButton } from '@/components/AddStageButton';
 import { TShirtSize } from '@/types';
 import { SIZE_POINTS, POINTS_PER_DEV_DAY } from '@/lib/constants';
@@ -79,6 +94,17 @@ const Index = () => {
   const [teamSize, setTeamSize] = useState(2);
   const [stages, setStages] = useState<Stage[]>([]);
   const [newStageId, setNewStageId] = useState<string | null>(null);
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8,
+      },
+    }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
 
   // Load from localStorage on mount
   useEffect(() => {
@@ -175,6 +201,18 @@ const Index = () => {
     setStages(stages.filter(s => s.id !== stageId));
   };
 
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+
+    if (over && active.id !== over.id) {
+      setStages((items) => {
+        const oldIndex = items.findIndex((item) => item.id === active.id);
+        const newIndex = items.findIndex((item) => item.id === over.id);
+        return arrayMove(items, oldIndex, newIndex);
+      });
+    }
+  };
+
   // Don't render until loaded to prevent flash
   if (!isLoaded) {
     return (
@@ -230,27 +268,33 @@ const Index = () => {
           backgroundSize: '24px 24px',
         }}
       >
-        <div className="flex gap-4 h-full items-start">
-          {stages.map((stage) => (
-            <div
-              key={stage.id}
-              className="animate-fade-in"
-              style={{ animationDuration: '150ms' }}
-            >
-              <StageColumn
-                id={stage.id}
-                name={stage.name}
-                features={stage.features}
-                onNameChange={(name) => handleStageName(stage.id, name)}
-                onFeaturesChange={(features) => handleStageFeatures(stage.id, features)}
-                onDelete={() => handleDeleteStage(stage.id)}
-                canDelete={stages.length > 1}
-                autoFocus={stage.id === newStageId}
-              />
+        <DndContext
+          sensors={sensors}
+          collisionDetection={closestCenter}
+          onDragEnd={handleDragEnd}
+        >
+          <SortableContext
+            items={stages.map(s => s.id)}
+            strategy={horizontalListSortingStrategy}
+          >
+            <div className="flex gap-4 h-full items-start">
+              {stages.map((stage) => (
+                <SortableStageColumn
+                  key={stage.id}
+                  id={stage.id}
+                  name={stage.name}
+                  features={stage.features}
+                  onNameChange={(name) => handleStageName(stage.id, name)}
+                  onFeaturesChange={(features) => handleStageFeatures(stage.id, features)}
+                  onDelete={() => handleDeleteStage(stage.id)}
+                  canDelete={stages.length > 1}
+                  autoFocus={stage.id === newStageId}
+                />
+              ))}
+              <AddStageButton onClick={handleAddStage} />
             </div>
-          ))}
-          <AddStageButton onClick={handleAddStage} />
-        </div>
+          </SortableContext>
+        </DndContext>
       </main>
 
       {/* Bottom Bar - Sticky */}
