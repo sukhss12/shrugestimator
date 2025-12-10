@@ -7,7 +7,7 @@ import { Minus, Plus, ChevronDown } from 'lucide-react';
 import { SortableStageColumn } from '@/components/SortableStageColumn';
 import { AddStageButton } from '@/components/AddStageButton';
 import { JourneySizeScale } from '@/components/JourneySizeScale';
-import { AppetiteBar } from '@/components/AppetiteBar';
+import { SummaryBar } from '@/components/SummaryBar';
 import { Logo } from '@/components/Logo';
 import { TShirtSize, ReleaseColour } from '@/types';
 import { SIZE_DAYS, WORKING_DAYS_PER_WEEK, APPETITE_OPTIONS, getJourneySize } from '@/lib/constants';
@@ -315,46 +315,21 @@ const Index = () => {
       {/* Bottom Bar - Sticky */}
       <footer className="sticky bottom-0 z-10 px-6 py-3 bg-card border-t border-border">
         <div className="flex items-center justify-between gap-4">
-          {/* Journey Size Scale - Left */}
-          <JourneySizeScale 
-            currentSize={summary.journeySize} 
-            totalDevDays={summary.totalDevDays} 
-            calendarWeeks={summary.calendarWeeks}
-            appetite={appetite} 
-          />
+          {/* Journey Size Scale - Left (reference only) */}
+          <JourneySizeScale currentSize={summary.journeySize} />
           
-          {/* Appetite Bar - Center */}
-          <AppetiteBar 
-            totalDevDays={summary.totalDevDays} 
+          {/* Summary - Right (all metrics) */}
+          <SummaryBar 
+            totalDevDays={summary.totalDevDays}
             calendarWeeks={summary.calendarWeeks}
-            appetite={appetite} 
-            teamSize={teamSize} 
-            greenDevDays={summary.greenDevDays} 
+            journeySize={summary.journeySize}
+            appetite={appetite}
+            teamSize={teamSize}
+            greenDevDays={summary.greenDevDays}
+            amberDevDays={summary.amberDevDays}
+            purpleDevDays={summary.purpleDevDays}
+            unassignedDevDays={summary.unassignedDevDays}
           />
-          
-          {/* Release Colour Totals */}
-          <div className="flex items-center gap-3 text-sm">
-            {summary.greenDevDays > 0 && <span className="flex items-center gap-1">
-                <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
-                <span className="font-medium">{summary.greenDevDays}d</span>
-              </span>}
-            {summary.amberDevDays > 0 && <span className="flex items-center gap-1">
-                <span className="w-2.5 h-2.5 rounded-full bg-amber-500" />
-                <span className="font-medium">{summary.amberDevDays}d</span>
-              </span>}
-            {summary.purpleDevDays > 0 && <span className="flex items-center gap-1">
-                <span className="w-2.5 h-2.5 rounded-full bg-violet-500" />
-                <span className="font-medium">{summary.purpleDevDays}d</span>
-              </span>}
-            {summary.unassignedDevDays > 0 && <span className="flex items-center gap-1">
-                <span className="w-2.5 h-2.5 rounded-full bg-foreground/20 border border-foreground/40" />
-                <span className="text-foreground/60">{summary.unassignedDevDays}d</span>
-              </span>}
-            <span className="text-foreground/40">·</span>
-            <span className="font-medium text-foreground">{summary.totalDevDays} dev-days</span>
-            <span className="text-foreground/40">·</span>
-            <span className="font-medium text-primary">{summary.timeEstimate}</span>
-          </div>
         </div>
       </footer>
     </div>;
