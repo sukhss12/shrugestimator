@@ -50,7 +50,7 @@ export const HeroSection = () => {
               </p>
 
               <p>
-                Map your journey. Size your features. See if your grand vision actually fits your appetite.{' '}
+                Map your journey. Size your features. See if your grand vision actually fits your scope.{' '}
                 <span className="text-muted-foreground/70">Spoiler:</span>{' '}
                 <span className="text-foreground font-medium">it probably won't.</span>{' '}
                 That's what the priorities are for:

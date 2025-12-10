@@ -9,7 +9,7 @@ interface SummaryBarProps {
   totalDevDays: number;
   calendarWeeks: number;
   journeySize: string;
-  appetite: number;
+  scope: number;
   teamSize: number;
   greenDevDays: number;
   amberDevDays: number;
@@ -21,28 +21,28 @@ export const SummaryBar = ({
   totalDevDays,
   calendarWeeks,
   journeySize,
-  appetite,
+  scope,
   teamSize,
   greenDevDays,
   amberDevDays,
   purpleDevDays,
   unassignedDevDays,
 }: SummaryBarProps) => {
-  const appetitePercent = appetite > 0 ? Math.round((calendarWeeks / appetite) * 100) : 0;
-  const isOverAppetite = calendarWeeks > appetite;
-  const weeksOver = Math.round((calendarWeeks - appetite) * 2) / 2;
+  const scopePercent = scope > 0 ? Math.round((calendarWeeks / scope) * 100) : 0;
+  const isOverScope = calendarWeeks > scope;
+  const weeksOver = Math.round((calendarWeeks - scope) * 2) / 2;
   
   const formatWeeks = (weeks: number) => {
     return Math.round(weeks * 2) / 2;
   };
 
   const getBarColor = () => {
-    if (appetitePercent <= 80) return 'bg-emerald-500';
-    if (appetitePercent <= 100) return 'bg-amber-500';
+    if (scopePercent <= 80) return 'bg-emerald-500';
+    if (scopePercent <= 100) return 'bg-amber-500';
     return 'bg-red-500';
   };
 
-  const fillWidth = Math.min(appetitePercent, 100);
+  const fillWidth = Math.min(scopePercent, 100);
   const hasPriorityBreakdown = greenDevDays > 0 || amberDevDays > 0 || purpleDevDays > 0;
 
   return (
@@ -99,7 +99,7 @@ export const SummaryBar = ({
             <span className="font-medium">~{formatWeeks(calendarWeeks)} wks</span>
             <span className={`
               text-xs font-semibold px-1.5 py-0.5 rounded
-              ${isOverAppetite 
+              ${isOverScope 
                 ? 'bg-destructive/20 text-destructive' 
                 : 'bg-emerald-500/20 text-emerald-500'
               }
@@ -115,18 +115,18 @@ export const SummaryBar = ({
 
       <span className="text-foreground/30">·</span>
 
-      {/* Appetite check */}
+      {/* Scope check */}
       <Tooltip>
         <TooltipTrigger asChild>
           <div className="flex items-center gap-2 cursor-default">
-            {isOverAppetite ? (
+            {isOverScope ? (
               <span className="text-destructive flex items-center gap-1">
                 <AlertTriangle className="h-3.5 w-3.5" />
-                <span>{appetitePercent}% — descope {weeksOver} wks</span>
+                <span>{scopePercent}% — descope {weeksOver} wks</span>
               </span>
             ) : (
               <>
-                <span className="text-foreground/70">{appetitePercent}%</span>
+                <span className="text-foreground/70">{scopePercent}%</span>
                 <div className="w-12 h-1.5 bg-muted rounded-full overflow-hidden">
                   <div 
                     className={`h-full ${getBarColor()} transition-all duration-300`}
@@ -139,8 +139,8 @@ export const SummaryBar = ({
         </TooltipTrigger>
         <TooltipContent side="top" className="text-xs">
           <div className="text-center">
-            <div className="font-medium">Appetite: {appetite} weeks</div>
-            {isOverAppetite && (
+            <div className="font-medium">Scope: {scope} weeks</div>
+            {isOverScope && (
               <div className="text-destructive">Descope {weeksOver} weeks to fit</div>
             )}
           </div>
