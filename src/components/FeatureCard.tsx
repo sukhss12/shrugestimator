@@ -28,11 +28,19 @@ export const FeatureCard = ({
       className={`
         group relative flex items-center gap-3 p-3 
         bg-background border border-border rounded-lg
-        cursor-pointer transition-all duration-200
+        cursor-pointer transition-all duration-150
         hover:shadow-md hover:-translate-y-0.5 hover:border-primary/30
+        focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none
         ${selected ? 'opacity-100' : 'opacity-50'}
       `}
       onClick={onClick}
+      tabIndex={0}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          onClick?.();
+        }
+      }}
     >
       {/* Checkbox */}
       <div onClick={(e) => e.stopPropagation()}>
