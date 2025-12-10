@@ -308,28 +308,27 @@ const Index = () => {
             </div>
 
             {/* Row 3: Summary */}
-            <div className="flex items-center justify-between gap-2 pt-2 border-t border-border">
-              <div className="flex items-center gap-3">
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <div className="text-sm">
-                      <span className="font-medium">{summary.totalDevDays}</span>
-                      <span className="text-foreground/60 ml-1">d</span>
-                    </div>
-                  </TooltipTrigger>
-                  <TooltipContent side="bottom" className="text-xs">
-                    <div className="space-y-1">
-                      {summary.greenDevDays > 0 && <div className="flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-green-500" /> Now: {summary.greenDevDays}d</div>}
-                      {summary.amberDevDays > 0 && <div className="flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-amber-500" /> Next: {summary.amberDevDays}d</div>}
-                      {summary.purpleDevDays > 0 && <div className="flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-purple-500" /> Later: {summary.purpleDevDays}d</div>}
-                      {summary.unassignedDevDays > 0 && <div className="flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-muted" /> Unassigned: {summary.unassignedDevDays}d</div>}
-                    </div>
-                  </TooltipContent>
-                </Tooltip>
-                <div className="text-sm text-foreground/70">{summary.timeEstimate}</div>
-              </div>
-              <div className="flex items-center gap-2">
-                <JourneySizeScale currentSize={summary.journeySize} />
+            <div className="flex flex-col gap-2 pt-2 border-t border-border">
+              <div className="flex items-center justify-between gap-2">
+                <div className="flex items-center gap-3">
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <div className="text-sm">
+                        <span className="font-medium">{summary.totalDevDays}</span>
+                        <span className="text-foreground/60 ml-1">d</span>
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent side="bottom" className="text-xs">
+                      <div className="space-y-1">
+                        {summary.greenDevDays > 0 && <div className="flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-green-500" /> Now: {summary.greenDevDays}d</div>}
+                        {summary.amberDevDays > 0 && <div className="flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-amber-500" /> Next: {summary.amberDevDays}d</div>}
+                        {summary.purpleDevDays > 0 && <div className="flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-purple-500" /> Later: {summary.purpleDevDays}d</div>}
+                        {summary.unassignedDevDays > 0 && <div className="flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-muted" /> Unassigned: {summary.unassignedDevDays}d</div>}
+                      </div>
+                    </TooltipContent>
+                  </Tooltip>
+                  <div className="text-sm text-foreground/70">{summary.timeEstimate}</div>
+                </div>
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <div className="flex items-center gap-1.5">
@@ -353,6 +352,10 @@ const Index = () => {
                     }
                   </TooltipContent>
                 </Tooltip>
+              </div>
+              {/* Journey Size on its own row */}
+              <div className="flex justify-center">
+                <JourneySizeScale currentSize={summary.journeySize} compact />
               </div>
             </div>
           </div>
