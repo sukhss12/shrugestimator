@@ -529,6 +529,11 @@ const Index = () => {
             </SortableContext>
           </DndContext>
         </main>
+
+        {/* Footer */}
+        <footer className="py-6 text-center">
+          <p className="text-xs text-muted-foreground/50">This app is free to use, forever, I guess.</p>
+        </footer>
       </div>
     </div>;
 };
