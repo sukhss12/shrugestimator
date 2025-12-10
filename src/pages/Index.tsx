@@ -238,45 +238,6 @@ const Index = () => {
             <span className="text-xs text-foreground/60">Product estimation, roughly</span>
           </div>
         </div>
-        
-        <div className="flex items-center gap-4">
-          {/* Team Size */}
-          <div className="flex items-center gap-2">
-            <span className="text-sm text-foreground/70">Team:</span>
-            <div className="flex items-center gap-1">
-              <Button variant="outline" size="icon" className="h-7 w-7 border-foreground/30 text-foreground hover:bg-foreground/10 focus-visible:ring-2 focus-visible:ring-ring" onClick={handleDecrement} disabled={teamSize <= 1}>
-                <Minus className="h-3 w-3" />
-              </Button>
-              <span className="w-6 text-center text-sm font-medium text-foreground">{teamSize}</span>
-              <Button variant="outline" size="icon" className="h-7 w-7 border-foreground/30 text-foreground hover:bg-foreground/10 focus-visible:ring-2 focus-visible:ring-ring" onClick={handleIncrement} disabled={teamSize >= 10}>
-                <Plus className="h-3 w-3" />
-              </Button>
-            </div>
-          </div>
-
-          {/* Sprint Length */}
-          <div className="flex items-center gap-2">
-            <span className="text-sm text-foreground/70">Sprint:</span>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="outline" size="sm" className="h-7 gap-1 px-2 border-foreground/30 text-foreground hover:bg-foreground/10">
-                  {sprintWeeks} wk{sprintWeeks > 1 ? 's' : ''}
-                  <ChevronDown className="h-3 w-3" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="bg-card border-border">
-                {SPRINT_OPTIONS.map(weeks => <DropdownMenuItem key={weeks} onClick={() => setSprintWeeks(weeks)} className={sprintWeeks === weeks ? 'bg-accent' : ''}>
-                    {weeks} week{weeks > 1 ? 's' : ''}
-                  </DropdownMenuItem>)}
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
-
-          {/* Capacity indicator */}
-          <span className="text-xs text-foreground/50 hidden lg:inline">
-            {summary.sprintCapacity} pts/sprint
-          </span>
-        </div>
       </header>
 
       {/* Hero Intro */}
@@ -293,16 +254,55 @@ const Index = () => {
           <p className="text-foreground/60 text-sm">
             Will your estimates be accurate? <span className="font-mono">¯\_(ツ)_/¯</span>
           </p>
-          
         </div>
       </div>
 
-      {/* Journey Title */}
-      <div className="px-8 pt-6 pb-4">
-        <label className="text-sm font-medium text-foreground mb-2 block">
-          Journey Name
-        </label>
-        <Input type="text" value={journeyName} onChange={e => setJourneyName(e.target.value)} placeholder="e.g. Business Review Flow" className="max-w-md text-lg" />
+      {/* Journey Settings */}
+      <div className="px-8 pt-6 pb-4 flex flex-wrap items-end gap-6">
+        {/* Journey Name */}
+        <div className="flex-1 min-w-[200px] max-w-md">
+          <label className="text-sm font-medium text-foreground mb-2 block">
+            Journey Name
+          </label>
+          <Input type="text" value={journeyName} onChange={e => setJourneyName(e.target.value)} placeholder="e.g. Business Review Flow" className="text-lg" />
+        </div>
+
+        {/* Team Size */}
+        <div className="flex flex-col gap-2">
+          <label className="text-sm font-medium text-foreground">Team</label>
+          <div className="flex items-center gap-1">
+            <Button variant="outline" size="icon" className="h-9 w-9" onClick={handleDecrement} disabled={teamSize <= 1}>
+              <Minus className="h-4 w-4" />
+            </Button>
+            <span className="w-8 text-center text-sm font-medium text-foreground">{teamSize}</span>
+            <Button variant="outline" size="icon" className="h-9 w-9" onClick={handleIncrement} disabled={teamSize >= 10}>
+              <Plus className="h-4 w-4" />
+            </Button>
+          </div>
+        </div>
+
+        {/* Sprint Length */}
+        <div className="flex flex-col gap-2">
+          <label className="text-sm font-medium text-foreground">Sprint</label>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" className="h-9 gap-1 px-3">
+                {sprintWeeks} week{sprintWeeks > 1 ? 's' : ''}
+                <ChevronDown className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="start">
+              {SPRINT_OPTIONS.map(weeks => <DropdownMenuItem key={weeks} onClick={() => setSprintWeeks(weeks)} className={sprintWeeks === weeks ? 'bg-accent' : ''}>
+                  {weeks} week{weeks > 1 ? 's' : ''}
+                </DropdownMenuItem>)}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+
+        {/* Capacity indicator */}
+        <span className="text-sm text-muted-foreground pb-2">
+          {summary.sprintCapacity} pts/sprint
+        </span>
       </div>
 
       {/* Main Scrolling Area */}
