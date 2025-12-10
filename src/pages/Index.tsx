@@ -111,7 +111,17 @@ const Index = () => {
     
     // Round up to nearest 0.5
     const roundedDays = Math.ceil(calendarDays * 2) / 2;
-    const timeEstimate = `${roundedDays} days`;
+    
+    let timeEstimate: string;
+    if (roundedDays === 0) {
+      timeEstimate = '0 days';
+    } else if (roundedDays < 5) {
+      timeEstimate = `~${roundedDays} days`;
+    } else {
+      // Convert to weeks, round up to nearest 0.5
+      const weeks = Math.ceil((roundedDays / 5) * 2) / 2;
+      timeEstimate = `~${weeks} weeks`;
+    }
 
     return { selectedCount, totalCount, totalPoints, timeEstimate };
   }, [stages, teamSize]);
@@ -236,6 +246,8 @@ const Index = () => {
             {summary.selectedCount} of {summary.totalCount} selected
             <span className="mx-2 text-muted-foreground">·</span>
             <span className="text-primary">{summary.totalPoints} pts</span>
+            <span className="mx-2 text-muted-foreground">·</span>
+            Team: {teamSize}
             <span className="mx-2 text-muted-foreground">·</span>
             {summary.timeEstimate}
           </span>
