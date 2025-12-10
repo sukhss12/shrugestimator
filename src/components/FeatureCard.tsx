@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Checkbox } from '@/components/ui/checkbox';
 import { ChevronRight, Trash2 } from 'lucide-react';
 import {
@@ -45,6 +46,7 @@ export const FeatureCard = ({
   onDelete,
   onColourChange,
 }: FeatureCardProps) => {
+  const [priorityOpen, setPriorityOpen] = useState(false);
   const hasEstimates = devDays !== undefined && devDays > 0;
   const colourClasses = getColourClasses(colour);
 
@@ -112,7 +114,7 @@ export const FeatureCard = ({
 
       {/* Bottom Row: Release Phase + Dev Days */}
       <div className="flex items-center justify-between pl-7">
-        <Popover>
+        <Popover open={priorityOpen} onOpenChange={setPriorityOpen}>
           <PopoverTrigger asChild>
             <button
               onClick={(e) => e.stopPropagation()}
@@ -136,6 +138,7 @@ export const FeatureCard = ({
                   onClick={(e) => {
                     e.stopPropagation();
                     onColourChange?.(option.value);
+                    setPriorityOpen(false);
                   }}
                   className={`
                     flex items-center gap-2 px-3 py-1.5 rounded text-sm transition-colors
