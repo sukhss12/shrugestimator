@@ -360,117 +360,172 @@ const Index = () => {
             </div>
           </div>
 
-          {/* Desktop: Single row layout */}
-          <div className="hidden sm:flex items-center gap-4">
-            {/* Journey Name */}
-            <div className="min-w-[140px] max-w-[200px]">
-              {isEditingName || !journeyName ? (
-                <Input 
-                  value={journeyName}
-                  onChange={e => setJourneyName(e.target.value)}
-                  onBlur={() => setIsEditingName(false)}
-                  onKeyDown={e => e.key === 'Enter' && setIsEditingName(false)}
-                  placeholder="Journey name..."
-                  autoFocus
-                  className="h-8 text-sm"
-                />
-              ) : (
-                <button 
-                  onClick={() => setIsEditingName(true)}
-                  className="flex items-center gap-1.5 text-sm font-medium text-foreground hover:text-foreground/80 transition-colors group"
-                >
-                  <span className="truncate max-w-[160px]">{journeyName}</span>
-                  <Pencil className="h-3 w-3 opacity-0 group-hover:opacity-60 transition-opacity flex-shrink-0" />
-                </button>
-              )}
-            </div>
+          {/* Desktop: Two row layout for medium, single row for large */}
+          <div className="hidden sm:block">
+            {/* Row 1: Settings */}
+            <div className="flex items-center gap-4 flex-wrap">
+              {/* Journey Name */}
+              <div className="min-w-[140px] max-w-[200px]">
+                {isEditingName || !journeyName ? (
+                  <Input 
+                    value={journeyName}
+                    onChange={e => setJourneyName(e.target.value)}
+                    onBlur={() => setIsEditingName(false)}
+                    onKeyDown={e => e.key === 'Enter' && setIsEditingName(false)}
+                    placeholder="Journey name..."
+                    autoFocus
+                    className="h-8 text-sm"
+                  />
+                ) : (
+                  <button 
+                    onClick={() => setIsEditingName(true)}
+                    className="flex items-center gap-1.5 text-sm font-medium text-foreground hover:text-foreground/80 transition-colors group"
+                  >
+                    <span className="truncate max-w-[160px]">{journeyName}</span>
+                    <Pencil className="h-3 w-3 opacity-0 group-hover:opacity-60 transition-opacity flex-shrink-0" />
+                  </button>
+                )}
+              </div>
 
-            <div className="w-px h-6 bg-border" />
+              <div className="w-px h-6 bg-border hidden lg:block" />
 
-            {/* Team Size */}
-            <div className="flex items-center gap-1.5">
-              <span className="text-xs text-foreground/60">Team Size</span>
-              <Button variant="outline" size="icon" className="h-7 w-7" onClick={handleDecrement} disabled={teamSize <= 1}>
-                <Minus className="h-3 w-3" />
-              </Button>
-              <span className="w-6 text-center text-sm font-medium">{teamSize}</span>
-              <Button variant="outline" size="icon" className="h-7 w-7" onClick={handleIncrement} disabled={teamSize >= 10}>
-                <Plus className="h-3 w-3" />
-              </Button>
-            </div>
+              {/* Team Size */}
+              <div className="flex items-center gap-1.5">
+                <span className="text-xs text-foreground/60 hidden lg:inline">Team Size</span>
+                <span className="text-xs text-foreground/60 lg:hidden">Team</span>
+                <Button variant="outline" size="icon" className="h-7 w-7" onClick={handleDecrement} disabled={teamSize <= 1}>
+                  <Minus className="h-3 w-3" />
+                </Button>
+                <span className="w-6 text-center text-sm font-medium">{teamSize}</span>
+                <Button variant="outline" size="icon" className="h-7 w-7" onClick={handleIncrement} disabled={teamSize >= 10}>
+                  <Plus className="h-3 w-3" />
+                </Button>
+              </div>
 
-            {/* Appetite */}
-            <div className="flex items-center gap-1.5">
-              <span className="text-xs text-foreground/60">Delivery Appetite</span>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="outline" className="h-7 gap-1 px-2 text-sm">
-                    {appetite} wks
-                    <ChevronDown className="h-3 w-3 opacity-50" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="bg-popover">
-                  {[1, 2, 3, 4, 6, 8, 10, 12].map((weeks) => (
-                    <DropdownMenuItem 
-                      key={weeks}
-                      onClick={() => setAppetite(weeks)}
-                      className={appetite === weeks ? 'bg-accent' : ''}
-                    >
-                      {weeks} week{weeks > 1 ? 's' : ''}
-                    </DropdownMenuItem>
-                  ))}
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
+              {/* Appetite */}
+              <div className="flex items-center gap-1.5">
+                <span className="text-xs text-foreground/60 hidden lg:inline">Delivery Appetite</span>
+                <span className="text-xs text-foreground/60 lg:hidden">Appetite</span>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="outline" className="h-7 gap-1 px-2 text-sm">
+                      {appetite} wks
+                      <ChevronDown className="h-3 w-3 opacity-50" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="bg-popover">
+                    {[1, 2, 3, 4, 6, 8, 10, 12].map((weeks) => (
+                      <DropdownMenuItem 
+                        key={weeks}
+                        onClick={() => setAppetite(weeks)}
+                        className={appetite === weeks ? 'bg-accent' : ''}
+                      >
+                        {weeks} week{weeks > 1 ? 's' : ''}
+                      </DropdownMenuItem>
+                    ))}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
 
-            <div className="w-px h-6 bg-border" />
+              <div className="w-px h-6 bg-border hidden xl:block" />
 
-            {/* Summary Section */}
-            <div className="flex items-center gap-3 ml-auto">
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <div className="text-sm">
-                    <span className="font-medium">{summary.totalDevDays}</span>
-                    <span className="text-foreground/60 ml-1">dev-days</span>
-                  </div>
-                </TooltipTrigger>
-                <TooltipContent side="bottom" className="text-xs">
-                  <div className="space-y-1">
-                    {summary.greenDevDays > 0 && <div className="flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-green-500" /> Now: {summary.greenDevDays}d</div>}
-                    {summary.amberDevDays > 0 && <div className="flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-amber-500" /> Next: {summary.amberDevDays}d</div>}
-                    {summary.purpleDevDays > 0 && <div className="flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-purple-500" /> Later: {summary.purpleDevDays}d</div>}
-                    {summary.unassignedDevDays > 0 && <div className="flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-muted" /> Unassigned: {summary.unassignedDevDays}d</div>}
-                  </div>
-                </TooltipContent>
-              </Tooltip>
-
-              <div className="text-sm text-foreground/70">{summary.timeEstimate}</div>
-
-              <JourneySizeScale currentSize={summary.journeySize} />
-
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <div className="flex items-center gap-1.5">
-                    <div className="w-16 h-1.5 bg-muted rounded-full overflow-hidden">
-                      <div 
-                        className={`h-full rounded-full transition-all ${
-                          summary.calendarWeeks > appetite ? 'bg-destructive' : 'bg-primary'
-                        }`}
-                        style={{ width: `${Math.min((summary.calendarWeeks / appetite) * 100, 100)}%` }}
-                      />
+              {/* Summary Section - inline on xl, below on smaller */}
+              <div className="hidden xl:flex items-center gap-3 ml-auto">
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <div className="text-sm">
+                      <span className="font-medium">{summary.totalDevDays}</span>
+                      <span className="text-foreground/60 ml-1">dev-days</span>
                     </div>
-                    {summary.calendarWeeks > appetite && (
-                      <span className="text-destructive text-xs font-medium">!</span>
-                    )}
-                  </div>
-                </TooltipTrigger>
-                <TooltipContent side="bottom" className="text-xs">
-                  {summary.calendarWeeks > appetite 
-                    ? `Over appetite by ${(summary.calendarWeeks - appetite).toFixed(1)} weeks`
-                    : `${Math.round((summary.calendarWeeks / appetite) * 100)}% of ${appetite} week appetite`
-                  }
-                </TooltipContent>
-              </Tooltip>
+                  </TooltipTrigger>
+                  <TooltipContent side="bottom" className="text-xs">
+                    <div className="space-y-1">
+                      {summary.greenDevDays > 0 && <div className="flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-green-500" /> Now: {summary.greenDevDays}d</div>}
+                      {summary.amberDevDays > 0 && <div className="flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-amber-500" /> Next: {summary.amberDevDays}d</div>}
+                      {summary.purpleDevDays > 0 && <div className="flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-purple-500" /> Later: {summary.purpleDevDays}d</div>}
+                      {summary.unassignedDevDays > 0 && <div className="flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-muted" /> Unassigned: {summary.unassignedDevDays}d</div>}
+                    </div>
+                  </TooltipContent>
+                </Tooltip>
+
+                <div className="text-sm text-foreground/70">{summary.timeEstimate}</div>
+
+                <JourneySizeScale currentSize={summary.journeySize} />
+
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <div className="flex items-center gap-1.5">
+                      <div className="w-16 h-1.5 bg-muted rounded-full overflow-hidden">
+                        <div 
+                          className={`h-full rounded-full transition-all ${
+                            summary.calendarWeeks > appetite ? 'bg-destructive' : 'bg-primary'
+                          }`}
+                          style={{ width: `${Math.min((summary.calendarWeeks / appetite) * 100, 100)}%` }}
+                        />
+                      </div>
+                      {summary.calendarWeeks > appetite && (
+                        <span className="text-destructive text-xs font-medium">!</span>
+                      )}
+                    </div>
+                  </TooltipTrigger>
+                  <TooltipContent side="bottom" className="text-xs">
+                    {summary.calendarWeeks > appetite 
+                      ? `Over appetite by ${(summary.calendarWeeks - appetite).toFixed(1)} weeks`
+                      : `${Math.round((summary.calendarWeeks / appetite) * 100)}% of ${appetite} week appetite`
+                    }
+                  </TooltipContent>
+                </Tooltip>
+              </div>
+            </div>
+
+            {/* Row 2: Summary (shown on sm/md/lg, hidden on xl) */}
+            <div className="flex xl:hidden items-center justify-between gap-3 pt-3 mt-3 border-t border-border">
+              <div className="flex items-center gap-3">
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <div className="text-sm">
+                      <span className="font-medium">{summary.totalDevDays}</span>
+                      <span className="text-foreground/60 ml-1">dev-days</span>
+                    </div>
+                  </TooltipTrigger>
+                  <TooltipContent side="bottom" className="text-xs">
+                    <div className="space-y-1">
+                      {summary.greenDevDays > 0 && <div className="flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-green-500" /> Now: {summary.greenDevDays}d</div>}
+                      {summary.amberDevDays > 0 && <div className="flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-amber-500" /> Next: {summary.amberDevDays}d</div>}
+                      {summary.purpleDevDays > 0 && <div className="flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-purple-500" /> Later: {summary.purpleDevDays}d</div>}
+                      {summary.unassignedDevDays > 0 && <div className="flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-muted" /> Unassigned: {summary.unassignedDevDays}d</div>}
+                    </div>
+                  </TooltipContent>
+                </Tooltip>
+                <div className="text-sm text-foreground/70">{summary.timeEstimate}</div>
+              </div>
+
+              <div className="flex items-center gap-3">
+                <JourneySizeScale currentSize={summary.journeySize} />
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <div className="flex items-center gap-1.5">
+                      <div className="w-16 h-1.5 bg-muted rounded-full overflow-hidden">
+                        <div 
+                          className={`h-full rounded-full transition-all ${
+                            summary.calendarWeeks > appetite ? 'bg-destructive' : 'bg-primary'
+                          }`}
+                          style={{ width: `${Math.min((summary.calendarWeeks / appetite) * 100, 100)}%` }}
+                        />
+                      </div>
+                      {summary.calendarWeeks > appetite && (
+                        <span className="text-destructive text-xs font-medium">!</span>
+                      )}
+                    </div>
+                  </TooltipTrigger>
+                  <TooltipContent side="bottom" className="text-xs">
+                    {summary.calendarWeeks > appetite 
+                      ? `Over appetite by ${(summary.calendarWeeks - appetite).toFixed(1)} weeks`
+                      : `${Math.round((summary.calendarWeeks / appetite) * 100)}% of ${appetite} week appetite`
+                    }
+                  </TooltipContent>
+                </Tooltip>
+              </div>
             </div>
           </div>
         </div>
