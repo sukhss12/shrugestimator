@@ -95,9 +95,13 @@ export const StageColumn = ({
     if (!editingFeature) return;
     const existingFeature = features.find(f => f.id === editingFeature.id);
     if (existingFeature) {
+      // Update existing feature
       onFeaturesChange(features.map(f => 
         f.id === editingFeature.id ? { ...f, name: featureName, estimates } : f
       ));
+    } else {
+      // Add new feature with the edited name and estimates
+      onFeaturesChange([...features, { ...editingFeature, name: featureName, estimates }]);
     }
     setEditingFeature(null);
   };
