@@ -1,9 +1,24 @@
 import { useState, useRef, useEffect } from 'react';
-import { GripVertical, Plus } from 'lucide-react';
+import { GripVertical, Plus, Trash2 } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { FeatureCard } from '@/components/FeatureCard';
 import { EstimationModal } from '@/components/EstimationModal';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 import { TShirtSize } from '@/types';
 import { SIZE_POINTS } from '@/lib/constants';
 
@@ -27,6 +42,8 @@ interface StageColumnProps {
   features: Feature[];
   onNameChange: (name: string) => void;
   onFeaturesChange: (features: Feature[]) => void;
+  onDelete?: () => void;
+  canDelete?: boolean;
   autoFocus?: boolean;
 }
 
@@ -43,11 +60,14 @@ export const StageColumn = ({
   features, 
   onNameChange, 
   onFeaturesChange,
+  onDelete,
+  canDelete = true,
   autoFocus = false,
 }: StageColumnProps) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [editingFeature, setEditingFeature] = useState<Feature | null>(null);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
   useEffect(() => {
     if (autoFocus && inputRef.current) {
@@ -67,9 +87,12 @@ export const StageColumn = ({
     setModalOpen(true);
   };
 
+  const handleDeleteFeature = (featureId: string) => {
+    onFeaturesChange(features.filter(f => f.id !== featureId));
+  };
+
   const handleSaveEstimates = (featureName: string, estimates: FeatureEstimates) => {
     if (!editingFeature) return;
-    // Check if feature already exists in list (editing existing)
     const existingFeature = features.find(f => f.id === editingFeature.id);
     if (existingFeature) {
       onFeaturesChange(features.map(f => 
@@ -81,7 +104,6 @@ export const StageColumn = ({
 
   const handleModalClose = (open: boolean) => {
     if (!open && editingFeature) {
-      // If closing modal for a new feature that doesn't exist yet, add it
       const existingFeature = features.find(f => f.id === editingFeature.id);
       if (!existingFeature) {
         onFeaturesChange([...features, editingFeature]);
@@ -98,14 +120,26 @@ export const StageColumn = ({
       estimates: undefined,
       selected: true,
     };
-    // Don't add to features yet - will be added on modal close/save
     setEditingFeature(newFeature);
     setModalOpen(true);
   };
 
+  const handleDeleteStage = () => {
+    if (features.length > 0) {
+      setDeleteDialogOpen(true);
+    } else {
+      onDelete?.();
+    }
+  };
+
+  const confirmDeleteStage = () => {
+    setDeleteDialogOpen(false);
+    onDelete?.();
+  };
+
   return (
     <>
-      <div className="flex flex-col w-[280px] min-h-[400px] h-fit bg-background border border-border rounded-lg shadow-sm shrink-0">
+      <div className="group/stage flex flex-col w-[280px] min-h-[400px] h-fit bg-background border border-border rounded-lg shadow-sm shrink-0">
         {/* Header */}
         <div className="flex items-center gap-2 px-3 py-3 border-b border-border">
           <GripVertical className="h-4 w-4 text-muted-foreground/50 cursor-grab" />
@@ -117,6 +151,34 @@ export const StageColumn = ({
             placeholder="Stage name"
             className="flex-1 border-none shadow-none bg-transparent font-semibold text-base placeholder:text-muted-foreground/60 focus-visible:ring-0 px-0 h-auto py-0"
           />
+          {canDelete && onDelete && (
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button
+                  onClick={handleDeleteStage}
+                  className="opacity-0 group-hover/stage:opacity-100 transition-opacity duration-150 p-1 text-muted-foreground hover:text-destructive focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded"
+                  aria-label="Delete stage"
+                >
+                  <Trash2 className="h-4 w-4" />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent side="top" className="text-xs">
+                Delete stage
+              </TooltipContent>
+            </Tooltip>
+          )}
+          {!canDelete && (
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <span className="p-1 text-muted-foreground/30 cursor-not-allowed">
+                  <Trash2 className="h-4 w-4" />
+                </span>
+              </TooltipTrigger>
+              <TooltipContent side="top" className="text-xs">
+                Add another stage before deleting this one
+              </TooltipContent>
+            </Tooltip>
+          )}
         </div>
 
         {/* Features Area */}
@@ -138,6 +200,7 @@ export const StageColumn = ({
                   selected={feature.selected}
                   onToggle={() => handleToggleFeature(feature.id)}
                   onClick={() => handleFeatureClick(feature)}
+                  onDelete={() => handleDeleteFeature(feature.id)}
                 />
               ))}
             </div>
@@ -166,6 +229,27 @@ export const StageColumn = ({
         initialEstimates={editingFeature?.estimates}
         onSave={handleSaveEstimates}
       />
+
+      {/* Delete Stage Confirmation */}
+      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete '{name}'?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This will delete the stage and its {features.length} feature{features.length !== 1 ? 's' : ''}. This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={confirmDeleteStage}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </>
   );
 };

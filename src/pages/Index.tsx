@@ -147,6 +147,10 @@ const Index = () => {
     ));
   };
 
+  const handleDeleteStage = (stageId: string) => {
+    setStages(stages.filter(s => s.id !== stageId));
+  };
+
   // Don't render until loaded to prevent flash
   if (!isLoaded) {
     return (
@@ -215,6 +219,8 @@ const Index = () => {
                 features={stage.features}
                 onNameChange={(name) => handleStageName(stage.id, name)}
                 onFeaturesChange={(features) => handleStageFeatures(stage.id, features)}
+                onDelete={() => handleDeleteStage(stage.id)}
+                canDelete={stages.length > 1}
                 autoFocus={stage.id === newStageId}
               />
             </div>

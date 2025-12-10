@@ -1,5 +1,5 @@
 import { Checkbox } from '@/components/ui/checkbox';
-import { ChevronRight } from 'lucide-react';
+import { ChevronRight, Trash2 } from 'lucide-react';
 import {
   Tooltip,
   TooltipContent,
@@ -12,6 +12,7 @@ interface FeatureCardProps {
   selected?: boolean;
   onToggle?: () => void;
   onClick?: () => void;
+  onDelete?: () => void;
 }
 
 export const FeatureCard = ({
@@ -20,6 +21,7 @@ export const FeatureCard = ({
   selected = true,
   onToggle,
   onClick,
+  onDelete,
 }: FeatureCardProps) => {
   const hasEstimates = points !== undefined && points > 0;
 
@@ -68,6 +70,20 @@ export const FeatureCard = ({
       >
         {hasEstimates ? `${points} pts` : '–'}
       </span>
+
+      {/* Delete Button - appears on hover */}
+      {onDelete && (
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            onDelete();
+          }}
+          className="opacity-0 group-hover:opacity-100 transition-opacity duration-150 p-1 -mr-1 text-muted-foreground hover:text-destructive focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded"
+          aria-label="Delete feature"
+        >
+          <Trash2 className="h-4 w-4" />
+        </button>
+      )}
 
       {/* Expand Icon with Tooltip */}
       <Tooltip>
