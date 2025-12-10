@@ -23,11 +23,11 @@ interface FeatureCardProps {
   onColourChange?: (colour: ReleaseColour) => void;
 }
 
-const COLOUR_OPTIONS: { value: ReleaseColour; label: string; bgClass: string; borderClass: string; glowClass: string }[] = [
-  { value: null, label: 'Unassigned', bgClass: 'bg-muted', borderClass: '', glowClass: '' },
-  { value: 'green', label: 'Now', bgClass: 'bg-emerald-500', borderClass: 'border-emerald-500/60', glowClass: 'shadow-[0_0_12px_rgba(16,185,129,0.4)]' },
-  { value: 'amber', label: 'Next', bgClass: 'bg-amber-500', borderClass: 'border-amber-500/60', glowClass: 'shadow-[0_0_12px_rgba(245,158,11,0.4)]' },
-  { value: 'purple', label: 'Later', bgClass: 'bg-violet-500', borderClass: 'border-violet-500/60', glowClass: 'shadow-[0_0_12px_rgba(139,92,246,0.4)]' },
+const COLOUR_OPTIONS: { value: ReleaseColour; label: string; bgClass: string; borderClass: string }[] = [
+  { value: null, label: 'Unassigned', bgClass: 'bg-muted', borderClass: 'border-l-muted-foreground/30' },
+  { value: 'green', label: 'Now', bgClass: 'bg-emerald-500', borderClass: 'border-l-emerald-500' },
+  { value: 'amber', label: 'Next', bgClass: 'bg-amber-500', borderClass: 'border-l-amber-500' },
+  { value: 'purple', label: 'Later', bgClass: 'bg-violet-500', borderClass: 'border-l-violet-500' },
 ];
 
 const getColourClasses = (colour: ReleaseColour) => {
@@ -51,15 +51,13 @@ export const FeatureCard = ({
   return (
     <div
       className={`
-        group relative flex items-center gap-3 p-3 
-        bg-card rounded-lg
+        group relative flex items-center gap-3 p-3 pl-0
+        bg-card rounded-lg border border-border
         cursor-pointer transition-all duration-200
         focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none
+        hover:shadow-md hover:-translate-y-0.5 hover:border-primary/30
         ${selected ? 'opacity-100' : 'opacity-50'}
-        ${colour 
-          ? `border ${colourClasses.borderClass} ${colourClasses.glowClass}` 
-          : 'border border-border hover:shadow-md hover:-translate-y-0.5 hover:border-primary/30'
-        }
+        border-l-4 ${colourClasses.borderClass}
       `}
       onClick={onClick}
       tabIndex={0}
@@ -70,16 +68,12 @@ export const FeatureCard = ({
         }
       }}
     >
-      {/* Colour Dot */}
+      {/* Left Border Color Picker */}
       <Popover>
         <PopoverTrigger asChild>
           <button
             onClick={(e) => e.stopPropagation()}
-            className={`
-              w-3 h-3 rounded-full shrink-0 transition-transform
-              hover:scale-125 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1
-              ${colour ? colourClasses.bgClass : 'bg-muted-foreground/20 border border-muted-foreground/40'}
-            `}
+            className="w-3 h-full absolute left-0 top-0 rounded-l-lg cursor-pointer hover:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             aria-label="Set release phase"
           />
         </PopoverTrigger>
@@ -115,7 +109,7 @@ export const FeatureCard = ({
       </Popover>
 
       {/* Checkbox */}
-      <div onClick={(e) => e.stopPropagation()}>
+      <div onClick={(e) => e.stopPropagation()} className="pl-3">
         <Checkbox
           checked={selected}
           onCheckedChange={onToggle}
@@ -128,17 +122,17 @@ export const FeatureCard = ({
         {name}
       </span>
 
-      {/* Points Badge */}
+      {/* Points - Subtle Text */}
       <span
         className={`
-          text-xs font-medium px-2 py-0.5 rounded-full
+          text-xs tabular-nums
           ${hasEstimates 
-            ? 'bg-primary/10 text-primary' 
-            : 'bg-muted text-muted-foreground'
+            ? 'text-muted-foreground' 
+            : 'text-muted-foreground/50'
           }
         `}
       >
-        {hasEstimates ? `${points} pts` : '–'}
+        {hasEstimates ? `${points} pts` : '—'}
       </span>
 
       {/* Delete Button - appears on hover */}
