@@ -40,15 +40,28 @@ export const HeroSection = () => {
                 This is for that.
               </p>
 
+              {/* Instructions */}
+              <div className="space-y-1">
+                <p className="font-medium text-foreground/80">Here's how it works:</p>
+                <ol className="list-decimal list-inside space-y-0.5 text-muted-foreground">
+                  <li>Map your journey into steps</li>
+                  <li>Add features to each step</li>
+                  <li>Size them with your team (S, M, L, XL)</li>
+                  <li>Set your priorities</li>
+                </ol>
+              </div>
+
               <p>
-                Map your journey. Size your features. See if your grand vision actually fits your scope.{' '}
-                <span className="text-muted-foreground/70">Spoiler:</span>{' '}
-                <span className="text-foreground font-medium">it probably won't.</span>{' '}
-                That's what the priorities are for:
+                We'll crunch the numbers and tell you if you're on track — or heading into{' '}
+                <span className="text-foreground font-medium">scope creep</span> territory. 🚨
+              </p>
+              <p className="text-muted-foreground/70">
+                Got room to spare? We'll let you know that too.
               </p>
 
               {/* Priority Legend */}
               <div className="space-y-1.5 py-2">
+                <p className="font-medium text-foreground/80">Prioritise ruthlessly:</p>
                 <div className="flex items-center gap-2">
                   <span className="w-2 h-2 rounded-full bg-emerald-500 flex-shrink-0" />
                   <span className="font-medium text-foreground/80">Now</span>
@@ -66,7 +79,9 @@ export const HeroSection = () => {
                 </div>
               </div>
 
-              <p className="text-muted-foreground/70">We calculate the effort for a single developer, and divide that by your team size. Get a rough shape before you've promised anything. Refine it properly once you're actually building.</p>
+              <p className="text-muted-foreground/70">
+                We estimate effort for a single developer, then divide by your team size. It's rough math for rough planning — refine it once you're actually building.
+              </p>
 
               {/* Closing line */}
               <div className="pt-2">
