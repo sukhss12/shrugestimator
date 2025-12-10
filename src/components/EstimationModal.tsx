@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { X } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -83,23 +82,13 @@ export const EstimationModal = ({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-[480px] p-0 gap-0">
         {/* Header */}
-        <DialogHeader className="p-4 pb-3 border-b border-border">
-          <div className="flex items-center gap-2">
-            <Input
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="Feature name"
-              className="flex-1 border-none shadow-none bg-transparent text-lg font-semibold placeholder:text-muted-foreground/60 focus-visible:ring-0 px-0 h-auto"
-            />
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-8 w-8 shrink-0"
-              onClick={handleCancel}
-            >
-              <X className="h-4 w-4" />
-            </Button>
-          </div>
+        <DialogHeader className="p-4 pb-3 border-b border-border pr-12">
+          <Input
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="Feature name"
+            className="border-none shadow-none bg-transparent text-lg font-semibold placeholder:text-muted-foreground/60 focus-visible:ring-0 px-0 h-auto"
+          />
           <DialogTitle className="sr-only">Estimate Feature</DialogTitle>
         </DialogHeader>
 
