@@ -16,7 +16,7 @@ import {
 } from '@dnd-kit/sortable';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Minus, Plus, ChevronDown, Pencil } from 'lucide-react';
+import { Minus, Plus, ChevronDown } from 'lucide-react';
 import { SortableStageColumn } from '@/components/SortableStageColumn';
 import { AddStageButton } from '@/components/AddStageButton';
 import { JourneySizeScale } from '@/components/JourneySizeScale';
@@ -335,19 +335,16 @@ const Index = () => {
 
       {/* Journey Title */}
       <div className="px-8 pt-6 pb-4">
-        <label className="text-xs font-medium text-foreground/50 uppercase tracking-wide mb-2 block">
+        <label className="text-sm font-medium text-foreground mb-2 block">
           Journey Name
         </label>
-        <div className="group relative inline-flex items-center gap-2 max-w-lg">
-          <Input
-            type="text"
-            value={journeyName}
-            onChange={(e) => setJourneyName(e.target.value)}
-            placeholder="Click to name your journey..."
-            className="w-full bg-transparent border-none shadow-none text-2xl font-semibold text-foreground placeholder:text-foreground/40 placeholder:italic focus-visible:ring-0 px-0 h-auto pr-8 hover:bg-foreground/5 focus:bg-foreground/5 rounded-lg transition-colors -ml-2 pl-2"
-          />
-          <Pencil className="absolute right-0 h-4 w-4 text-foreground/30 group-hover:text-foreground/60 transition-colors pointer-events-none" />
-        </div>
+        <Input
+          type="text"
+          value={journeyName}
+          onChange={(e) => setJourneyName(e.target.value)}
+          placeholder="e.g. Business Review Flow"
+          className="max-w-md text-lg"
+        />
       </div>
 
       {/* Main Scrolling Area */}
