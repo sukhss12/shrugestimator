@@ -243,7 +243,7 @@ const Index = () => {
       </div>
 
       {/* Settings/Summary Bar - Above Stages */}
-      <div className="sticky top-0 z-10 px-4 sm:px-6 py-3 bg-card border-y border-border flex flex-wrap items-center gap-3 sm:gap-4">
+      <div className="sticky top-0 z-10 mx-4 sm:mx-6 my-2 px-4 py-3 bg-card border border-border rounded-lg flex flex-wrap items-center gap-3 sm:gap-4">
         {/* Journey Name */}
         <div className="min-w-[140px] max-w-[200px]">
           {isEditingName || !journeyName ? (
