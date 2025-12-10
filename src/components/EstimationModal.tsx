@@ -17,10 +17,10 @@ import { SIZE_DAYS, SIZE_LABELS } from '@/lib/constants';
 
 const SIZES: TShirtSize[] = ['XS', 'S', 'M', 'L', 'XL', 'NA'];
 const DIMENSIONS = [
-  { key: 'fe', label: 'Frontend' },
-  { key: 'be', label: 'Backend' },
-  { key: 'db', label: 'Database' },
-  { key: 'int', label: 'Integration' },
+  { key: 'fe', label: 'Frontend', description: 'UI, components, styling, interactions, responsive behaviour' },
+  { key: 'be', label: 'Backend', description: 'Business logic, services, validation, processing' },
+  { key: 'db', label: 'Data', description: 'Schema, queries, storage, caching' },
+  { key: 'int', label: 'External', description: 'Third-party APIs, integrations' },
 ] as const;
 
 type DimensionKey = typeof DIMENSIONS[number]['key'];
@@ -99,11 +99,14 @@ export const EstimationModal = ({
 
         {/* Body */}
         <div className="p-4 space-y-4">
-          {DIMENSIONS.map(({ key, label }) => (
-            <div key={key} className="space-y-2">
-              <label className="text-sm font-medium text-foreground">
-                {label}
-              </label>
+          {DIMENSIONS.map(({ key, label, description }) => (
+            <div key={key} className="space-y-1.5">
+              <div>
+                <label className="text-sm font-medium text-foreground">
+                  {label}
+                </label>
+                <p className="text-xs text-muted-foreground">{description}</p>
+              </div>
               <div className="flex gap-1.5">
                 {SIZES.map((size) => (
                   <Tooltip key={size}>
