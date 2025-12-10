@@ -19,6 +19,7 @@ import { Button } from '@/components/ui/button';
 import { Minus, Plus } from 'lucide-react';
 import { SortableStageColumn } from '@/components/SortableStageColumn';
 import { AddStageButton } from '@/components/AddStageButton';
+import { JourneySizeScale } from '@/components/JourneySizeScale';
 import { TShirtSize } from '@/types';
 import { SIZE_POINTS, POINTS_PER_DEV_DAY } from '@/lib/constants';
 
@@ -298,21 +299,26 @@ const Index = () => {
       </main>
 
       {/* Bottom Bar - Sticky */}
-      <footer className="sticky bottom-0 z-10 px-6 py-4 bg-background border-t border-border shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
-        <div className="flex items-center justify-center gap-2">
-          <span className="text-sm font-medium">
-            {summary.selectedCount} of {summary.totalCount} selected
-          </span>
-          <span className="text-muted-foreground">·</span>
-          <span className="text-sm font-medium text-primary">{summary.totalPoints} pts</span>
-          <span className="text-muted-foreground">·</span>
-          <span className="text-xs font-semibold px-2 py-0.5 rounded bg-primary/10 text-primary">
-            {summary.journeySize}
-          </span>
-          <span className="text-muted-foreground">·</span>
-          <span className="text-sm font-medium">Team: {teamSize}</span>
-          <span className="text-muted-foreground">·</span>
-          <span className="text-sm font-medium">{summary.timeEstimate}</span>
+      <footer className="sticky bottom-0 z-10 px-6 py-3 bg-background border-t border-border shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
+        <div className="flex items-center justify-between gap-4">
+          {/* Journey Size Scale - Left */}
+          <JourneySizeScale 
+            currentSize={summary.journeySize} 
+            totalPoints={summary.totalPoints} 
+          />
+          
+          {/* Summary Stats - Right */}
+          <div className="flex items-center gap-2 text-sm">
+            <span className="text-muted-foreground hidden md:inline">
+              {summary.selectedCount}/{summary.totalCount} selected
+            </span>
+            <span className="text-muted-foreground hidden md:inline">·</span>
+            <span className="font-medium">{summary.totalPoints} pts</span>
+            <span className="text-muted-foreground">·</span>
+            <span className="text-muted-foreground">Team: {teamSize}</span>
+            <span className="text-muted-foreground">·</span>
+            <span className="font-medium text-primary">{summary.timeEstimate}</span>
+          </div>
         </div>
       </footer>
     </div>
