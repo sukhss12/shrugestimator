@@ -123,7 +123,21 @@ const Index = () => {
       timeEstimate = `~${weeks} weeks`;
     }
 
-    return { selectedCount, totalCount, totalPoints, timeEstimate };
+    // Journey size based on total points
+    let journeySize: string;
+    if (totalPoints <= 10) {
+      journeySize = 'XS';
+    } else if (totalPoints <= 25) {
+      journeySize = 'S';
+    } else if (totalPoints <= 50) {
+      journeySize = 'M';
+    } else if (totalPoints <= 100) {
+      journeySize = 'L';
+    } else {
+      journeySize = 'XL';
+    }
+
+    return { selectedCount, totalCount, totalPoints, timeEstimate, journeySize };
   }, [stages, teamSize]);
 
   const handleDecrement = () => {
@@ -241,16 +255,20 @@ const Index = () => {
 
       {/* Bottom Bar - Sticky */}
       <footer className="sticky bottom-0 z-10 px-6 py-4 bg-background border-t border-border shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
-        <div className="flex items-center justify-center">
+        <div className="flex items-center justify-center gap-2">
           <span className="text-sm font-medium">
             {summary.selectedCount} of {summary.totalCount} selected
-            <span className="mx-2 text-muted-foreground">·</span>
-            <span className="text-primary">{summary.totalPoints} pts</span>
-            <span className="mx-2 text-muted-foreground">·</span>
-            Team: {teamSize}
-            <span className="mx-2 text-muted-foreground">·</span>
-            {summary.timeEstimate}
           </span>
+          <span className="text-muted-foreground">·</span>
+          <span className="text-sm font-medium text-primary">{summary.totalPoints} pts</span>
+          <span className="text-muted-foreground">·</span>
+          <span className="text-xs font-semibold px-2 py-0.5 rounded bg-primary/10 text-primary">
+            {summary.journeySize}
+          </span>
+          <span className="text-muted-foreground">·</span>
+          <span className="text-sm font-medium">Team: {teamSize}</span>
+          <span className="text-muted-foreground">·</span>
+          <span className="text-sm font-medium">{summary.timeEstimate}</span>
         </div>
       </footer>
     </div>
