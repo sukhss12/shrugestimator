@@ -169,7 +169,7 @@ export const StageColumn = ({
             type="text"
             value={name}
             onChange={(e) => onNameChange(e.target.value)}
-            placeholder="Stage name"
+            placeholder="Journey Stage"
             className="flex-1 border-none shadow-none bg-transparent font-semibold text-base text-foreground placeholder:text-foreground/40 focus-visible:ring-0 px-0 h-auto py-0"
           />
           {canDelete && onDelete && (
