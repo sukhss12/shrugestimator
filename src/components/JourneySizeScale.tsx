@@ -19,8 +19,8 @@ const SIZES = [
 
 export const JourneySizeScale = ({ currentSize }: JourneySizeScaleProps) => {
   return (
-    <div className="flex items-center gap-1">
-      <span className="text-xs text-foreground/60 mr-2 hidden sm:inline">Journey:</span>
+    <div className="flex items-center gap-2">
+      <span className="text-sm text-foreground/60 hidden sm:inline">Journey:</span>
       <div className="flex gap-1">
         {SIZES.map(({ size, range }) => {
           const isActive = size === currentSize;
@@ -30,26 +30,21 @@ export const JourneySizeScale = ({ currentSize }: JourneySizeScaleProps) => {
               <TooltipTrigger asChild>
                 <div
                   className={`
-                    flex flex-col items-center justify-center px-2 py-1 rounded-md
-                    transition-all duration-150 cursor-default min-w-[40px]
+                    px-2 py-1 rounded text-sm font-medium cursor-default
+                    transition-colors duration-150
                     ${isActive
                       ? 'bg-primary text-primary-foreground'
-                      : 'bg-card border border-border/50 text-foreground/60'
+                      : 'bg-muted text-foreground/50 hover:text-foreground/70'
                     }
                   `}
                 >
-                  <span className="text-xs font-semibold">
-                    {size}
-                  </span>
-                  <span className={`text-[10px] ${isActive ? 'opacity-80' : 'text-foreground/50'}`}>
-                    {range}
-                  </span>
+                  {size}
                 </div>
               </TooltipTrigger>
               <TooltipContent side="top" className="text-xs">
                 <div className="text-center">
-                  <div className="font-medium">{size}: {band.label}</div>
-                  <div className="text-foreground/70">{band.sprints}</div>
+                  <div className="font-medium">{band.label}</div>
+                  <div className="text-foreground/70">{range} · {band.sprints}</div>
                 </div>
               </TooltipContent>
             </Tooltip>

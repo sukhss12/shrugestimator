@@ -32,13 +32,10 @@ export const SummaryBar = ({
   const isOverAppetite = calendarWeeks > appetite;
   const weeksOver = Math.round((calendarWeeks - appetite) * 2) / 2;
   
-  // Format weeks for display
   const formatWeeks = (weeks: number) => {
-    const rounded = Math.round(weeks * 2) / 2;
-    return rounded;
+    return Math.round(weeks * 2) / 2;
   };
 
-  // Progress bar color
   const getBarColor = () => {
     if (appetitePercent <= 80) return 'bg-emerald-500';
     if (appetitePercent <= 100) return 'bg-amber-500';
@@ -46,45 +43,42 @@ export const SummaryBar = ({
   };
 
   const fillWidth = Math.min(appetitePercent, 100);
-
   const hasPriorityBreakdown = greenDevDays > 0 || amberDevDays > 0 || purpleDevDays > 0;
 
   return (
     <div className="flex items-center gap-3 text-sm">
-      {/* Dev-days: show total OR breakdown, not both */}
+      {/* Dev-days: show breakdown OR total */}
       {hasPriorityBreakdown ? (
         <div className="flex items-center gap-2">
           {greenDevDays > 0 && (
             <span className="flex items-center gap-1">
               <span className="w-2 h-2 rounded-full bg-emerald-500" />
-              <span className="text-xs font-medium">{greenDevDays}d</span>
+              <span className="font-medium">{greenDevDays}d</span>
             </span>
           )}
           {amberDevDays > 0 && (
             <span className="flex items-center gap-1">
               <span className="w-2 h-2 rounded-full bg-amber-500" />
-              <span className="text-xs font-medium">{amberDevDays}d</span>
+              <span className="font-medium">{amberDevDays}d</span>
             </span>
           )}
           {purpleDevDays > 0 && (
             <span className="flex items-center gap-1">
               <span className="w-2 h-2 rounded-full bg-violet-500" />
-              <span className="text-xs font-medium">{purpleDevDays}d</span>
+              <span className="font-medium">{purpleDevDays}d</span>
             </span>
           )}
           {unassignedDevDays > 0 && (
             <span className="flex items-center gap-1">
-              <span className="w-2 h-2 rounded-full bg-foreground/20 border border-foreground/40" />
-              <span className="text-xs text-foreground/60">{unassignedDevDays}d</span>
+              <span className="w-2 h-2 rounded-full bg-muted-foreground/30 border border-muted-foreground/50" />
+              <span className="text-foreground/60">{unassignedDevDays}d</span>
             </span>
           )}
         </div>
       ) : (
         <Tooltip>
           <TooltipTrigger asChild>
-            <span className="font-medium text-foreground cursor-default">
-              {totalDevDays} dev-days
-            </span>
+            <span className="font-medium cursor-default">{totalDevDays} dev-days</span>
           </TooltipTrigger>
           <TooltipContent side="top" className="text-xs">
             Total effort across all selected features
@@ -92,22 +86,22 @@ export const SummaryBar = ({
         </Tooltip>
       )}
 
-      <span className="text-foreground/40">·</span>
+      <span className="text-foreground/30">·</span>
       
       <span className="text-foreground/70">{teamSize} dev{teamSize > 1 ? 's' : ''}</span>
       
-      <span className="text-foreground/40">·</span>
+      <span className="text-foreground/30">·</span>
 
       {/* Weeks + Size badge */}
       <Tooltip>
         <TooltipTrigger asChild>
           <div className="flex items-center gap-1.5 cursor-default">
-            <span className="font-medium text-primary">~{formatWeeks(calendarWeeks)} wks</span>
+            <span className="font-medium">~{formatWeeks(calendarWeeks)} wks</span>
             <span className={`
               text-xs font-semibold px-1.5 py-0.5 rounded
               ${isOverAppetite 
-                ? 'bg-red-100 text-red-700 dark:bg-red-900/50 dark:text-red-300' 
-                : 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/50 dark:text-emerald-300'
+                ? 'bg-destructive/20 text-destructive' 
+                : 'bg-emerald-500/20 text-emerald-500'
               }
             `}>
               {journeySize}
@@ -119,21 +113,21 @@ export const SummaryBar = ({
         </TooltipContent>
       </Tooltip>
 
-      <span className="text-foreground/40">·</span>
+      <span className="text-foreground/30">·</span>
 
       {/* Appetite check */}
       <Tooltip>
         <TooltipTrigger asChild>
           <div className="flex items-center gap-2 cursor-default">
             {isOverAppetite ? (
-              <span className="text-xs text-red-500 flex items-center gap-1">
-                <AlertTriangle className="h-3 w-3" />
-                {appetitePercent}% — descope {weeksOver} wks
+              <span className="text-destructive flex items-center gap-1">
+                <AlertTriangle className="h-3.5 w-3.5" />
+                <span>{appetitePercent}% — descope {weeksOver} wks</span>
               </span>
             ) : (
               <>
-                <span className="text-xs text-foreground/70">{appetitePercent}%</span>
-                <div className="w-12 h-1.5 bg-foreground/10 rounded-full overflow-hidden">
+                <span className="text-foreground/70">{appetitePercent}%</span>
+                <div className="w-12 h-1.5 bg-muted rounded-full overflow-hidden">
                   <div 
                     className={`h-full ${getBarColor()} transition-all duration-300`}
                     style={{ width: `${fillWidth}%` }}
@@ -147,7 +141,7 @@ export const SummaryBar = ({
           <div className="text-center">
             <div className="font-medium">Appetite: {appetite} weeks</div>
             {isOverAppetite && (
-              <div className="text-red-500">Descope {weeksOver} weeks to fit</div>
+              <div className="text-destructive">Descope {weeksOver} weeks to fit</div>
             )}
           </div>
         </TooltipContent>
