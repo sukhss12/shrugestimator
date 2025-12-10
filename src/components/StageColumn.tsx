@@ -19,7 +19,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
-import { TShirtSize } from '@/types';
+import { TShirtSize, ReleaseColour } from '@/types';
 import { SIZE_POINTS } from '@/lib/constants';
 
 interface FeatureEstimates {
@@ -34,6 +34,7 @@ interface Feature {
   name: string;
   estimates?: FeatureEstimates;
   selected: boolean;
+  colour?: ReleaseColour;
 }
 
 interface StageColumnProps {
@@ -84,6 +85,12 @@ export const StageColumn = ({
   const handleToggleFeature = (featureId: string) => {
     onFeaturesChange(features.map(f => 
       f.id === featureId ? { ...f, selected: !f.selected } : f
+    ));
+  };
+
+  const handleColourChange = (featureId: string, colour: ReleaseColour) => {
+    onFeaturesChange(features.map(f => 
+      f.id === featureId ? { ...f, colour } : f
     ));
   };
 
@@ -218,9 +225,11 @@ export const StageColumn = ({
                   name={feature.name}
                   points={calculatePoints(feature.estimates)}
                   selected={feature.selected}
+                  colour={feature.colour}
                   onToggle={() => handleToggleFeature(feature.id)}
                   onClick={() => handleFeatureClick(feature)}
                   onDelete={() => handleDeleteFeature(feature.id)}
+                  onColourChange={(colour) => handleColourChange(feature.id, colour)}
                 />
               ))}
             </div>

@@ -21,7 +21,7 @@ import { SortableStageColumn } from '@/components/SortableStageColumn';
 import { AddStageButton } from '@/components/AddStageButton';
 import { JourneySizeScale } from '@/components/JourneySizeScale';
 import { SprintCapacityBar } from '@/components/SprintCapacityBar';
-import { TShirtSize } from '@/types';
+import { TShirtSize, ReleaseColour } from '@/types';
 import { SIZE_POINTS, POINTS_PER_DEV_DAY } from '@/lib/constants';
 import {
   DropdownMenu,
@@ -44,6 +44,7 @@ interface Feature {
   name: string;
   estimates?: FeatureEstimates;
   selected: boolean;
+  colour?: ReleaseColour;
 }
 
 interface Stage {
@@ -148,6 +149,21 @@ const Index = () => {
       (sum, f) => sum + calculateFeaturePoints(f.estimates),
       0
     );
+    
+    // Points by release colour
+    const greenPoints = selectedFeatures
+      .filter(f => f.colour === 'green')
+      .reduce((sum, f) => sum + calculateFeaturePoints(f.estimates), 0);
+    const amberPoints = selectedFeatures
+      .filter(f => f.colour === 'amber')
+      .reduce((sum, f) => sum + calculateFeaturePoints(f.estimates), 0);
+    const purplePoints = selectedFeatures
+      .filter(f => f.colour === 'purple')
+      .reduce((sum, f) => sum + calculateFeaturePoints(f.estimates), 0);
+    const unassignedPoints = selectedFeatures
+      .filter(f => !f.colour)
+      .reduce((sum, f) => sum + calculateFeaturePoints(f.estimates), 0);
+    
     const devDays = totalPoints / POINTS_PER_DEV_DAY;
     const calendarDays = devDays / teamSize;
     
@@ -155,6 +171,7 @@ const Index = () => {
     const sprintDays = sprintWeeks * 5;
     const sprintCapacity = sprintDays * teamSize * POINTS_PER_DEV_DAY;
     const capacityPercent = sprintCapacity > 0 ? (totalPoints / sprintCapacity) * 100 : 0;
+    const greenCapacityPercent = sprintCapacity > 0 ? (greenPoints / sprintCapacity) * 100 : 0;
     
     // Round up to nearest 0.5
     const roundedDays = Math.ceil(calendarDays * 2) / 2;
@@ -184,7 +201,11 @@ const Index = () => {
       journeySize = 'XL';
     }
 
-    return { selectedCount, totalCount, totalPoints, timeEstimate, journeySize, sprintCapacity, capacityPercent };
+    return { 
+      selectedCount, totalCount, totalPoints, timeEstimate, journeySize, 
+      sprintCapacity, capacityPercent, 
+      greenPoints, amberPoints, purplePoints, unassignedPoints, greenCapacityPercent 
+    };
   }, [stages, teamSize, sprintWeeks]);
 
   const handleDecrement = () => {
@@ -366,14 +387,36 @@ const Index = () => {
             sprintCapacity={summary.sprintCapacity}
             teamSize={teamSize}
             sprintWeeks={sprintWeeks}
+            greenPoints={summary.greenPoints}
           />
           
-          {/* Summary Stats - Right */}
-          <div className="flex items-center gap-2 text-sm">
-            <span className="text-muted-foreground hidden md:inline">
-              {summary.selectedCount}/{summary.totalCount} selected
-            </span>
-            <span className="text-muted-foreground hidden md:inline">·</span>
+          {/* Release Colour Totals */}
+          <div className="flex items-center gap-3 text-sm">
+            {summary.greenPoints > 0 && (
+              <span className="flex items-center gap-1">
+                <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
+                <span className="font-medium">{summary.greenPoints}</span>
+              </span>
+            )}
+            {summary.amberPoints > 0 && (
+              <span className="flex items-center gap-1">
+                <span className="w-2.5 h-2.5 rounded-full bg-amber-500" />
+                <span className="font-medium">{summary.amberPoints}</span>
+              </span>
+            )}
+            {summary.purplePoints > 0 && (
+              <span className="flex items-center gap-1">
+                <span className="w-2.5 h-2.5 rounded-full bg-violet-500" />
+                <span className="font-medium">{summary.purplePoints}</span>
+              </span>
+            )}
+            {summary.unassignedPoints > 0 && (
+              <span className="flex items-center gap-1">
+                <span className="w-2.5 h-2.5 rounded-full bg-muted-foreground/30 border border-muted-foreground/50" />
+                <span className="text-muted-foreground">{summary.unassignedPoints}</span>
+              </span>
+            )}
+            <span className="text-muted-foreground">·</span>
             <span className="font-medium">{summary.totalPoints} pts</span>
             <span className="text-muted-foreground">·</span>
             <span className="font-medium text-primary">{summary.timeEstimate}</span>

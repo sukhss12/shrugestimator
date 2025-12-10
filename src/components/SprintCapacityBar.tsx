@@ -1,4 +1,4 @@
-import { AlertTriangle } from 'lucide-react';
+import { AlertTriangle, Check } from 'lucide-react';
 import {
   Tooltip,
   TooltipContent,
@@ -10,6 +10,7 @@ interface SprintCapacityBarProps {
   sprintCapacity: number;
   teamSize: number;
   sprintWeeks: number;
+  greenPoints?: number;
 }
 
 export const SprintCapacityBar = ({
@@ -17,9 +18,13 @@ export const SprintCapacityBar = ({
   sprintCapacity,
   teamSize,
   sprintWeeks,
+  greenPoints = 0,
 }: SprintCapacityBarProps) => {
   const capacityPercent = sprintCapacity > 0 ? (totalPoints / sprintCapacity) * 100 : 0;
+  const greenPercent = sprintCapacity > 0 ? (greenPoints / sprintCapacity) * 100 : 0;
   const sprintsNeeded = sprintCapacity > 0 ? totalPoints / sprintCapacity : 0;
+  const greenOverBudget = greenPoints > sprintCapacity;
+  const greenOverBy = greenPoints - sprintCapacity;
   
   // Color based on capacity usage
   const getBarColor = () => {
@@ -40,15 +45,58 @@ export const SprintCapacityBar = ({
     : `${sprintsNeeded.toFixed(1)}x`;
 
   const fillWidth = Math.min(capacityPercent, 100);
+  const greenFillWidth = Math.min(greenPercent, 100);
 
   return (
-    <div className="flex items-center gap-3">
+    <div className="flex items-center gap-4">
+      {/* Green appetite check - only show if green features exist */}
+      {greenPoints > 0 && (
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <div className="flex items-center gap-2 cursor-default">
+              <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 shrink-0" />
+              <span className="text-xs text-muted-foreground">
+                {greenPoints} of {sprintCapacity}
+              </span>
+              <div className="w-16 h-2 bg-muted rounded-full overflow-hidden">
+                <div 
+                  className={`h-full ${greenOverBudget ? 'bg-red-500' : 'bg-emerald-500'} transition-all duration-300`}
+                  style={{ width: `${greenFillWidth}%` }}
+                />
+              </div>
+              {greenOverBudget ? (
+                <AlertTriangle className="h-3.5 w-3.5 text-red-500" />
+              ) : (
+                <Check className="h-3.5 w-3.5 text-emerald-500" />
+              )}
+            </div>
+          </TooltipTrigger>
+          <TooltipContent side="top" className="text-xs">
+            <div className="text-center space-y-1">
+              <div className="font-medium">
+                "Now" Release: {greenPoints} pts
+              </div>
+              {greenOverBudget ? (
+                <div className="text-red-500 font-medium">
+                  ⚠️ {greenOverBy} pts over appetite
+                </div>
+              ) : (
+                <div className="text-emerald-500 font-medium">
+                  ✓ {Math.round(greenPercent)}% of sprint
+                </div>
+              )}
+            </div>
+          </TooltipContent>
+        </Tooltip>
+      )}
+
+      {/* Total sprint capacity */}
       <Tooltip>
         <TooltipTrigger asChild>
           <div className="flex flex-col gap-1 cursor-default">
             <div className="flex items-center gap-2">
-              <span className="text-xs text-muted-foreground">Sprint:</span>
-              <div className="w-24 h-2 bg-muted rounded-full overflow-hidden">
+              <span className="text-xs text-muted-foreground">Total:</span>
+              <div className="w-20 h-2 bg-muted rounded-full overflow-hidden">
                 <div 
                   className={`h-full ${getBarColor()} transition-all duration-300`}
                   style={{ width: `${fillWidth}%` }}
