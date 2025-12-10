@@ -130,7 +130,7 @@ export const EstimationModal = ({
         </div>
 
         {/* Footer */}
-        <div className="flex items-center justify-between p-4 border-t border-border bg-muted/30">
+        <div className="flex items-center justify-between p-4 border-t border-border bg-muted">
           <span className="text-sm font-medium">
             Total: <span className="text-primary">{totalPoints} points</span>
           </span>
