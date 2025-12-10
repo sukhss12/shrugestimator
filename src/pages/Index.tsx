@@ -89,6 +89,7 @@ const saveToStorage = (data: StoredData) => {
 const Index = () => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [journeyName, setJourneyName] = useState('');
+  const [isEditingName, setIsEditingName] = useState(false);
   const [teamSize, setTeamSize] = useState(2);
   const [appetite, setAppetite] = useState(6);
   const [stages, setStages] = useState<Stage[]>([]);
@@ -265,7 +266,33 @@ const Index = () => {
           <label className="text-sm font-medium text-foreground mb-2 block">
             Journey Name
           </label>
-          <Input type="text" value={journeyName} onChange={e => setJourneyName(e.target.value)} placeholder="e.g. Business Review Flow" className="text-lg" />
+          {isEditingName || !journeyName ? (
+            <Input 
+              type="text" 
+              value={journeyName} 
+              onChange={e => setJourneyName(e.target.value)} 
+              onKeyDown={e => {
+                if (e.key === 'Enter' && journeyName.trim()) {
+                  setIsEditingName(false);
+                }
+              }}
+              onBlur={() => {
+                if (journeyName.trim()) {
+                  setIsEditingName(false);
+                }
+              }}
+              placeholder="e.g. Business Review Flow" 
+              className="text-lg"
+              autoFocus={isEditingName}
+            />
+          ) : (
+            <button
+              onClick={() => setIsEditingName(true)}
+              className="w-full text-left text-lg font-medium text-foreground py-2 px-3 rounded-md border border-transparent hover:border-border hover:bg-accent/50 transition-colors"
+            >
+              {journeyName}
+            </button>
+          )}
         </div>
 
         {/* Team Size */}
