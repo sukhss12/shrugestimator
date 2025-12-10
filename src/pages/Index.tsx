@@ -8,6 +8,7 @@ import { SortableStageColumn } from '@/components/SortableStageColumn';
 import { AddStageButton } from '@/components/AddStageButton';
 import { JourneySizeScale } from '@/components/JourneySizeScale';
 import { SummaryBar } from '@/components/SummaryBar';
+import { StageNavigation } from '@/components/StageNavigation';
 import { Logo } from '@/components/Logo';
 import { TShirtSize, ReleaseColour } from '@/types';
 import { SIZE_DAYS, WORKING_DAYS_PER_WEEK, APPETITE_OPTIONS, getJourneySize } from '@/lib/constants';
@@ -301,13 +302,28 @@ const Index = () => {
       </div>
 
       {/* Main Scrolling Area */}
-      <main className="flex-1 overflow-x-auto overflow-y-auto px-4 sm:px-8 pb-8 bg-background">
+      <main className="flex-1 overflow-hidden px-4 sm:px-8 pb-4 sm:pb-8 bg-background">
         <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
           <SortableContext items={stages.map(s => s.id)} strategy={horizontalListSortingStrategy}>
-            <div className="flex flex-col sm:flex-row gap-4 h-full items-stretch sm:items-start">
-              {stages.map(stage => <SortableStageColumn key={stage.id} id={stage.id} name={stage.name} features={stage.features} onNameChange={name => handleStageName(stage.id, name)} onFeaturesChange={features => handleStageFeatures(stage.id, features)} onDelete={() => handleDeleteStage(stage.id)} canDelete={stages.length > 1} autoFocus={stage.id === newStageId} />)}
-              <AddStageButton onClick={handleAddStage} />
-            </div>
+            <StageNavigation stageCount={stages.length + 1}>
+              {stages.map(stage => (
+                <div key={stage.id} className="flex-shrink-0 w-full sm:w-auto">
+                  <SortableStageColumn 
+                    id={stage.id} 
+                    name={stage.name} 
+                    features={stage.features} 
+                    onNameChange={name => handleStageName(stage.id, name)} 
+                    onFeaturesChange={features => handleStageFeatures(stage.id, features)} 
+                    onDelete={() => handleDeleteStage(stage.id)} 
+                    canDelete={stages.length > 1} 
+                    autoFocus={stage.id === newStageId} 
+                  />
+                </div>
+              ))}
+              <div className="flex-shrink-0 w-full sm:w-auto">
+                <AddStageButton onClick={handleAddStage} />
+              </div>
+            </StageNavigation>
           </SortableContext>
         </DndContext>
       </main>
