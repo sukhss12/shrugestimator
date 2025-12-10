@@ -230,6 +230,7 @@ const Index = () => {
   }
 
   return <div className="flex flex-col h-screen bg-background">
+    <div className="flex flex-col h-full w-full max-w-7xl mx-auto">
       {/* Hero Section */}
       <HeroSection />
 
@@ -381,6 +382,7 @@ const Index = () => {
           </SortableContext>
         </DndContext>
       </main>
+    </div>
     </div>;
 };
 
