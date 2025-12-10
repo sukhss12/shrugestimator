@@ -100,12 +100,12 @@ export const EstimationModal = ({
         {/* Body */}
         <div className="p-4 space-y-4">
           {DIMENSIONS.map(({ key, label, description }) => (
-            <div key={key} className="space-y-1.5">
+            <div key={key} className="space-y-2.5">
               <div>
                 <label className="text-sm font-medium text-foreground">
                   {label}
                 </label>
-                <p className="text-xs text-muted-foreground">{description}</p>
+                <p className="text-xs text-muted-foreground/60">{description}</p>
               </div>
               <div className="flex gap-1.5">
                 {SIZES.map((size) => (
