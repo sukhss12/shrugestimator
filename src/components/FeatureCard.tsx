@@ -23,11 +23,11 @@ interface FeatureCardProps {
   onColourChange?: (colour: ReleaseColour) => void;
 }
 
-const COLOUR_OPTIONS: { value: ReleaseColour; label: string; bgClass: string; borderClass: string; textClass: string }[] = [
-  { value: null, label: 'Backlog', bgClass: 'bg-muted', borderClass: 'border-l-muted-foreground/30', textClass: 'text-muted-foreground' },
-  { value: 'green', label: 'Now', bgClass: 'bg-emerald-500', borderClass: 'border-l-emerald-500', textClass: 'text-emerald-500' },
-  { value: 'amber', label: 'Next', bgClass: 'bg-amber-500', borderClass: 'border-l-amber-500', textClass: 'text-amber-500' },
-  { value: 'purple', label: 'Later', bgClass: 'bg-violet-500', borderClass: 'border-l-violet-500', textClass: 'text-violet-500' },
+const COLOUR_OPTIONS: { value: ReleaseColour; label: string; bgClass: string; borderClass: string; textClass: string; glowClass: string }[] = [
+  { value: null, label: 'Priority', bgClass: 'bg-muted', borderClass: 'border-l-muted-foreground/30', textClass: 'text-muted-foreground', glowClass: '' },
+  { value: 'green', label: 'Now', bgClass: 'bg-emerald-500', borderClass: 'border-l-emerald-500', textClass: 'text-emerald-500', glowClass: 'shadow-[0_0_12px_rgba(16,185,129,0.4)]' },
+  { value: 'amber', label: 'Next', bgClass: 'bg-amber-500', borderClass: 'border-l-amber-500', textClass: 'text-amber-500', glowClass: 'shadow-[0_0_12px_rgba(245,158,11,0.4)]' },
+  { value: 'purple', label: 'Later', bgClass: 'bg-violet-500', borderClass: 'border-l-violet-500', textClass: 'text-violet-500', glowClass: 'shadow-[0_0_12px_rgba(139,92,246,0.4)]' },
 ];
 
 const getColourClasses = (colour: ReleaseColour) => {
@@ -58,6 +58,7 @@ export const FeatureCard = ({
         hover:shadow-md hover:-translate-y-0.5 hover:border-primary/30
         ${selected ? 'opacity-100' : 'opacity-50'}
         border-l-4 ${colourClasses.borderClass}
+        ${selected && colour ? colourClasses.glowClass : ''}
       `}
       onClick={onClick}
       tabIndex={0}
