@@ -177,8 +177,8 @@ const Index = () => {
       timeEstimate = `~${roundedWeeks} week${roundedWeeks !== 1 ? 's' : ''}`;
     }
 
-    // Journey size based on calendar weeks (using new bands)
-    const journeySize = getJourneySize(calendarWeeks);
+    // Journey size based on total dev days
+    const journeySize = getJourneySize(totalDevDays);
 
     return {
       selectedCount,
