@@ -7,6 +7,11 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 import { TShirtSize } from '@/types';
 import { SIZE_DAYS, SIZE_LABELS } from '@/lib/constants';
 
@@ -80,7 +85,7 @@ export const EstimationModal = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="w-[calc(100%-2rem)] sm:w-full max-w-[480px] p-0 gap-0">
+      <DialogContent className="w-[calc(100%-2rem)] sm:w-full max-w-[480px] p-0 gap-0 overflow-hidden">
         {/* Header */}
         <DialogHeader className="p-4 pb-3 border-b border-border pr-12">
           <Input
@@ -101,36 +106,53 @@ export const EstimationModal = ({
               </label>
               <div className="flex gap-1.5">
                 {SIZES.map((size) => (
-                  <button
-                    key={size}
-                    onClick={() => handleSizeSelect(key, size)}
-                    className={`
-                      flex-1 py-1.5 px-2 text-xs font-medium rounded-full
-                      transition-colors duration-150
-                      ${estimates[key] === size
-                        ? 'bg-foreground text-background'
-                        : 'bg-background border border-border text-muted-foreground hover:border-foreground/30'
-                      }
-                    `}
-                  >
-                    {size === 'NA' ? 'N/A' : size}
-                  </button>
+                  <Tooltip key={size}>
+                    <TooltipTrigger asChild>
+                      <button
+                        onClick={() => handleSizeSelect(key, size)}
+                        className={`
+                          flex-1 py-1.5 px-2 text-xs font-medium rounded-full
+                          transition-colors duration-150
+                          ${estimates[key] === size
+                            ? 'bg-foreground text-background'
+                            : 'bg-background border border-border text-muted-foreground hover:border-foreground/30'
+                          }
+                        `}
+                      >
+                        {size === 'NA' ? 'N/A' : size}
+                      </button>
+                    </TooltipTrigger>
+                    <TooltipContent side="top" className="text-xs">
+                      <span className="font-medium">{size === 'NA' ? 'N/A' : size}</span>
+                      <span className="text-foreground/70"> = {SIZE_LABELS[size]}</span>
+                      {size !== 'NA' && (
+                        <span className="text-foreground/50"> ({SIZE_DAYS[size]} dev-day{SIZE_DAYS[size] !== 1 ? 's' : ''})</span>
+                      )}
+                    </TooltipContent>
+                  </Tooltip>
                 ))}
               </div>
             </div>
           ))}
 
-          {/* Size Reference */}
-          <p className="text-xs text-muted-foreground pt-2">
-            {Object.entries(SIZE_LABELS)
-              .filter(([key]) => key !== 'NA')
-              .map(([key, label]) => `${key} = ${label}`)
-              .join(' · ')}
-          </p>
+          {/* Size Legend */}
+          <div className="pt-3 border-t border-border/50">
+            <p className="text-xs text-muted-foreground mb-2 font-medium">Size Guide</p>
+            <div className="grid grid-cols-3 gap-x-4 gap-y-1 text-xs text-muted-foreground">
+              {Object.entries(SIZE_LABELS)
+                .filter(([key]) => key !== 'NA')
+                .map(([key, label]) => (
+                  <div key={key} className="flex items-center gap-1.5">
+                    <span className="font-medium text-foreground/80">{key}</span>
+                    <span className="text-foreground/50">{label}</span>
+                  </div>
+                ))}
+            </div>
+          </div>
         </div>
 
         {/* Footer */}
-        <div className="flex items-center justify-between p-4 border-t border-border bg-muted">
+        <div className="flex items-center justify-between p-4 border-t border-border bg-muted rounded-b-lg">
           <span className="text-sm font-medium">
             Total: <span className="text-primary">{totalDevDays} dev-days</span>
           </span>
